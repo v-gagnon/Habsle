@@ -1,0 +1,36 @@
+name: Mise a jour quotidienne des stats LNH
+
+on:
+  schedule:
+    # S'exécute automatiquement tous les jours à 11h00 UTC (06h00 heure de Montréal)
+    - cron: "0 11 * * *"
+  # Permet aussi de lancer la mise à jour manuellement avec un bouton sur GitHub
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-nhl-data:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Le robot récupère le contenu actuel de ton dépôt
+      - name: Recuperer les fichiers du depot
+        uses: actions/checkout@v4
+
+      # 2. Le robot interroge les deux URLs de la LNH et les fusionne dans nhl-data.json
+      - name: Telecharger l'alignement et les statistiques depuis la LNH
+        run: |
+          curl -sL "https://api-web.nhle.com/v1/roster/MTL/current" > roster.json
+          curl -sL "https://api-web.nhle.com/v1/club-stats/MTL/now" > stats.json
+          jq -n --slurpfile r roster.json --slurpfile s stats.json '{roster: $r[0], stats: $s[0]}' > nhl-data.json
+          rm roster.json stats.json
+
+      # 3. Le robot sauvegarde nhl-data.json dans ton dépôt si les stats ont changé
+      - name: Enregistrer nhl-data.json dans le depot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nhl-data.json
+          git diff --staged --quiet || git commit -m "Mise a jour automatique des statistiques LNH"
+          git push
