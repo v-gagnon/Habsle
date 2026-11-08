@@ -92,10 +92,10 @@ body {
   background: transparent;
   color: var(--text-muted);
   border: 1px solid transparent;
-  padding: 0.5rem 1.1rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -164,23 +164,35 @@ body {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 }
 
+.menu-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
 .menu-tag {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-muted);
-  padding: 0.25rem 0.65rem;
+  padding: 0.24rem 0.6rem;
   border-radius: 6px;
-  margin-bottom: 0.9rem;
 }
 
 .menu-tag.daily-tag {
   background: rgba(175, 30, 45, 0.25);
   color: #ff9aa5;
   border: 1px solid rgba(175, 30, 45, 0.5);
+}
+
+.menu-tag.remix-tag {
+  background: rgba(59, 76, 202, 0.25);
+  color: #b8c4ff;
+  border: 1px solid rgba(92, 112, 242, 0.5);
 }
 
 .menu-tag.completed-tag {
@@ -477,8 +489,8 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1.2rem;
-  font-size: 0.82rem;
+  gap: 1.4rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   margin-bottom: 1.2rem;
 }
@@ -496,7 +508,7 @@ body {
 .dot.close { background: var(--close-yellow); }
 .dot.wrong { background: var(--wrong-gray); }
 
-/* Grille et animations */
+/* Grille et titres de colonnes avec intervalles */
 .board {
   width: 100%;
   overflow-x: auto;
@@ -507,24 +519,39 @@ body {
   display: grid;
   grid-template-columns: 1.8fr repeat(6, 1fr);
   gap: 0.5rem;
-  min-width: 640px;
+  min-width: 660px;
 }
 
 .board-header {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.6px;
   color: var(--text-muted);
   text-align: center;
-  padding: 0 0.2rem 0.5rem;
+  padding: 0 0.2rem 0.55rem;
   font-weight: 700;
+  align-items: end;
 }
 
-.board-header .stat-col-header {
+.header-col-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  line-height: 1.2;
+}
+
+.header-col-cell.stat-col-header {
   color: #b8c4ff;
-  cursor: help;
-  text-decoration: underline dotted rgba(184, 196, 255, 0.45);
-  text-underline-offset: 3px;
+}
+
+.header-interval {
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.82;
+  margin-top: 2px;
 }
 
 .guesses-body {
