@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CH-ertl | Le Wordle du Canadien de Montréal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-badge">CH</div>
+    <div>
+      <h1>CH-ERTL</h1>
+      <p class="subtitle">Devine le joueur des Canadiens de Montréal (Saison 2026-2027)</p>
+    </div>
+  </header>
+
+  <main class="game-container">
+    <!-- Barre de contrôle -->
+    <div class="top-controls">
+      <div class="attempts-counter">
+        Essais : <span id="attempt-count">0</span> / 8
+      </div>
+      <label class="study-toggle" title="Affiche le numéro et la position dans le menu de recherche">
+        <input type="checkbox" id="study-mode" checked />
+        <span>Indices au menu</span>
+      </label>
+      <div class="action-buttons">
+        <button id="roster-btn" class="secondary-btn">📋 Liste des joueurs</button>
+        <button id="give-up-btn" class="danger-btn">🏳️ Donner la réponse</button>
+        <button id="new-game-btn" class="secondary-btn">🔄 Nouveau joueur</button>
+      </div>
+    </div>
+
+    <!-- Zone de recherche avec autocomplétion -->
+    <div class="search-wrapper" id="search-wrapper">
+      <input
+        type="text"
+        id="player-input"
+        placeholder="Tape le nom ou le numéro d'un joueur du CH (ex: Suzuki, 48, Caufield...)"
+        autocomplete="off"
+      />
+      <div id="autocomplete-list" class="autocomplete-items hidden"></div>
+    </div>
+
+    <!-- Légende des couleurs -->
+    <div class="legend">
+      <span><i class="dot exact"></i> Exact</span>
+      <span><i class="dot close"></i> Proche (Même groupe / # ±5 / Âge ±2)</span>
+      <span><i class="dot wrong"></i> Différent</span>
+    </div>
+
+    <!-- Grille des essais -->
+    <div class="board">
+      <div class="board-header">
+        <div>Joueur</div>
+        <div>#</div>
+        <div>Pos</div>
+        <div>Unité</div>
+        <div>Âge</div>
+        <div>Lancer</div>
+        <div>Pays</div>
+      </div>
+      <div id="guesses-container" class="guesses-body"></div>
+    </div>
+
+    <!-- Carte finale (affichée à la fin ou quand on demande la réponse) -->
+    <section id="result-card" class="result-card hidden">
+      <div class="result-banner" id="result-banner"></div>
+      <div class="result-content">
+        <div class="photo-wrapper">
+          <img id="player-photo" src="" alt="Photo du joueur" />
+          <span id="player-jersey-badge" class="jersey-badge"></span>
+        </div>
+        <div class="player-details">
+          <h2 id="reveal-name"></h2>
+          <p id="reveal-role" class="reveal-role"></p>
+          <div class="stats-grid" id="reveal-stats"></div>
+          <button id="play-again-btn" class="primary-btn">Jouer une autre manche</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Fenêtre modale : Liste complète des joueurs -->
+  <div id="roster-modal" class="modal-overlay hidden">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2>Alignement des Canadiens (25 joueurs)</h2>
+        <button id="close-modal-btn" class="close-btn" aria-label="Fermer">&times;</button>
+      </div>
+      <p class="modal-subtitle">
+        Astuce : Tu peux cliquer directement sur un joueur de la liste pour le soumettre comme essai !
+      </p>
+      <div id="roster-list-content" class="roster-sections"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
