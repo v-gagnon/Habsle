@@ -586,14 +586,31 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+  gap: 0.6rem;
+}
+
+.season-stats-heading {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ff9aa5;
+  margin: 1.1rem 0 0.55rem;
+}
+
+.season-stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
 }
 
 .stat-box {
   background: rgba(255, 255, 255, 0.05);
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
+}
+
+.stat-box.highlight-stat {
+  background: rgba(175, 30, 45, 0.16);
+  border: 1px solid rgba(175, 30, 45, 0.35);
 }
 
 .stat-label {
@@ -640,6 +657,39 @@ body {
   border: 1px solid var(--border-subtle);
 }
 
+.api-sync-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.55rem;
+}
+
+.api-status-pill {
+  font-size: 0.75rem;
+  background: rgba(31, 139, 76, 0.2);
+  color: #7ee2a8;
+  border: 1px solid rgba(31, 139, 76, 0.45);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.mini-sync-btn {
+  background: #283457;
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mini-sync-btn:hover {
+  background: #364675;
+}
+
 .study-search {
   min-width: 260px;
   flex: 1;
@@ -677,6 +727,14 @@ body {
   display: flex;
   gap: 0.9rem;
   align-items: center;
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.study-player-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--rouge-ch);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
 .study-avatar {
@@ -720,7 +778,7 @@ body {
   line-height: 1.35;
 }
 
-/* Fenêtre modale pour la liste des joueurs */
+/* Fenêtres modales */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -745,6 +803,10 @@ body {
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
   animation: slideUpFade 0.25s ease forwards;
+}
+
+.profile-modal-window {
+  max-width: 680px;
 }
 
 .modal-header {
@@ -779,6 +841,82 @@ body {
   padding: 0.75rem 1.4rem 0;
 }
 
+/* Contenu de la fiche joueur agrandie (Mode Étude) */
+.profile-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.profile-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.profile-hero-photo {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a3968 0%, #12182e 100%);
+  border: 4px solid var(--rouge-ch);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-hero-text {
+  flex: 1;
+  min-width: 220px;
+}
+
+.profile-hero-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+
+.profile-hero-title h3 {
+  font-size: 1.5rem;
+}
+
+.profile-unit-badge {
+  background: rgba(175, 30, 45, 0.25);
+  color: #ff9aa5;
+  border: 1px solid rgba(175, 30, 45, 0.5);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.profile-bio-note {
+  color: #cad3eb;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.profile-section-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ff9aa5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+/* Liste modale en cours de partie */
 .roster-sections {
   padding: 1rem 1.4rem 1.5rem;
   overflow-y: auto;

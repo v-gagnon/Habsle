@@ -57,7 +57,7 @@
         <div class="menu-card-top">
           <span class="menu-tag">Alignement complet</span>
           <h3>Étude</h3>
-          <p>Consulte les fiches, photos, numéros, âges et trios des 25 joueurs en dehors du jeu.</p>
+          <p>Consulte les fiches, photos, numéros, âges, trios et statistiques des 25 joueurs.</p>
         </div>
         <span class="menu-card-cta">Explorer l'équipe &rarr;</span>
       </button>
@@ -133,6 +133,10 @@
           <h2 id="reveal-name"></h2>
           <p id="reveal-role" class="reveal-role"></p>
           <div class="stats-grid" id="reveal-stats"></div>
+
+          <h3 class="season-stats-heading">Statistiques Saison 2026-2027</h3>
+          <div class="stats-grid season-stats-grid" id="reveal-season-stats"></div>
+
           <div class="result-actions">
             <button id="play-again-btn" class="primary-btn">Jouer une autre manche</button>
             <div id="daily-next-info" class="daily-next-info hidden">
@@ -150,7 +154,15 @@
     <div class="study-header">
       <div>
         <h2>Mode Étude — Alignement des Canadiens</h2>
-        <p class="mode-subtitle">Révise les trios, les paires défensives, les numéros et les profils des 25 joueurs.</p>
+        <p class="mode-subtitle">
+          Clique sur la carte d'un joueur pour afficher son profil en grand avec toutes ses statistiques.
+        </p>
+        <div class="api-sync-bar">
+          <span id="api-sync-status" class="api-status-pill">Données LNH 2026-2027 chargées</span>
+          <button id="refresh-api-btn" class="mini-sync-btn" title="Synchroniser avec l'API officielle de la LNH">
+            Actualiser via l'API LNH
+          </button>
+        </div>
       </div>
       <input
         type="text"
@@ -163,7 +175,7 @@
     <div id="study-directory-content" class="study-sections"></div>
   </section>
 
-  <!-- Fenêtre modale : Liste complète des joueurs (pendant une partie) -->
+  <!-- Fenêtre modale 1 : Liste rapide des joueurs (pendant une partie) -->
   <div id="roster-modal" class="modal-overlay hidden">
     <div class="modal-window">
       <div class="modal-header">
@@ -174,6 +186,17 @@
         Astuce : Tu peux cliquer directement sur un joueur de la liste pour le soumettre comme essai !
       </p>
       <div id="roster-list-content" class="roster-sections"></div>
+    </div>
+  </div>
+
+  <!-- Fenêtre modale 2 : Profil détaillé en grand avec statistiques (Mode Étude) -->
+  <div id="study-profile-modal" class="modal-overlay hidden">
+    <div class="modal-window profile-modal-window">
+      <div class="modal-header">
+        <h2 id="profile-modal-title">Fiche du joueur</h2>
+        <button id="close-profile-modal-btn" class="close-btn" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="profile-modal-body" id="profile-modal-body"></div>
     </div>
   </div>
 
