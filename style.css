@@ -8,6 +8,7 @@
   --exact-green: #1f8b4c;
   --close-yellow: #c88a14;
   --wrong-gray: #2b3553;
+  --remix-indigo: #3b4cca;
   --border-subtle: rgba(255, 255, 255, 0.1);
 }
 
@@ -134,7 +135,7 @@ body {
 
 .menu-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.2rem;
 }
 
@@ -149,8 +150,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.4rem;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-card-static {
+  cursor: default;
 }
 
 .menu-card:hover {
@@ -195,10 +200,46 @@ body {
   line-height: 1.45;
 }
 
-.menu-card-cta {
+.menu-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.menu-action-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.68rem 0.95rem;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 0.9rem;
-  color: #ff9aa5;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-action-btn.primary-action {
+  background: rgba(175, 30, 45, 0.18);
+  color: #ffadb6;
+  border-color: rgba(175, 30, 45, 0.45);
+}
+
+.menu-action-btn.primary-action:hover {
+  background: var(--rouge-ch);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.menu-action-btn.remix-action {
+  background: rgba(59, 76, 202, 0.22);
+  color: #b8c4ff;
+  border-color: rgba(92, 112, 242, 0.5);
+}
+
+.menu-action-btn.remix-action:hover {
+  background: var(--remix-indigo);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* Conteneur du jeu */
@@ -213,14 +254,33 @@ body {
   margin-bottom: 1rem;
 }
 
+.mode-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
 .mode-banner h2 {
   font-size: 1.35rem;
+}
+
+.remix-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  background: rgba(59, 76, 202, 0.3);
+  color: #c4ceff;
+  border: 1px solid rgba(92, 112, 242, 0.6);
+  padding: 0.22rem 0.65rem;
+  border-radius: 6px;
 }
 
 .mode-subtitle {
   font-size: 0.86rem;
   color: var(--text-muted);
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
 }
 
 .top-controls {
@@ -264,7 +324,8 @@ body {
 
 .secondary-btn,
 .danger-btn,
-.primary-btn {
+.primary-btn,
+.remix-btn {
   border: none;
   border-radius: 8px;
   padding: 0.55rem 0.9rem;
@@ -281,6 +342,18 @@ body {
 
 .secondary-btn:hover {
   background: #374570;
+  transform: translateY(-1px);
+}
+
+.remix-btn {
+  background: rgba(59, 76, 202, 0.32);
+  color: #ccd4ff;
+  border: 1px solid rgba(92, 112, 242, 0.55);
+}
+
+.remix-btn:hover {
+  background: var(--remix-indigo);
+  color: #fff;
   transform: translateY(-1px);
 }
 
@@ -304,7 +377,6 @@ body {
 .primary-btn {
   background: var(--rouge-ch);
   color: #fff;
-  margin-top: 1rem;
   font-size: 0.95rem;
   padding: 0.65rem 1.2rem;
 }
@@ -312,6 +384,24 @@ body {
 .primary-btn:hover {
   background: #c92435;
   transform: translateY(-1px);
+}
+
+.large-remix-btn {
+  font-size: 0.95rem;
+  padding: 0.65rem 1.2rem;
+}
+
+.practice-end-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.1rem;
+}
+
+.daily-next-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 /* Barre de recherche */
@@ -428,6 +518,13 @@ body {
   text-align: center;
   padding: 0 0.2rem 0.5rem;
   font-weight: 700;
+}
+
+.board-header .stat-col-header {
+  color: #b8c4ff;
+  cursor: help;
+  text-decoration: underline dotted rgba(184, 196, 255, 0.45);
+  text-underline-offset: 3px;
 }
 
 .guesses-body {

@@ -168,6 +168,244 @@ const MAX_ATTEMPTS = 8;
 const DAILY_STORAGE_KEY = "habsle_daily_state_v1";
 const NHL_CACHE_KEY = "habsle_nhl_api_cache_v1";
 const UNITS_ORDER = ["Trio 1", "Trio 2", "Trio 3", "Trio 4", "Paire 1", "Paire 2", "Paire 3", "Gardien"];
+const CLASSIC_COLUMNS = ["number", "pos", "unit", "age", "shoots", "country"];
+const STAT_POOL_COLUMNS = ["gp", "g", "a", "pts", "plusMinus", "pim", "shots", "toi", "height"];
+
+// --- FONCTIONS UTILITAIRES POUR ÉVALUER LES COLONNES (CLASSIQUES ET MÉLANGÉES) ---
+function parseHeightToInches(heightStr) {
+  if (!heightStr) return 72;
+  const match = heightStr.match(/(\d+)'(\d+)/);
+  if (!match) return 72;
+  return parseInt(match[1], 10) * 12 + parseInt(match[2], 10);
+}
+
+function parseMMSS(mmss) {
+  if (!mmss || mmss === "—") return null;
+  const parts = mmss.split(":");
+  if (parts.length !== 2) return null;
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+}
+
+function compareNumericClue(guessVal, secretVal, closeThreshold, displayStr, upLabel = "▲ Plus haut", downLabel = "▼ Plus bas") {
+  if (guessVal === null || secretVal === null || isNaN(guessVal) || isNaN(secretVal)) {
+    const bothMissing = guessVal === secretVal;
+    return {
+      text: displayStr,
+      status: bothMissing ? "exact" : "wrong",
+      sub: ""
+    };
+  }
+  const diff = secretVal - guessVal;
+  const status = diff === 0 ? "exact" : Math.abs(diff) <= closeThreshold ? "close" : "wrong";
+  const sub = diff === 0 ? "" : diff > 0 ? upLabel : downLabel;
+  return { text: displayStr, status, sub };
+}
+
+// Catalogue complet des colonnes (6 colonnes de base + 9 colonnes statistiques/profil)
+const CLUE_DEFINITIONS = {
+  number: {
+    label: "#",
+    isStat: false,
+    tooltip: "Numéro de chandail (Proche : ±5)",
+    evaluate(player, secret) {
+      return compareNumericClue(player.number, secret.number, 5, `#${player.number}`);
+    }
+  },
+  pos: {
+    label: "Pos",
+    isStat: false,
+    tooltip: "Position (Proche : même groupe ATT / DEF / GAR)",
+    evaluate(player, secret) {
+      const status =
+        player.pos === secret.pos
+          ? "exact"
+          : player.posGroup === secret.posGroup
+          ? "close"
+          : "wrong";
+      return { text: player.pos, status, sub: "" };
+    }
+  },
+  unit: {
+    label: "Unité",
+    isStat: false,
+    tooltip: "Trio ou paire défensive (Proche : même catégorie d'unité)",
+    evaluate(player, secret) {
+      const status =
+        player.unit === secret.unit
+          ? "exact"
+          : player.unitGroup === secret.unitGroup
+          ? "close"
+          : "wrong";
+      return { text: player.unit, status, sub: "" };
+    }
+  },
+  age: {
+    label: "Âge",
+    isStat: false,
+    tooltip: "Âge du joueur (Proche : ±2 ans)",
+    evaluate(player, secret) {
+      return compareNumericClue(
+        player.age,
+        secret.age,
+        2,
+        `${player.age} ans`,
+        "▲ Plus vieux",
+        "▼ Plus jeune"
+      );
+    }
+  },
+  shoots: {
+    label: "Lancer",
+    isStat: false,
+    tooltip: "Côté de lancer / mitaine (G ou D)",
+    evaluate(player, secret) {
+      return {
+        text: player.shoots,
+        status: player.shoots === secret.shoots ? "exact" : "wrong",
+        sub: ""
+      };
+    }
+  },
+  country: {
+    label: "Pays",
+    isStat: false,
+    tooltip: "Pays de naissance",
+    evaluate(player, secret) {
+      return {
+        text: player.country,
+        status: player.country === secret.country ? "exact" : "wrong",
+        sub: ""
+      };
+    }
+  },
+  gp: {
+    label: "MJ",
+    isStat: true,
+    tooltip: "Matchs joués cette saison (Proche : ±3)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.gp ?? 0;
+      const sVal = secret.stats?.gp ?? 0;
+      return compareNumericClue(gVal, sVal, 3, `${gVal} MJ`);
+    }
+  },
+  g: {
+    label: "Buts",
+    isStat: true,
+    tooltip: "Buts marqués cette saison (Proche : ±2)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.g ?? 0;
+      const sVal = secret.stats?.g ?? 0;
+      return compareNumericClue(gVal, sVal, 2, `${gVal} B`);
+    }
+  },
+  a: {
+    label: "Passes",
+    isStat: true,
+    tooltip: "Passes cette saison (Proche : ±2)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.a ?? 0;
+      const sVal = secret.stats?.a ?? 0;
+      return compareNumericClue(gVal, sVal, 2, `${gVal} A`);
+    }
+  },
+  pts: {
+    label: "Points",
+    isStat: true,
+    tooltip: "Points cette saison (Proche : ±3)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.pts ?? 0;
+      const sVal = secret.stats?.pts ?? 0;
+      return compareNumericClue(gVal, sVal, 3, `${gVal} Pts`);
+    }
+  },
+  plusMinus: {
+    label: "+/-",
+    isStat: true,
+    tooltip: "Différentiel +/- (Proche : ±2)",
+    evaluate(player, secret) {
+      const gIsGoalie = player.posGroup === "GAR";
+      const sIsGoalie = secret.posGroup === "GAR";
+      if (gIsGoalie || sIsGoalie) {
+        const gText = gIsGoalie ? "—" : (player.stats?.plusMinus > 0 ? `+${player.stats.plusMinus}` : `${player.stats?.plusMinus ?? 0}`);
+        return {
+          text: gText,
+          status: gIsGoalie && sIsGoalie ? "exact" : "wrong",
+          sub: ""
+        };
+      }
+      const gVal = player.stats?.plusMinus ?? 0;
+      const sVal = secret.stats?.plusMinus ?? 0;
+      const formatted = gVal > 0 ? `+${gVal}` : `${gVal}`;
+      return compareNumericClue(gVal, sVal, 2, formatted);
+    }
+  },
+  pim: {
+    label: "PUN",
+    isStat: true,
+    tooltip: "Minutes de punition (Proche : ±4 min)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.pim ?? 0;
+      const sVal = secret.stats?.pim ?? 0;
+      return compareNumericClue(gVal, sVal, 4, `${gVal} min`);
+    }
+  },
+  shots: {
+    label: "Tirs",
+    isStat: true,
+    tooltip: "Tirs au but cette saison (Proche : ±8 tirs)",
+    evaluate(player, secret) {
+      const gVal = player.stats?.shots ?? 0;
+      const sVal = secret.stats?.shots ?? 0;
+      return compareNumericClue(gVal, sVal, 8, `${gVal} tirs`);
+    }
+  },
+  toi: {
+    label: "TG/M",
+    isStat: true,
+    tooltip: "Temps de glace moyen par match (Proche : ±2:00)",
+    evaluate(player, secret) {
+      const gStr = player.posGroup === "GAR" ? (player.stats?.gp > 0 ? "60:00" : "—") : (player.stats?.toi || "—");
+      const sStr = secret.posGroup === "GAR" ? (secret.stats?.gp > 0 ? "60:00" : "—") : (secret.stats?.toi || "—");
+      const gSec = parseMMSS(gStr);
+      const sSec = parseMMSS(sStr);
+      return compareNumericClue(gSec, sSec, 120, gStr);
+    }
+  },
+  height: {
+    label: "Taille",
+    isStat: true,
+    tooltip: "Taille du joueur (Proche : ±2 pouces)",
+    evaluate(player, secret) {
+      const gIn = parseHeightToInches(player.height);
+      const sIn = parseHeightToInches(secret.height);
+      return compareNumericClue(
+        gIn,
+        sIn,
+        2,
+        player.height,
+        "▲ Plus grand",
+        "▼ Plus petit"
+      );
+    }
+  }
+};
+
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+// Génère 6 colonnes pour une Partie mélangée : 3 indices de base + 3 statistiques aléatoires
+function generateRemixedColumns() {
+  const keptBase = shuffleArray(CLASSIC_COLUMNS).slice(0, 3);
+  const pickedStats = shuffleArray(STAT_POOL_COLUMNS).slice(0, 3);
+  // On conserve l'ordre naturel pour les indices de base gardés et on y mêle les statistiques
+  return shuffleArray([...keptBase, ...pickedStats]);
+}
 
 let currentView = "menu";
 let activeGameMode = "daily";
@@ -177,13 +415,17 @@ const sessions = {
     secretPlayer: null,
     guesses: [],
     gameOver: false,
-    endReason: null
+    endReason: null,
+    isRemix: false,
+    columns: [...CLASSIC_COLUMNS]
   },
   practice: {
     secretPlayer: null,
     guesses: [],
     gameOver: false,
-    endReason: null
+    endReason: null,
+    isRemix: false,
+    columns: [...CLASSIC_COLUMNS]
   }
 };
 
@@ -196,7 +438,10 @@ const navTabs = document.querySelectorAll(".nav-tab");
 
 const modeTitleEl = document.getElementById("current-mode-title");
 const modeSubtitleEl = document.getElementById("current-mode-subtitle");
+const remixActivePill = document.getElementById("remix-active-pill");
 const dailyStatusBadge = document.getElementById("daily-status-badge");
+const legendCloseText = document.getElementById("legend-close-text");
+const boardHeaderEl = document.getElementById("board-header");
 
 const inputEl = document.getElementById("player-input");
 const autocompleteEl = document.getElementById("autocomplete-list");
@@ -206,7 +451,10 @@ const studyModeCheckbox = document.getElementById("study-mode");
 const resultCard = document.getElementById("result-card");
 const giveUpBtn = document.getElementById("give-up-btn");
 const newGameBtn = document.getElementById("new-game-btn");
+const newRemixGameBtn = document.getElementById("new-remix-game-btn");
+const practiceEndActions = document.getElementById("practice-end-actions");
 const playAgainBtn = document.getElementById("play-again-btn");
+const playAgainRemixBtn = document.getElementById("play-again-remix-btn");
 const dailyNextInfo = document.getElementById("daily-next-info");
 const dailyCountdownEl = document.getElementById("daily-countdown");
 
@@ -241,7 +489,6 @@ function calculateAgeFromBirthDate(birthDateStr) {
 }
 
 function applyNHLAPIData(rosterData, statsData) {
-  // 1. Validation des informations de base (numéro, âge, côté de lancer, pays, photo) via /v1/roster/MTL/current
   if (rosterData) {
     const allRosterEntries = [
       ...(rosterData.forwards || []),
@@ -272,7 +519,6 @@ function applyNHLAPIData(rosterData, statsData) {
     });
   }
 
-  // 2. Mise à jour des statistiques de la saison via /v1/club-stats/MTL/now
   if (statsData) {
     if (Array.isArray(statsData.skaters)) {
       statsData.skaters.forEach(s => {
@@ -332,9 +578,7 @@ async function fetchViaCORSFallback(targetUrl) {
       if (response.ok) {
         return await response.json();
       }
-    } catch (e) {
-      // Passe au relais suivant
-    }
+    } catch (e) {}
   }
   return null;
 }
@@ -343,7 +587,6 @@ async function syncWithNHLAPI(forceRefresh = false) {
   if (!forceRefresh) {
     try {
       const cached = JSON.parse(localStorage.getItem(NHL_CACHE_KEY) || "null");
-      // Cache valide pendant 6 heures
       if (cached && Date.now() - cached.timestamp < 6 * 3600 * 1000) {
         applyNHLAPIData(cached.roster, cached.stats);
         if (apiSyncStatusEl) {
@@ -358,7 +601,6 @@ async function syncWithNHLAPI(forceRefresh = false) {
     apiSyncStatusEl.textContent = "Synchronisation avec l'API LNH en cours...";
   }
 
-  // Niveau 1 : Fichier statique local ./nhl-data.json (si généré par GitHub Actions)
   try {
     const localResp = await fetch("./nhl-data.json", { cache: "no-store" });
     if (localResp.ok) {
@@ -372,7 +614,6 @@ async function syncWithNHLAPI(forceRefresh = false) {
     }
   } catch (e) {}
 
-  // Niveau 2 : Requête directe vers api-web.nhle.com via relais CORS compatible GitHub Pages
   const [rosterData, statsData] = await Promise.all([
     fetchViaCORSFallback("https://api-web.nhle.com/v1/roster/MTL/current"),
     fetchViaCORSFallback("https://api-web.nhle.com/v1/club-stats/MTL/now")
@@ -491,6 +732,8 @@ function saveDailySession() {
 function loadDailySession() {
   const todayKey = getTodayKey();
   sessions.daily.secretPlayer = getDailyPlayerForDate(todayKey);
+  sessions.daily.isRemix = false;
+  sessions.daily.columns = [...CLASSIC_COLUMNS];
 
   try {
     const raw = localStorage.getItem(DAILY_STORAGE_KEY);
@@ -526,7 +769,7 @@ function updateMenuDailyBadge() {
 }
 
 // --- NAVIGATION ENTRE LES VUES ---
-function switchView(target) {
+function switchView(target, practiceRemixOption = null) {
   currentView = target;
   autocompleteEl.classList.add("hidden");
 
@@ -547,8 +790,10 @@ function switchView(target) {
     renderActiveGameSession();
   } else if (target === "practice") {
     activeGameMode = "practice";
-    if (!sessions.practice.secretPlayer) {
-      startNewPracticeGame();
+    if (typeof practiceRemixOption === "boolean") {
+      startNewPracticeGame(practiceRemixOption);
+    } else if (!sessions.practice.secretPlayer) {
+      startNewPracticeGame(false);
     } else {
       renderActiveGameSession();
     }
@@ -557,27 +802,57 @@ function switchView(target) {
   }
 }
 
-function startNewPracticeGame() {
+function startNewPracticeGame(isRemix = false) {
   sessions.practice.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
   sessions.practice.guesses = [];
   sessions.practice.gameOver = false;
   sessions.practice.endReason = null;
+  sessions.practice.isRemix = isRemix;
+  sessions.practice.columns = isRemix ? generateRemixedColumns() : [...CLASSIC_COLUMNS];
   renderActiveGameSession();
 }
 
-// --- RENDU D'UNE SESSION DE JEU (DAILY OU PRATIQUE) ---
+// --- RENDU DE L'EN-TÊTE DE GRILLE ET DE LA SESSION DE JEU ---
+function renderBoardHeader(columns) {
+  boardHeaderEl.innerHTML = `<div>Joueur</div>`;
+  columns.forEach(colKey => {
+    const def = CLUE_DEFINITIONS[colKey];
+    const div = document.createElement("div");
+    if (def.isStat) {
+      div.className = "stat-col-header";
+    }
+    div.title = def.tooltip;
+    div.textContent = def.label;
+    boardHeaderEl.appendChild(div);
+  });
+}
+
 function renderActiveGameSession() {
   const session = sessions[activeGameMode];
   const isDaily = activeGameMode === "daily";
 
   modeTitleEl.textContent = isDaily ? "Défi Quotidien" : "Mode Pratique";
-  modeSubtitleEl.textContent = isDaily
-    ? `Joueur mystère du ${getFormattedTodayFrench()}`
-    : "Manches illimitées tirées au hasard pour t'entraîner";
+  remixActivePill.classList.toggle("hidden", isDaily || !session.isRemix);
+
+  if (isDaily) {
+    modeSubtitleEl.textContent = `Joueur mystère du ${getFormattedTodayFrench()}`;
+  } else if (session.isRemix) {
+    const colLabels = session.columns.map(k => CLUE_DEFINITIONS[k].label).join(" • ");
+    modeSubtitleEl.textContent = `Indices tirés au sort pour cette manche : ${colLabels}`;
+  } else {
+    modeSubtitleEl.textContent = "Manches classiques illimitées pour t'entraîner";
+  }
+
+  legendCloseText.innerHTML = session.isRemix
+    ? `<i class="dot close"></i> Proche (Survole le titre d'une colonne pour voir sa marge ±)`
+    : `<i class="dot close"></i> Proche (Même groupe / # ±5 / Âge ±2)`;
 
   newGameBtn.classList.toggle("hidden", isDaily);
-  playAgainBtn.classList.toggle("hidden", isDaily);
+  newRemixGameBtn.classList.toggle("hidden", isDaily);
+  practiceEndActions.classList.toggle("hidden", isDaily);
   dailyNextInfo.classList.toggle("hidden", !isDaily);
+
+  renderBoardHeader(session.columns);
 
   attemptCountEl.textContent = String(session.guesses.length);
   guessesContainer.innerHTML = "";
@@ -586,7 +861,7 @@ function renderActiveGameSession() {
   session.guesses.forEach(playerId => {
     const player = PLAYERS.find(p => p.id === playerId);
     if (player) {
-      appendGuessRowDOM(player, session.secretPlayer, false);
+      appendGuessRowDOM(player, session.secretPlayer, session.columns, false);
     }
   });
 
@@ -654,7 +929,7 @@ function submitGuess(player) {
   inputEl.value = "";
   autocompleteEl.classList.add("hidden");
 
-  appendGuessRowDOM(player, session.secretPlayer, true);
+  appendGuessRowDOM(player, session.secretPlayer, session.columns, true);
 
   if (player.id === session.secretPlayer.id) {
     finishSession("win");
@@ -665,41 +940,12 @@ function submitGuess(player) {
   }
 }
 
-function appendGuessRowDOM(player, secretPlayer, animate) {
-  const numDiff = secretPlayer.number - player.number;
-  const numStatus = numDiff === 0 ? "exact" : Math.abs(numDiff) <= 5 ? "close" : "wrong";
-  const numArrow = numDiff === 0 ? "" : numDiff > 0 ? "▲ Plus haut" : "▼ Plus bas";
-
-  const posStatus =
-    player.pos === secretPlayer.pos
-      ? "exact"
-      : player.posGroup === secretPlayer.posGroup
-      ? "close"
-      : "wrong";
-
-  const unitStatus =
-    player.unit === secretPlayer.unit
-      ? "exact"
-      : player.unitGroup === secretPlayer.unitGroup
-      ? "close"
-      : "wrong";
-
-  const ageDiff = secretPlayer.age - player.age;
-  const ageStatus = ageDiff === 0 ? "exact" : Math.abs(ageDiff) <= 2 ? "close" : "wrong";
-  const ageArrow = ageDiff === 0 ? "" : ageDiff > 0 ? "▲ Plus vieux" : "▼ Plus jeune";
-
-  const shootsStatus = player.shoots === secretPlayer.shoots ? "exact" : "wrong";
-  const countryStatus = player.country === secretPlayer.country ? "exact" : "wrong";
+function appendGuessRowDOM(player, secretPlayer, columns, animate) {
   const nameStatus = player.id === secretPlayer.id ? "exact" : "name-cell";
 
   const cellsData = [
     { text: player.name, status: nameStatus, sub: "" },
-    { text: `#${player.number}`, status: numStatus, sub: numArrow },
-    { text: player.pos, status: posStatus, sub: "" },
-    { text: player.unit, status: unitStatus, sub: "" },
-    { text: `${player.age} ans`, status: ageStatus, sub: ageArrow },
-    { text: player.shoots, status: shootsStatus, sub: "" },
-    { text: player.country, status: countryStatus, sub: "" }
+    ...columns.map(colKey => CLUE_DEFINITIONS[colKey].evaluate(player, secretPlayer))
   ];
 
   const row = document.createElement("div");
@@ -769,7 +1015,6 @@ function showEndGameCard(session, waitAnimation) {
     <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${secretPlayer.hometown}</div></div>
   `;
 
-  // Statistiques de la saison 2026-2027 sur la carte finale
   document.getElementById("reveal-season-stats").innerHTML = buildSeasonStatsHTML(secretPlayer, true);
 
   const delay = waitAnimation ? 650 : 40;
@@ -856,7 +1101,6 @@ function renderStudyDirectory(filterText = "") {
         `https://assets.nhle.com/mugs/nhl/20262027/MTL/${player.id}.png`;
       const fallbackUrl = `https://assets.nhle.com/mugs/nhl/latest/${player.id}.png`;
 
-      // Présentation identique des cartes, avec clic pour ouvrir le grand profil
       card.innerHTML = `
         <img class="study-avatar" src="${mugUrl}" alt="${player.name}" onerror="this.onerror=null;this.src='${fallbackUrl}';" />
         <div class="study-info">
@@ -944,13 +1188,24 @@ function updateDailyCountdown() {
 setInterval(updateDailyCountdown, 1000);
 updateDailyCountdown();
 
-// --- ÉVÉNEMENTS ---
-document.querySelectorAll(".menu-card").forEach(card => {
-  card.addEventListener("click", () => {
-    switchView(card.dataset.mode);
-  });
+// --- ÉVÉNEMENTS DU MENU PRINCIPAL ---
+document.getElementById("menu-card-daily").addEventListener("click", () => {
+  switchView("daily");
 });
 
+document.getElementById("menu-start-practice-classic-btn").addEventListener("click", () => {
+  switchView("practice", false);
+});
+
+document.getElementById("menu-start-practice-remix-btn").addEventListener("click", () => {
+  switchView("practice", true);
+});
+
+document.getElementById("menu-card-study").addEventListener("click", () => {
+  switchView("study");
+});
+
+// --- ÉVÉNEMENTS DE NAVIGATION ET BOUTONS DE PARTIE ---
 navTabs.forEach(tab => {
   tab.addEventListener("click", () => {
     switchView(tab.dataset.target);
@@ -962,8 +1217,17 @@ document.getElementById("header-home-trigger").addEventListener("click", () => {
 });
 
 document.getElementById("go-practice-btn").addEventListener("click", () => {
-  switchView("practice");
+  switchView("practice", false);
 });
+
+document.getElementById("go-practice-remix-btn").addEventListener("click", () => {
+  switchView("practice", true);
+});
+
+newGameBtn.addEventListener("click", () => startNewPracticeGame(false));
+newRemixGameBtn.addEventListener("click", () => startNewPracticeGame(true));
+playAgainBtn.addEventListener("click", () => startNewPracticeGame(false));
+playAgainRemixBtn.addEventListener("click", () => startNewPracticeGame(true));
 
 document.getElementById("refresh-api-btn").addEventListener("click", () => {
   syncWithNHLAPI(true);
@@ -1017,9 +1281,6 @@ document.addEventListener("keydown", e => {
     studyProfileModal.classList.add("hidden");
   }
 });
-
-newGameBtn.addEventListener("click", startNewPracticeGame);
-playAgainBtn.addEventListener("click", startNewPracticeGame);
 
 // Au démarrage : affichage du menu et synchronisation en arrière-plan avec l'API de la LNH
 switchView("menu");

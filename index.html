@@ -35,42 +35,61 @@
     </div>
 
     <div class="menu-cards">
-      <button class="menu-card" data-mode="daily">
+      <!-- Carte 1 : Défi Quotidien -->
+      <div class="menu-card" id="menu-card-daily" role="button" tabindex="0">
         <div class="menu-card-top">
           <span class="menu-tag daily-tag" id="daily-status-badge">Joueur du jour</span>
           <h3>Défi Quotidien</h3>
           <p>Un seul joueur mystère par jour.</p>
         </div>
-        <span class="menu-card-cta">Jouer le défi du jour &rarr;</span>
-      </button>
+        <div class="menu-card-actions">
+          <button id="menu-start-daily-btn" class="menu-action-btn primary-action">
+            Jouer le défi du jour &rarr;
+          </button>
+        </div>
+      </div>
 
-      <button class="menu-card" data-mode="practice">
+      <!-- Carte 2 : Pratique (Classique ou Partie mélangée) -->
+      <div class="menu-card menu-card-static">
         <div class="menu-card-top">
           <span class="menu-tag">Illimité</span>
           <h3>Pratique</h3>
-          <p>Enchaîne autant de manches aléatoires que tu veux pour t'entraîner.</p>
+          <p>Enchaîne des manches classiques ou remplace aléatoirement des indices par des statistiques.</p>
         </div>
-        <span class="menu-card-cta">Lancer une partie &rarr;</span>
-      </button>
+        <div class="menu-card-actions stacked-actions">
+          <button id="menu-start-practice-classic-btn" class="menu-action-btn primary-action">
+            Lancer une partie &rarr;
+          </button>
+          <button id="menu-start-practice-remix-btn" class="menu-action-btn remix-action">
+            Lancer une partie mélangée &rarr;
+          </button>
+        </div>
+      </div>
 
-      <button class="menu-card" data-mode="study">
+      <!-- Carte 3 : Mode Étude -->
+      <div class="menu-card" id="menu-card-study" role="button" tabindex="0">
         <div class="menu-card-top">
           <span class="menu-tag">Alignement complet</span>
           <h3>Étude</h3>
           <p>Consulte les fiches, photos, numéros, âges, trios et statistiques des 25 joueurs.</p>
         </div>
-        <span class="menu-card-cta">Explorer l'équipe &rarr;</span>
-      </button>
+        <div class="menu-card-actions">
+          <button id="menu-start-study-btn" class="menu-action-btn primary-action">
+            Explorer l'équipe &rarr;
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- VUE 2 : JEU (PARTAGÉE ENTRE DÉFI QUOTIDIEN ET PRATIQUE) -->
   <main id="game-view" class="game-container hidden">
     <div class="mode-banner">
-      <div>
+      <div class="mode-banner-header">
         <h2 id="current-mode-title">Défi Quotidien</h2>
-        <p id="current-mode-subtitle" class="mode-subtitle"></p>
+        <span id="remix-active-pill" class="remix-pill hidden">Partie mélangée</span>
       </div>
+      <p id="current-mode-subtitle" class="mode-subtitle"></p>
     </div>
 
     <!-- Barre de contrôle -->
@@ -85,7 +104,8 @@
       <div class="action-buttons">
         <button id="roster-btn" class="secondary-btn">Liste des joueurs</button>
         <button id="give-up-btn" class="danger-btn">Donner la réponse</button>
-        <button id="new-game-btn" class="secondary-btn">Nouveau joueur</button>
+        <button id="new-game-btn" class="secondary-btn">Nouvelle partie</button>
+        <button id="new-remix-game-btn" class="remix-btn">Nouvelle partie mélangée</button>
       </div>
     </div>
 
@@ -103,13 +123,13 @@
     <!-- Légende des couleurs -->
     <div class="legend">
       <span><i class="dot exact"></i> Exact</span>
-      <span><i class="dot close"></i> Proche (Même groupe / # ±5 / Âge ±2)</span>
+      <span id="legend-close-text"><i class="dot close"></i> Proche (Même groupe / # ±5 / Âge ±2)</span>
       <span><i class="dot wrong"></i> Différent</span>
     </div>
 
     <!-- Grille des essais -->
     <div class="board">
-      <div class="board-header">
+      <div id="board-header" class="board-header">
         <div>Joueur</div>
         <div>#</div>
         <div>Pos</div>
@@ -138,10 +158,16 @@
           <div class="stats-grid season-stats-grid" id="reveal-season-stats"></div>
 
           <div class="result-actions">
-            <button id="play-again-btn" class="primary-btn">Jouer une autre manche</button>
+            <div id="practice-end-actions" class="practice-end-actions">
+              <button id="play-again-btn" class="primary-btn">Nouvelle partie</button>
+              <button id="play-again-remix-btn" class="remix-btn large-remix-btn">Nouvelle partie mélangée</button>
+            </div>
             <div id="daily-next-info" class="daily-next-info hidden">
               <span>Prochain Défi Quotidien dans <strong id="daily-countdown">--:--:--</strong></span>
-              <button id="go-practice-btn" class="secondary-btn">Passer en mode Pratique</button>
+              <div class="daily-next-buttons">
+                <button id="go-practice-btn" class="secondary-btn">Nouvelle partie (Pratique)</button>
+                <button id="go-practice-remix-btn" class="remix-btn">Nouvelle partie mélangée</button>
+              </div>
             </div>
           </div>
         </div>
