@@ -39,10 +39,38 @@ const PLAYERS = [
 ];
 
 const MAX_ATTEMPTS = 8;
-let secretPlayer = null;
-let guessedIds = new Set();
-let attempts = 0;
-let gameOver = false;
+const DAILY_STORAGE_KEY = "habsle_daily_state_v1";
+const UNITS_ORDER = ["Trio 1", "Trio 2", "Trio 3", "Trio 4", "Paire 1", "Paire 2", "Paire 3", "Gardien"];
+
+let currentView = "menu"; // "menu" | "daily" | "practice" | "study"
+let activeGameMode = "daily"; // "daily" | "practice"
+
+// États séparés pour que le joueur puisse passer du Défi Quotidien à Pratique sans perdre sa partie
+const sessions = {
+  daily: {
+    secretPlayer: null,
+    guesses: [], // Liste des IDs essayés dans l'ordre
+    gameOver: false,
+    endReason: null // "win" | "lose" | "giveup"
+  },
+  practice: {
+    secretPlayer: null,
+    guesses: [],
+    gameOver: false,
+    endReason: null
+  }
+};
+
+// Références DOM
+const menuView = document.getElementById("menu-view");
+const gameView = document.getElementById("game-view");
+const studyView = document.getElementById("study-view");
+const modeNavbar = document.getElementById("mode-navbar");
+const navTabs = document.querySelectorAll(".nav-tab");
+
+const modeTitleEl = document.getElementById("current-mode-title");
+const modeSubtitleEl = document.getElementById("current-mode-subtitle");
+const dailyStatusBadge = document.getElementById("daily-status-badge");
 
 const inputEl = document.getElementById("player-input");
 const autocompleteEl = document.getElementById("autocomplete-list");
@@ -51,41 +79,190 @@ const attemptCountEl = document.getElementById("attempt-count");
 const studyModeCheckbox = document.getElementById("study-mode");
 const resultCard = document.getElementById("result-card");
 const giveUpBtn = document.getElementById("give-up-btn");
+const newGameBtn = document.getElementById("new-game-btn");
+const playAgainBtn = document.getElementById("play-again-btn");
+const dailyNextInfo = document.getElementById("daily-next-info");
+const dailyCountdownEl = document.getElementById("daily-countdown");
+
 const rosterModal = document.getElementById("roster-modal");
 const rosterListContent = document.getElementById("roster-list-content");
+const studyDirectoryContent = document.getElementById("study-directory-content");
+const studySearchInput = document.getElementById("study-search-input");
 
-function initGame() {
-  secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
-  guessedIds.clear();
-  attempts = 0;
-  gameOver = false;
+// --- OUTILS DATE & SÉLECTION DU JOUEUR DU JOUR ---
+function getTodayKey() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
-  attemptCountEl.textContent = "0";
+function getFormattedTodayFrench() {
+  return new Date().toLocaleDateString("fr-CA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function getDailyPlayerForDate(dateKey) {
+  // Hachage déterministe basé sur la chaîne YYYY-MM-DD
+  let hash = 2166136261;
+  for (let i = 0; i < dateKey.length; i++) {
+    hash ^= dateKey.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  const index = Math.abs(hash) % PLAYERS.length;
+  return PLAYERS[index];
+}
+
+function saveDailySession() {
+  const payload = {
+    dateKey: getTodayKey(),
+    guesses: sessions.daily.guesses,
+    gameOver: sessions.daily.gameOver,
+    endReason: sessions.daily.endReason
+  };
+  localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(payload));
+  updateMenuDailyBadge();
+}
+
+function loadDailySession() {
+  const todayKey = getTodayKey();
+  sessions.daily.secretPlayer = getDailyPlayerForDate(todayKey);
+
+  try {
+    const raw = localStorage.getItem(DAILY_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.dateKey === todayKey) {
+        sessions.daily.guesses = Array.isArray(parsed.guesses) ? parsed.guesses : [];
+        sessions.daily.gameOver = Boolean(parsed.gameOver);
+        sessions.daily.endReason = parsed.endReason || null;
+        return;
+      }
+    }
+  } catch (e) {
+    // Si localStorage est indisponible, on repart à neuf
+  }
+
+  sessions.daily.guesses = [];
+  sessions.daily.gameOver = false;
+  sessions.daily.endReason = null;
+}
+
+function updateMenuDailyBadge() {
+  loadDailySession();
+  if (sessions.daily.gameOver) {
+    dailyStatusBadge.textContent =
+      sessions.daily.endReason === "win" ? "Complété aujourd'hui" : "Terminé aujourd'hui";
+    dailyStatusBadge.className = "menu-tag completed-tag";
+  } else if (sessions.daily.guesses.length > 0) {
+    dailyStatusBadge.textContent = `En cours (${sessions.daily.guesses.length}/${MAX_ATTEMPTS})`;
+    dailyStatusBadge.className = "menu-tag daily-tag";
+  } else {
+    dailyStatusBadge.textContent = "Joueur du jour";
+    dailyStatusBadge.className = "menu-tag daily-tag";
+  }
+}
+
+// --- NAVIGATION ENTRE LES VUES ---
+function switchView(target) {
+  currentView = target;
+  autocompleteEl.classList.add("hidden");
+
+  menuView.classList.toggle("hidden", target !== "menu");
+  gameView.classList.toggle("hidden", target !== "daily" && target !== "practice");
+  studyView.classList.toggle("hidden", target !== "study");
+  modeNavbar.classList.toggle("hidden", target === "menu");
+
+  navTabs.forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.target === target);
+  });
+
+  if (target === "menu") {
+    updateMenuDailyBadge();
+  } else if (target === "daily") {
+    activeGameMode = "daily";
+    loadDailySession();
+    renderActiveGameSession();
+  } else if (target === "practice") {
+    activeGameMode = "practice";
+    if (!sessions.practice.secretPlayer) {
+      startNewPracticeGame();
+    } else {
+      renderActiveGameSession();
+    }
+  } else if (target === "study") {
+    renderStudyDirectory(studySearchInput.value);
+  }
+}
+
+function startNewPracticeGame() {
+  sessions.practice.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+  sessions.practice.guesses = [];
+  sessions.practice.gameOver = false;
+  sessions.practice.endReason = null;
+  renderActiveGameSession();
+}
+
+// --- RENDU D'UNE SESSION DE JEU (DAILY OU PRATIQUE) ---
+function renderActiveGameSession() {
+  const session = sessions[activeGameMode];
+  const isDaily = activeGameMode === "daily";
+
+  modeTitleEl.textContent = isDaily ? "Défi Quotidien" : "Mode Pratique";
+  modeSubtitleEl.textContent = isDaily
+    ? `Joueur mystère du ${getFormattedTodayFrench()}`
+    : "Manches illimitées tirées au hasard pour t'entraîner";
+
+  newGameBtn.classList.toggle("hidden", isDaily);
+  playAgainBtn.classList.toggle("hidden", isDaily);
+  dailyNextInfo.classList.toggle("hidden", !isDaily);
+
+  attemptCountEl.textContent = String(session.guesses.length);
   guessesContainer.innerHTML = "";
   resultCard.classList.add("hidden");
-  inputEl.disabled = false;
-  giveUpBtn.disabled = false;
+
+  session.guesses.forEach(playerId => {
+    const player = PLAYERS.find(p => p.id === playerId);
+    if (player) {
+      appendGuessRowDOM(player, session.secretPlayer, false);
+    }
+  });
+
+  inputEl.disabled = session.gameOver;
+  giveUpBtn.disabled = session.gameOver;
   inputEl.value = "";
-  inputEl.focus();
+
+  if (session.gameOver) {
+    showEndGameCard(session, false);
+  } else {
+    inputEl.focus();
+  }
 }
 
 function normalizeStr(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// Gestion de l'autocomplétion
+// --- AUTOCOMPLÉTION ---
 function updateAutocomplete() {
+  const session = sessions[activeGameMode];
   const query = normalizeStr(inputEl.value.trim());
   autocompleteEl.innerHTML = "";
 
-  if (!query || gameOver) {
+  if (!query || session.gameOver) {
     autocompleteEl.classList.add("hidden");
     return;
   }
 
-  const matches = PLAYERS.filter(p =>
-    !guessedIds.has(p.id) &&
-    (normalizeStr(p.name).includes(query) || String(p.number).startsWith(query))
+  const guessedSet = new Set(session.guesses);
+  const matches = PLAYERS.filter(
+    p =>
+      !guessedSet.has(p.id) &&
+      (normalizeStr(p.name).includes(query) || String(p.number).startsWith(query))
   );
 
   if (matches.length === 0) {
@@ -109,16 +286,28 @@ function updateAutocomplete() {
   autocompleteEl.classList.remove("hidden");
 }
 
-// Comparaison et affichage d'une ligne d'essai
+// --- SOUMISSION D'UN ESSAI ---
 function submitGuess(player) {
-  if (gameOver || guessedIds.has(player.id)) return;
+  const session = sessions[activeGameMode];
+  if (session.gameOver || session.guesses.includes(player.id)) return;
 
-  guessedIds.add(player.id);
-  attempts++;
-  attemptCountEl.textContent = String(attempts);
+  session.guesses.push(player.id);
+  attemptCountEl.textContent = String(session.guesses.length);
   inputEl.value = "";
   autocompleteEl.classList.add("hidden");
 
+  appendGuessRowDOM(player, session.secretPlayer, true);
+
+  if (player.id === session.secretPlayer.id) {
+    finishSession("win");
+  } else if (session.guesses.length >= MAX_ATTEMPTS) {
+    finishSession("lose");
+  } else if (activeGameMode === "daily") {
+    saveDailySession();
+  }
+}
+
+function appendGuessRowDOM(player, secretPlayer, animate) {
   const numDiff = secretPlayer.number - player.number;
   const numStatus = numDiff === 0 ? "exact" : Math.abs(numDiff) <= 5 ? "close" : "wrong";
   const numArrow = numDiff === 0 ? "" : numDiff > 0 ? "▲ Plus haut" : "▼ Plus bas";
@@ -161,7 +350,7 @@ function submitGuess(player) {
   cellsData.forEach((cellInfo, index) => {
     const cell = document.createElement("div");
     cell.className = `cell ${cellInfo.status}`;
-    cell.style.animationDelay = `${index * 90}ms`;
+    cell.style.animationDelay = animate ? `${index * 90}ms` : "0ms";
     cell.innerHTML = `
       <span>${cellInfo.text}</span>
       ${cellInfo.sub ? `<span class="arrow-hint">${cellInfo.sub}</span>` : ""}
@@ -170,26 +359,33 @@ function submitGuess(player) {
   });
 
   guessesContainer.appendChild(row);
-
-  if (player.id === secretPlayer.id) {
-    endGame("win");
-  } else if (attempts >= MAX_ATTEMPTS) {
-    endGame("lose");
-  }
 }
 
-// Fin de manche ("win", "lose" ou "giveup")
-function endGame(reason) {
-  gameOver = true;
+function finishSession(reason) {
+  const session = sessions[activeGameMode];
+  session.gameOver = true;
+  session.endReason = reason;
   inputEl.disabled = true;
   giveUpBtn.disabled = true;
   autocompleteEl.classList.add("hidden");
+
+  if (activeGameMode === "daily") {
+    saveDailySession();
+  }
+
+  showEndGameCard(session, reason !== "giveup");
+}
+
+function showEndGameCard(session, waitAnimation) {
+  const secretPlayer = session.secretPlayer;
+  const reason = session.endReason;
+  const attemptsCount = session.guesses.length;
 
   const banner = document.getElementById("result-banner");
   banner.className = `result-banner ${reason === "win" ? "win" : "lose"}`;
 
   if (reason === "win") {
-    banner.textContent = `Bravo ! Tu as trouvé ${secretPlayer.name} en ${attempts} essai${attempts > 1 ? "s" : ""} !`;
+    banner.textContent = `Bravo ! Tu as trouvé ${secretPlayer.name} en ${attemptsCount} essai${attemptsCount > 1 ? "s" : ""} !`;
   } else if (reason === "giveup") {
     banner.textContent = `Réponse révélée : le joueur mystère était ${secretPlayer.name} (#${secretPlayer.number}).`;
   } else {
@@ -213,19 +409,20 @@ function endGame(reason) {
     <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${secretPlayer.hometown}</div></div>
   `;
 
-  const delay = reason === "giveup" ? 50 : 650;
+  const delay = waitAnimation ? 650 : 40;
   setTimeout(() => {
     resultCard.classList.remove("hidden");
     resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, delay);
 }
 
-// Génération de la fenêtre modale avec la liste de tous les joueurs par unité
+// --- FENÊTRE MODALE : LISTE DES JOUEURS EN PARTIE ---
 function openRosterModal() {
-  const unitsOrder = ["Trio 1", "Trio 2", "Trio 3", "Trio 4", "Paire 1", "Paire 2", "Paire 3", "Gardien"];
+  const session = sessions[activeGameMode];
+  const guessedSet = new Set(session.guesses);
   rosterListContent.innerHTML = "";
 
-  unitsOrder.forEach(unitName => {
+  UNITS_ORDER.forEach(unitName => {
     const unitPlayers = PLAYERS.filter(p => p.unit === unitName);
     if (unitPlayers.length === 0) return;
 
@@ -236,9 +433,9 @@ function openRosterModal() {
     grid.className = "unit-players-grid";
 
     unitPlayers.forEach(player => {
-      const isGuessed = guessedIds.has(player.id);
+      const isGuessed = guessedSet.has(player.id);
       const card = document.createElement("div");
-      card.className = `roster-player-card ${isGuessed || gameOver ? "already-guessed" : ""}`;
+      card.className = `roster-player-card ${isGuessed || session.gameOver ? "already-guessed" : ""}`;
       card.innerHTML = `
         <div class="roster-player-main">
           <span class="roster-num">#${player.number}</span>
@@ -247,7 +444,7 @@ function openRosterModal() {
         <span class="roster-meta">${player.pos} • ${player.age}a • ${player.country}</span>
       `;
 
-      if (!isGuessed && !gameOver) {
+      if (!isGuessed && !session.gameOver) {
         card.addEventListener("click", () => {
           rosterModal.classList.add("hidden");
           submitGuess(player);
@@ -263,7 +460,100 @@ function openRosterModal() {
   rosterModal.classList.remove("hidden");
 }
 
-// Événements
+// --- VUE ÉTUDE (HORS DU JEU AVEC PHOTOS ET DÉTAILS COMPLETS) ---
+function renderStudyDirectory(filterText = "") {
+  const query = normalizeStr(filterText.trim());
+  studyDirectoryContent.innerHTML = "";
+
+  UNITS_ORDER.forEach(unitName => {
+    const unitPlayers = PLAYERS.filter(p => {
+      if (p.unit !== unitName) return false;
+      if (!query) return true;
+      return (
+        normalizeStr(p.name).includes(query) ||
+        String(p.number).includes(query) ||
+        normalizeStr(p.pos).includes(query) ||
+        normalizeStr(p.unit).includes(query)
+      );
+    });
+
+    if (unitPlayers.length === 0) return;
+
+    const section = document.createElement("div");
+    section.innerHTML = `<div class="unit-group-title">${unitName}</div>`;
+
+    const grid = document.createElement("div");
+    grid.className = "study-cards-grid";
+
+    unitPlayers.forEach(player => {
+      const card = document.createElement("div");
+      card.className = "study-player-card";
+      const mugUrl = `https://assets.nhle.com/mugs/nhl/20262027/MTL/${player.id}.png`;
+      const fallbackUrl = `https://assets.nhle.com/mugs/nhl/latest/${player.id}.png`;
+
+      card.innerHTML = `
+        <img class="study-avatar" src="${mugUrl}" alt="${player.name}" onerror="this.onerror=null;this.src='${fallbackUrl}';" />
+        <div class="study-info">
+          <div class="study-info-top">
+            <span class="roster-num">#${player.number}</span>
+            <h4>${player.name}</h4>
+          </div>
+          <div class="study-specs">
+            ${player.pos} • ${player.age} ans • Lancer ${player.shoots} • ${player.height} • ${player.country}
+          </div>
+          <div class="study-note">${player.note} (${player.hometown})</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    studyDirectoryContent.appendChild(section);
+  });
+}
+
+// --- COMPTE À REBOURS DE MINUIT POUR LE DÉFI QUOTIDIEN ---
+function updateDailyCountdown() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const diffMs = Math.max(0, midnight - now);
+
+  const hours = String(Math.floor(diffMs / 3600000)).padStart(2, "0");
+  const minutes = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, "0");
+  const seconds = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, "0");
+
+  dailyCountdownEl.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+setInterval(updateDailyCountdown, 1000);
+updateDailyCountdown();
+
+// --- ÉVÉNEMENTS ---
+document.querySelectorAll(".menu-card").forEach(card => {
+  card.addEventListener("click", () => {
+    switchView(card.dataset.mode);
+  });
+});
+
+navTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    switchView(tab.dataset.target);
+  });
+});
+
+document.getElementById("header-home-trigger").addEventListener("click", () => {
+  switchView("menu");
+});
+
+document.getElementById("go-practice-btn").addEventListener("click", () => {
+  switchView("practice");
+});
+
+studySearchInput.addEventListener("input", e => {
+  renderStudyDirectory(e.target.value);
+});
+
 inputEl.addEventListener("input", updateAutocomplete);
 studyModeCheckbox.addEventListener("change", updateAutocomplete);
 
@@ -281,7 +571,8 @@ document.addEventListener("click", e => {
 });
 
 giveUpBtn.addEventListener("click", () => {
-  if (!gameOver) endGame("giveup");
+  const session = sessions[activeGameMode];
+  if (!session.gameOver) finishSession("giveup");
 });
 
 document.getElementById("roster-btn").addEventListener("click", openRosterModal);
@@ -293,7 +584,8 @@ rosterModal.addEventListener("click", e => {
   if (e.target === rosterModal) rosterModal.classList.add("hidden");
 });
 
-document.getElementById("new-game-btn").addEventListener("click", initGame);
-document.getElementById("play-again-btn").addEventListener("click", initGame);
+newGameBtn.addEventListener("click", startNewPracticeGame);
+playAgainBtn.addEventListener("click", startNewPracticeGame);
 
-initGame();
+// Au démarrage, on affiche le menu principal avec l'état à jour du Défi Quotidien
+switchView("menu");

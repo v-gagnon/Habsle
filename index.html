@@ -8,14 +8,71 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="logo-badge">CH</div>
-    <div>
-      <h1>Habsle</h1>
-      <p class="subtitle">Devine le joueur des Canadiens de Montréal (Saison 2026-2027)</p>
+    <div class="header-brand" id="header-home-trigger" title="Retour au menu principal">
+      <div class="logo-badge">CH</div>
+      <div>
+        <h1>Habsle</h1>
+        <p class="subtitle">Devine le joueur des Canadiens de Montréal (Saison 2026-2027)</p>
+      </div>
     </div>
   </header>
 
-  <main class="game-container">
+  <!-- Barre de navigation horizontale (affichée uniquement à l'intérieur d'un mode) -->
+  <nav id="mode-navbar" class="mode-navbar hidden" aria-label="Navigation des modes">
+    <div class="nav-inner">
+      <button class="nav-tab" data-target="menu">Accueil</button>
+      <button class="nav-tab" data-target="daily">Défi Quotidien</button>
+      <button class="nav-tab" data-target="practice">Pratique</button>
+      <button class="nav-tab" data-target="study">Étude</button>
+    </div>
+  </nav>
+
+  <!-- VUE 1 : MENU PRINCIPAL AU LANCEMENT -->
+  <section id="menu-view" class="menu-container">
+    <div class="menu-intro">
+      <h2>Choisis ton mode de jeu</h2>
+      <p>Apprends à connaître l'alignement complet des Canadiens de Montréal.</p>
+    </div>
+
+    <div class="menu-cards">
+      <button class="menu-card" data-mode="daily">
+        <div class="menu-card-top">
+          <span class="menu-tag daily-tag" id="daily-status-badge">Joueur du jour</span>
+          <h3>Défi Quotidien</h3>
+          <p>Un seul joueur mystère par jour.</p>
+        </div>
+        <span class="menu-card-cta">Jouer le défi du jour &rarr;</span>
+      </button>
+
+      <button class="menu-card" data-mode="practice">
+        <div class="menu-card-top">
+          <span class="menu-tag">Illimité</span>
+          <h3>Pratique</h3>
+          <p>Enchaîne autant de manches aléatoires que tu veux pour t'entraîner.</p>
+        </div>
+        <span class="menu-card-cta">Lancer une partie &rarr;</span>
+      </button>
+
+      <button class="menu-card" data-mode="study">
+        <div class="menu-card-top">
+          <span class="menu-tag">Alignement complet</span>
+          <h3>Étude</h3>
+          <p>Consulte les fiches, photos, numéros, âges et trios des 25 joueurs en dehors du jeu.</p>
+        </div>
+        <span class="menu-card-cta">Explorer l'équipe &rarr;</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- VUE 2 : JEU (PARTAGÉE ENTRE DÉFI QUOTIDIEN ET PRATIQUE) -->
+  <main id="game-view" class="game-container hidden">
+    <div class="mode-banner">
+      <div>
+        <h2 id="current-mode-title">Défi Quotidien</h2>
+        <p id="current-mode-subtitle" class="mode-subtitle"></p>
+      </div>
+    </div>
+
     <!-- Barre de contrôle -->
     <div class="top-controls">
       <div class="attempts-counter">
@@ -76,13 +133,37 @@
           <h2 id="reveal-name"></h2>
           <p id="reveal-role" class="reveal-role"></p>
           <div class="stats-grid" id="reveal-stats"></div>
-          <button id="play-again-btn" class="primary-btn">Jouer une autre manche</button>
+          <div class="result-actions">
+            <button id="play-again-btn" class="primary-btn">Jouer une autre manche</button>
+            <div id="daily-next-info" class="daily-next-info hidden">
+              <span>Prochain Défi Quotidien dans <strong id="daily-countdown">--:--:--</strong></span>
+              <button id="go-practice-btn" class="secondary-btn">Passer en mode Pratique</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Fenêtre modale : Liste complète des joueurs -->
+  <!-- VUE 3 : MODE ÉTUDE (EN DEHORS DU JEU) -->
+  <section id="study-view" class="study-container hidden">
+    <div class="study-header">
+      <div>
+        <h2>Mode Étude — Alignement des Canadiens</h2>
+        <p class="mode-subtitle">Révise les trios, les paires défensives, les numéros et les profils des 25 joueurs.</p>
+      </div>
+      <input
+        type="text"
+        id="study-search-input"
+        class="study-search"
+        placeholder="Filtrer par nom, numéro ou position..."
+        autocomplete="off"
+      />
+    </div>
+    <div id="study-directory-content" class="study-sections"></div>
+  </section>
+
+  <!-- Fenêtre modale : Liste complète des joueurs (pendant une partie) -->
   <div id="roster-modal" class="modal-overlay hidden">
     <div class="modal-window">
       <div class="modal-header">
