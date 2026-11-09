@@ -1094,6 +1094,8 @@ function showEndGameCard(session, waitAnimation) {
     photoEl.src = `https://assets.nhle.com/mugs/nhl/latest/${secretPlayer.id}.png`;
   };
 
+  setupXhekajEasterEgg(photoEl.closest(".photo-wrapper"), secretPlayer);
+
   document.getElementById("player-jersey-badge").textContent = `#${secretPlayer.number}`;
   document.getElementById("reveal-name").textContent = secretPlayer.name;
   document.getElementById("reveal-role").textContent = secretPlayer.note;
@@ -1258,6 +1260,9 @@ function openStudyProfileModal(player) {
     </div>
   `;
 
+  const heroPhotoContainer = profileModalBody.querySelector(".profile-hero-photo");
+  setupXhekajEasterEgg(heroPhotoContainer, player);
+
   studyProfileModal.classList.remove("hidden");
 }
 
@@ -1277,6 +1282,147 @@ function updateDailyCountdown() {
 
 setInterval(updateDailyCountdown, 1000);
 updateDailyCountdown();
+
+// --- EASTER EGG ARBER XHEKAJ (#72) ---
+const ARBER_XHEKAJ_ID = 8482964;
+const XHEKAJ_UNLOCK_CLICKS = 11;
+
+// Couleur de départ (--rouge-ch : #af1e2d) et rose cible (#ff5ca8)
+const CH_RED_RGB = { r: 175, g: 30, b: 45 };
+const TARGET_PINK_RGB = { r: 255, g: 92, b: 168 };
+
+function getInterpolatedPink(step, maxSteps) {
+  const ratio = Math.min(1, Math.max(0, step / maxSteps));
+  const r = Math.round(CH_RED_RGB.r + (TARGET_PINK_RGB.r - CH_RED_RGB.r) * ratio);
+  const g = Math.round(CH_RED_RGB.g + (TARGET_PINK_RGB.g - CH_RED_RGB.g) * ratio);
+  const b = Math.round(CH_RED_RGB.b + (TARGET_PINK_RGB.b - CH_RED_RGB.b) * ratio);
+  return { css: `rgb(${r}, ${g}, ${b})`, ratio };
+}
+
+function spawnXhekajHearts(containerEl, clickEvent) {
+  const rect = containerEl.getBoundingClientRect();
+  const originX = clickEvent?.clientX || rect.left + rect.width / 2;
+  const originY = clickEvent?.clientY || rect.top + rect.height / 2;
+
+  const shades = ["#ff5ca8", "#ff7eb9", "#ff3b94", "#ff9ec9", "#ff4da6"];
+  const heartCount = 7 + Math.floor(Math.random() * 4); // 7 à 10 coeurs par clic
+
+  for (let i = 0; i < heartCount; i++) {
+    const heart = document.createElement("div");
+    heart.className = "xhekaj-heart-particle";
+
+    const size = 14 + Math.random() * 12;
+    const color = shades[Math.floor(Math.random() * shades.length)];
+
+    heart.innerHTML = `
+      <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    `;
+
+    document.body.appendChild(heart);
+
+    // Position initiale dispersée autour du clic / de la photo
+    let x = originX - size / 2 + (Math.random() - 0.5) * 50;
+    let y = originY - size / 2 + (Math.random() - 0.5) * 30;
+
+    // Physique : léger bond initial puis chute naturelle avec balancement
+    let vx = (Math.random() - 0.5) * 2.2;
+    let vy = -1.2 - Math.random() * 2.0;
+    const gravity = 0.065 + Math.random() * 0.025;
+    const swaySpeed = 0.04 + Math.random() * 0.03;
+    const swayAmp = 0.45 + Math.random() * 0.55;
+    const swayPhase = Math.random() * Math.PI * 2;
+
+    let rotation = (Math.random() - 0.5) * 30;
+    const rotationSpeed = (Math.random() - 0.5) * 1.4;
+
+    const maxOpacity = 0.65 + Math.random() * 0.2; // Légèrement transparent
+    const duration = 1600 + Math.random() * 700;
+    const startTime = performance.now();
+    let frame = 0;
+
+    function animateHeart(now) {
+      const elapsed = now - startTime;
+      const progress = elapsed / duration;
+
+      if (progress >= 1) {
+        heart.remove();
+        return;
+      }
+
+      frame++;
+      vy += gravity;
+      x += vx + Math.sin(frame * swaySpeed + swayPhase) * swayAmp;
+      y += vy;
+      rotation += rotationSpeed;
+
+      // Apparition douce puis disparition progressive dans le dernier tiers
+      const opacity =
+        progress < 0.65
+          ? maxOpacity
+          : maxOpacity * (1 - (progress - 0.65) / 0.35);
+
+      heart.style.opacity = String(Math.max(0, opacity));
+      heart.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rotation}deg)`;
+      heart.style.left = "0px";
+      heart.style.top = "0px";
+
+      requestAnimationFrame(animateHeart);
+    }
+
+    requestAnimationFrame(animateHeart);
+  }
+}
+
+function setupXhekajEasterEgg(photoContainer, player) {
+  if (!photoContainer) return;
+
+  // Nettoyage de l'état précédent (important pour la carte de fin de partie réutilisée)
+  if (photoContainer._xhekajFadeTimer) {
+    clearTimeout(photoContainer._xhekajFadeTimer);
+  }
+  photoContainer.classList.remove("xhekaj-photo-interactive", "xhekaj-pink-locked");
+  photoContainer.style.borderColor = "";
+  photoContainer.style.boxShadow = "";
+  photoContainer.style.transition = "";
+  photoContainer.onclick = null;
+
+  if (!player || player.id !== ARBER_XHEKAJ_ID) return;
+
+  let clickCount = 0;
+  photoContainer.classList.add("xhekaj-photo-interactive");
+
+  photoContainer.onclick = e => {
+    clickCount++;
+
+    if (photoContainer._xhekajFadeTimer) {
+      clearTimeout(photoContainer._xhekajFadeTimer);
+    }
+
+    // Pour les premiers clics : flash de plus en plus rose puis retour au rouge
+    if (clickCount < XHEKAJ_UNLOCK_CLICKS) {
+      const { css, ratio } = getInterpolatedPink(clickCount, XHEKAJ_UNLOCK_CLICKS);
+
+      // Changement immédiat vers le rose au clic
+      photoContainer.style.transition = "border-color 0.06s ease, box-shadow 0.06s ease, transform 0.1s ease";
+      photoContainer.style.borderColor = css;
+      photoContainer.style.boxShadow = `0 0 ${6 + clickCount}px rgba(255, 92, 168, ${(ratio * 0.55).toFixed(2)})`;
+
+      // Retour progressif au rouge du CH entre les clics
+      photoContainer._xhekajFadeTimer = setTimeout(() => {
+        photoContainer.style.transition = "border-color 0.55s ease, box-shadow 0.55s ease, transform 0.12s ease";
+        photoContainer.style.borderColor = "";
+        photoContainer.style.boxShadow = "";
+      }, 260);
+    } else {
+      // Au 10e clic et après : contour rose fixe + pluie de coeurs
+      photoContainer.style.transition = "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease";
+      photoContainer.classList.add("xhekaj-pink-locked");
+      spawnXhekajHearts(photoContainer, e);
+    }
+  };
+}
 
 // --- ÉVÉNEMENTS DU MENU PRINCIPAL ---
 document.getElementById("menu-start-daily-btn").addEventListener("click", () => {
