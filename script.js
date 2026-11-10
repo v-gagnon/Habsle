@@ -165,12 +165,20 @@ const PLAYERS = [
 ];
 
 const MAX_ATTEMPTS = 8;
-const DAILY_STORAGE_KEY = "habsle_daily_state_v1";
-const DAILY_REMIX_STORAGE_KEY = "habsle_daily_remix_state_v1";
+const DAILY_STORAGE_KEY = "habsle_daily_state_v2";
+const DAILY_REMIX_STORAGE_KEY = "habsle_daily_remix_state_v2";
+const DAILY_EXPERT_STORAGE_KEY = "habsle_daily_expert_state_v1";
+const CUSTOM_PREFS_STORAGE_KEY = "habsle_custom_prefs_v1";
 const NHL_CACHE_KEY = "habsle_nhl_api_cache_v1";
+
 const UNITS_ORDER = ["Trio 1", "Trio 2", "Trio 3", "Trio 4", "Paire 1", "Paire 2", "Paire 3", "Gardien"];
-const CLASSIC_COLUMNS = ["number", "pos", "unit", "age", "shoots", "country"];
-const STAT_POOL_COLUMNS = ["gp", "g", "a", "pts", "plusMinus", "pim", "shots", "toi", "height"];
+
+// 1. Mode standard : 5 indices (sans pays, et âge placé à la fin après lancer)
+const CLASSIC_COLUMNS = ["number", "pos", "unit", "shoots", "age"];
+
+// Pays rejoint les autres statistiques / attributs secondaires
+const STAT_POOL_COLUMNS = ["country", "gp", "g", "a", "pts", "plusMinus", "pim", "shots", "toi", "height"];
+const ALL_AVAILABLE_COLUMNS = [...CLASSIC_COLUMNS, ...STAT_POOL_COLUMNS];
 
 // --- FONCTIONS UTILITAIRES POUR ÉVALUER LES COLONNES ---
 function parseHeightToInches(heightStr) {
@@ -202,10 +210,11 @@ function compareNumericClue(guessVal, secretVal, closeThreshold, displayStr, upL
   return { text: displayStr, status, sub };
 }
 
-// Catalogue complet des colonnes avec intervalles affichés directement dans les titres
+// Catalogue complet des 15 indices disponibles
 const CLUE_DEFINITIONS = {
   number: {
     label: "#",
+    fullName: "Numéro (#)",
     interval: "(±5)",
     isStat: false,
     evaluate(player, secret) {
@@ -214,6 +223,7 @@ const CLUE_DEFINITIONS = {
   },
   pos: {
     label: "Pos",
+    fullName: "Position",
     interval: "(Groupe)",
     isStat: false,
     evaluate(player, secret) {
@@ -228,6 +238,7 @@ const CLUE_DEFINITIONS = {
   },
   unit: {
     label: "Unité",
+    fullName: "Unité / Trio",
     interval: "(Groupe)",
     isStat: false,
     evaluate(player, secret) {
@@ -240,8 +251,22 @@ const CLUE_DEFINITIONS = {
       return { text: player.unit, status, sub: "" };
     }
   },
+  shoots: {
+    label: "Lancer",
+    fullName: "Lancer (G/D)",
+    interval: "",
+    isStat: false,
+    evaluate(player, secret) {
+      return {
+        text: player.shoots,
+        status: player.shoots === secret.shoots ? "exact" : "wrong",
+        sub: ""
+      };
+    }
+  },
   age: {
     label: "Âge",
+    fullName: "Âge",
     interval: "(±2)",
     isStat: false,
     evaluate(player, secret) {
@@ -255,22 +280,11 @@ const CLUE_DEFINITIONS = {
       );
     }
   },
-  shoots: {
-    label: "Lancer",
-    interval: "",
-    isStat: false,
-    evaluate(player, secret) {
-      return {
-        text: player.shoots,
-        status: player.shoots === secret.shoots ? "exact" : "wrong",
-        sub: ""
-      };
-    }
-  },
   country: {
     label: "Pays",
+    fullName: "Pays",
     interval: "",
-    isStat: false,
+    isStat: true,
     evaluate(player, secret) {
       return {
         text: player.country,
@@ -281,6 +295,7 @@ const CLUE_DEFINITIONS = {
   },
   gp: {
     label: "MJ",
+    fullName: "Matchs joués",
     interval: "(±3)",
     isStat: true,
     evaluate(player, secret) {
@@ -291,6 +306,7 @@ const CLUE_DEFINITIONS = {
   },
   g: {
     label: "Buts",
+    fullName: "Buts",
     interval: "(±2)",
     isStat: true,
     evaluate(player, secret) {
@@ -301,6 +317,7 @@ const CLUE_DEFINITIONS = {
   },
   a: {
     label: "Passes",
+    fullName: "Passes",
     interval: "(±2)",
     isStat: true,
     evaluate(player, secret) {
@@ -311,6 +328,7 @@ const CLUE_DEFINITIONS = {
   },
   pts: {
     label: "Points",
+    fullName: "Points",
     interval: "(±3)",
     isStat: true,
     evaluate(player, secret) {
@@ -321,6 +339,7 @@ const CLUE_DEFINITIONS = {
   },
   plusMinus: {
     label: "+/-",
+    fullName: "Différentiel (+/-)",
     interval: "(±2)",
     isStat: true,
     evaluate(player, secret) {
@@ -342,6 +361,7 @@ const CLUE_DEFINITIONS = {
   },
   pim: {
     label: "PUN",
+    fullName: "Punitions (PUN)",
     interval: "(±4)",
     isStat: true,
     evaluate(player, secret) {
@@ -352,6 +372,7 @@ const CLUE_DEFINITIONS = {
   },
   shots: {
     label: "Tirs",
+    fullName: "Tirs au but",
     interval: "(±8)",
     isStat: true,
     evaluate(player, secret) {
@@ -362,6 +383,7 @@ const CLUE_DEFINITIONS = {
   },
   toi: {
     label: "TG/M",
+    fullName: "Temps de glace",
     interval: "(±2:00)",
     isStat: true,
     evaluate(player, secret) {
@@ -374,6 +396,7 @@ const CLUE_DEFINITIONS = {
   },
   height: {
     label: "Taille",
+    fullName: "Taille",
     interval: "(±2\")",
     isStat: true,
     evaluate(player, secret) {
@@ -391,7 +414,7 @@ const CLUE_DEFINITIONS = {
   }
 };
 
-// Générateur pseudo-aléatoire déterministe pour que tout le monde ait le même Défi Mélangé
+// Générateur pseudo-aléatoire déterministe pour les défis quotidiens
 function createSeededRNG(seedStr) {
   let h = 2166136261 >>> 0;
   for (let i = 0; i < seedStr.length; i++) {
@@ -415,17 +438,57 @@ function shuffleArray(arr, rng = Math.random) {
   return copy;
 }
 
-// Génère 6 colonnes : entre 2 et 4 indices normaux + le reste en statistiques (total = 6)
+// 2. Mode Mélangé : 5 colonnes (2 ou 3 indices standards + 3 ou 2 statistiques)
 function generateRemixedColumns(rng = Math.random) {
-  const normalCount = 2 + Math.floor(rng() * 3); // 2, 3 ou 4 indices de base
-  const statCount = 6 - normalCount; // 4, 3 ou 2 statistiques
+  const normalCount = 2 + Math.floor(rng() * 2); // 2 ou 3 standards
+  const statCount = 5 - normalCount; // 3 ou 2 statistiques (total = 5)
   const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
   const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
   return shuffleArray([...keptBase, ...pickedStats], rng);
 }
 
-let currentView = "menu"; // "menu" | "daily" | "dailyRemix" | "practice" | "study"
-let activeGameMode = "daily"; // "daily" | "dailyRemix" | "practice"
+// 3. Mode Expert : 4 colonnes (0 ou 1 indice standard + 4 ou 3 statistiques)
+function generateExpertColumns(rng = Math.random) {
+  const normalCount = Math.floor(rng() * 2); // 0 ou 1 standard
+  const statCount = 4 - normalCount; // 4 ou 3 statistiques (total = 4)
+  const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
+  const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
+  return shuffleArray([...keptBase, ...pickedStats], rng);
+}
+
+// Préférences de la Partie Personnalisée
+let customSelectedColumns = [...CLASSIC_COLUMNS];
+let customShowArrows = true;
+
+function loadCustomPrefs() {
+  try {
+    const raw = localStorage.getItem(CUSTOM_PREFS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.columns)) {
+        const valid = parsed.columns.filter(c => CLUE_DEFINITIONS[c]).slice(0, 6);
+        if (valid.length >= 1) customSelectedColumns = valid;
+      }
+      if (typeof parsed.showArrows === "boolean") {
+        customShowArrows = parsed.showArrows;
+      }
+    }
+  } catch (e) {}
+}
+
+function saveCustomPrefs() {
+  try {
+    localStorage.setItem(
+      CUSTOM_PREFS_STORAGE_KEY,
+      JSON.stringify({ columns: customSelectedColumns, showArrows: customShowArrows })
+    );
+  } catch (e) {}
+}
+
+loadCustomPrefs();
+
+let currentView = "menu"; // "menu" | "daily" | "dailyRemix" | "dailyExpert" | "practice" | "custom" | "study"
+let activeGameMode = "daily"; // "daily" | "dailyRemix" | "dailyExpert" | "practice" | "custom"
 
 const sessions = {
   daily: {
@@ -433,7 +496,8 @@ const sessions = {
     guesses: [],
     gameOver: false,
     endReason: null,
-    isRemix: false,
+    variant: "classic",
+    hideArrows: false,
     columns: [...CLASSIC_COLUMNS]
   },
   dailyRemix: {
@@ -441,7 +505,17 @@ const sessions = {
     guesses: [],
     gameOver: false,
     endReason: null,
-    isRemix: true,
+    variant: "remix",
+    hideArrows: false,
+    columns: []
+  },
+  dailyExpert: {
+    secretPlayer: null,
+    guesses: [],
+    gameOver: false,
+    endReason: null,
+    variant: "expert",
+    hideArrows: true,
     columns: []
   },
   practice: {
@@ -449,8 +523,18 @@ const sessions = {
     guesses: [],
     gameOver: false,
     endReason: null,
-    isRemix: false,
+    variant: "classic", // "classic" | "remix" | "expert"
+    hideArrows: false,
     columns: [...CLASSIC_COLUMNS]
+  },
+  custom: {
+    secretPlayer: null,
+    guesses: [],
+    gameOver: false,
+    endReason: null,
+    variant: "custom",
+    hideArrows: !customShowArrows,
+    columns: [...customSelectedColumns]
   }
 };
 
@@ -463,10 +547,20 @@ const navTabs = document.querySelectorAll(".nav-tab");
 
 const modeTitleEl = document.getElementById("current-mode-title");
 const modeSubtitleEl = document.getElementById("current-mode-subtitle");
-const remixActivePill = document.getElementById("remix-active-pill");
+const modeActivePill = document.getElementById("mode-active-pill");
 const dailyStatusBadge = document.getElementById("daily-status-badge");
 const dailyRemixStatusBadge = document.getElementById("daily-remix-status-badge");
+const dailyExpertStatusBadge = document.getElementById("daily-expert-status-badge");
 const boardHeaderEl = document.getElementById("board-header");
+
+const customConfigPanel = document.getElementById("custom-config-panel");
+const customCluesGrid = document.getElementById("custom-clues-grid");
+const customCountBadge = document.getElementById("custom-count-badge");
+const customArrowsToggle = document.getElementById("custom-arrows-toggle");
+const applyCustomGameBtn = document.getElementById("apply-custom-game-btn");
+const cancelCustomConfigBtn = document.getElementById("cancel-custom-config-btn");
+const customizeCluesBtn = document.getElementById("customize-clues-btn");
+const endCustomizeCluesBtn = document.getElementById("end-customize-clues-btn");
 
 const inputEl = document.getElementById("player-input");
 const autocompleteEl = document.getElementById("autocomplete-list");
@@ -476,13 +570,12 @@ const studyModeCheckbox = document.getElementById("study-mode");
 const resultCard = document.getElementById("result-card");
 const giveUpBtn = document.getElementById("give-up-btn");
 const newGameBtn = document.getElementById("new-game-btn");
-const newRemixGameBtn = document.getElementById("new-remix-game-btn");
 const practiceEndActions = document.getElementById("practice-end-actions");
 const playAgainBtn = document.getElementById("play-again-btn");
-const playAgainRemixBtn = document.getElementById("play-again-remix-btn");
+const backToMenuBtn = document.getElementById("back-to-menu-btn");
 const dailyNextInfo = document.getElementById("daily-next-info");
 const dailyCountdownEl = document.getElementById("daily-countdown");
-const switchOtherDailyBtn = document.getElementById("switch-other-daily-btn");
+const dailyBackToMenuBtn = document.getElementById("daily-back-to-menu-btn");
 
 const rosterModal = document.getElementById("roster-modal");
 const rosterListContent = document.getElementById("roster-list-content");
@@ -717,7 +810,7 @@ function buildSeasonStatsHTML(player, compact = false) {
   `;
 }
 
-// --- OUTILS DATE & GESTION DES DEUX DÉFIS QUOTIDIENS (CLASSIQUE ET MÉLANGÉ) ---
+// --- OUTILS DATE & GESTION DES 3 DÉFIS QUOTIDIENS (CLASSIQUE, MÉLANGÉ, EXPERT) ---
 function getTodayKey() {
   const now = new Date();
   const y = now.getFullYear();
@@ -745,19 +838,35 @@ function getDailyPlayerForDate(dateKey) {
 }
 
 function getDailyRemixSetupForDate(dateKey) {
-  const rng = createSeededRNG(`${dateKey}-habsle-remix`);
+  const rng = createSeededRNG(`${dateKey}-habsle-remix-v2`);
   const classicPlayer = getDailyPlayerForDate(dateKey);
-  // On s'assure que le joueur du Défi Mélangé est différent de celui du Défi Quotidien classique
   const candidates = PLAYERS.filter(p => p.id !== classicPlayer.id);
   const secretPlayer = candidates[Math.floor(rng() * candidates.length)];
   const columns = generateRemixedColumns(rng);
   return { secretPlayer, columns };
 }
 
+function getDailyExpertSetupForDate(dateKey) {
+  const rng = createSeededRNG(`${dateKey}-habsle-expert-v1`);
+  const classicPlayer = getDailyPlayerForDate(dateKey);
+  const remixSetup = getDailyRemixSetupForDate(dateKey);
+  const candidates = PLAYERS.filter(
+    p => p.id !== classicPlayer.id && p.id !== remixSetup.secretPlayer.id
+  );
+  const secretPlayer = candidates[Math.floor(rng() * candidates.length)];
+  const columns = generateExpertColumns(rng);
+  return { secretPlayer, columns };
+}
+
+function getStorageKeyForDailyMode(modeKey) {
+  if (modeKey === "dailyRemix") return DAILY_REMIX_STORAGE_KEY;
+  if (modeKey === "dailyExpert") return DAILY_EXPERT_STORAGE_KEY;
+  return DAILY_STORAGE_KEY;
+}
+
 function saveDailySession(modeKey) {
-  const isRemixDaily = modeKey === "dailyRemix";
   const session = sessions[modeKey];
-  const storageKey = isRemixDaily ? DAILY_REMIX_STORAGE_KEY : DAILY_STORAGE_KEY;
+  const storageKey = getStorageKeyForDailyMode(modeKey);
 
   const payload = {
     dateKey: getTodayKey(),
@@ -772,7 +881,8 @@ function saveDailySession(modeKey) {
 function loadDailySession() {
   const todayKey = getTodayKey();
   sessions.daily.secretPlayer = getDailyPlayerForDate(todayKey);
-  sessions.daily.isRemix = false;
+  sessions.daily.variant = "classic";
+  sessions.daily.hideArrows = false;
   sessions.daily.columns = [...CLASSIC_COLUMNS];
 
   try {
@@ -797,7 +907,8 @@ function loadDailyRemixSession() {
   const todayKey = getTodayKey();
   const setup = getDailyRemixSetupForDate(todayKey);
   sessions.dailyRemix.secretPlayer = setup.secretPlayer;
-  sessions.dailyRemix.isRemix = true;
+  sessions.dailyRemix.variant = "remix";
+  sessions.dailyRemix.hideArrows = false;
   sessions.dailyRemix.columns = setup.columns;
 
   try {
@@ -818,11 +929,38 @@ function loadDailyRemixSession() {
   sessions.dailyRemix.endReason = null;
 }
 
+function loadDailyExpertSession() {
+  const todayKey = getTodayKey();
+  const setup = getDailyExpertSetupForDate(todayKey);
+  sessions.dailyExpert.secretPlayer = setup.secretPlayer;
+  sessions.dailyExpert.variant = "expert";
+  sessions.dailyExpert.hideArrows = true;
+  sessions.dailyExpert.columns = setup.columns;
+
+  try {
+    const raw = localStorage.getItem(DAILY_EXPERT_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.dateKey === todayKey) {
+        sessions.dailyExpert.guesses = Array.isArray(parsed.guesses) ? parsed.guesses : [];
+        sessions.dailyExpert.gameOver = Boolean(parsed.gameOver);
+        sessions.dailyExpert.endReason = parsed.endReason || null;
+        return;
+      }
+    }
+  } catch (e) {}
+
+  sessions.dailyExpert.guesses = [];
+  sessions.dailyExpert.gameOver = false;
+  sessions.dailyExpert.endReason = null;
+}
+
 function updateMenuDailyBadges() {
   loadDailySession();
   loadDailyRemixSession();
+  loadDailyExpertSession();
 
-  // Badge du Défi Quotidien classique
+  // Badge Classique
   if (sessions.daily.gameOver) {
     dailyStatusBadge.textContent =
       sessions.daily.endReason === "win" ? "Classique : Réussi" : "Classique : Terminé";
@@ -835,7 +973,7 @@ function updateMenuDailyBadges() {
     dailyStatusBadge.className = "menu-tag daily-tag";
   }
 
-  // Badge du Défi Mélangé quotidien
+  // Badge Mélangé
   if (sessions.dailyRemix.gameOver) {
     dailyRemixStatusBadge.textContent =
       sessions.dailyRemix.endReason === "win" ? "Mélangé : Réussi" : "Mélangé : Terminé";
@@ -847,14 +985,79 @@ function updateMenuDailyBadges() {
     dailyRemixStatusBadge.textContent = "Mélangé : À jouer";
     dailyRemixStatusBadge.className = "menu-tag remix-tag";
   }
+
+  // Badge Expert
+  if (sessions.dailyExpert.gameOver) {
+    dailyExpertStatusBadge.textContent =
+      sessions.dailyExpert.endReason === "win" ? "Expert : Réussi" : "Expert : Terminé";
+    dailyExpertStatusBadge.className = "menu-tag completed-tag";
+  } else if (sessions.dailyExpert.guesses.length > 0) {
+    dailyExpertStatusBadge.textContent = `Expert : ${sessions.dailyExpert.guesses.length}/${MAX_ATTEMPTS}`;
+    dailyExpertStatusBadge.className = "menu-tag expert-tag";
+  } else {
+    dailyExpertStatusBadge.textContent = "Expert : À jouer";
+    dailyExpertStatusBadge.className = "menu-tag expert-tag";
+  }
+}
+
+// --- INTERFACE DU CONSTRUCTEUR DE PARTIE PERSONNALISÉE ---
+function renderCustomConfigUI() {
+  customCluesGrid.innerHTML = "";
+  customArrowsToggle.checked = customShowArrows;
+
+  ALL_AVAILABLE_COLUMNS.forEach(colKey => {
+    const def = CLUE_DEFINITIONS[colKey];
+    const selectedIdx = customSelectedColumns.indexOf(colKey);
+    const isSelected = selectedIdx !== -1;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `custom-clue-option ${isSelected ? "selected" : ""} ${def.isStat ? "stat-option" : ""}`;
+    btn.innerHTML = `
+      <div class="clue-opt-top">
+        <span class="clue-opt-label">${def.fullName}</span>
+        ${isSelected ? `<span class="clue-opt-order">${selectedIdx + 1}</span>` : ""}
+      </div>
+      <span class="clue-opt-meta">${def.isStat ? "Statistique / Secondaire" : "Indice standard"} ${def.interval}</span>
+    `;
+
+    btn.addEventListener("click", () => {
+      const idx = customSelectedColumns.indexOf(colKey);
+      if (idx !== -1) {
+        customSelectedColumns.splice(idx, 1);
+      } else if (customSelectedColumns.length < 6) {
+        customSelectedColumns.push(colKey);
+      }
+      renderCustomConfigUI();
+    });
+
+    customCluesGrid.appendChild(btn);
+  });
+
+  const count = customSelectedColumns.length;
+  customCountBadge.textContent = `${count} / 6`;
+  applyCustomGameBtn.disabled = count < 1 || count > 6;
+  cancelCustomConfigBtn.classList.toggle("hidden", !sessions.custom.secretPlayer);
+}
+
+function openCustomConfigPanel() {
+  renderCustomConfigUI();
+  customConfigPanel.classList.remove("hidden");
+  customConfigPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 // --- NAVIGATION ENTRE LES VUES ---
-function switchView(target, practiceRemixOption = null) {
+function switchView(target, option = null) {
   currentView = target;
   autocompleteEl.classList.add("hidden");
 
-  const isGameView = target === "daily" || target === "dailyRemix" || target === "practice";
+  const isGameView =
+    target === "daily" ||
+    target === "dailyRemix" ||
+    target === "dailyExpert" ||
+    target === "practice" ||
+    target === "custom";
+
   menuView.classList.toggle("hidden", target !== "menu");
   gameView.classList.toggle("hidden", !isGameView);
   studyView.classList.toggle("hidden", target !== "study");
@@ -868,38 +1071,101 @@ function switchView(target, practiceRemixOption = null) {
     updateMenuDailyBadges();
   } else if (target === "daily") {
     activeGameMode = "daily";
+    customConfigPanel.classList.add("hidden");
     loadDailySession();
     renderActiveGameSession();
   } else if (target === "dailyRemix") {
     activeGameMode = "dailyRemix";
+    customConfigPanel.classList.add("hidden");
     loadDailyRemixSession();
+    renderActiveGameSession();
+  } else if (target === "dailyExpert") {
+    activeGameMode = "dailyExpert";
+    customConfigPanel.classList.add("hidden");
+    loadDailyExpertSession();
     renderActiveGameSession();
   } else if (target === "practice") {
     activeGameMode = "practice";
-    if (typeof practiceRemixOption === "boolean") {
-      startNewPracticeGame(practiceRemixOption);
+    customConfigPanel.classList.add("hidden");
+    if (typeof option === "string") {
+      startNewPracticeGame(option);
     } else if (!sessions.practice.secretPlayer) {
-      startNewPracticeGame(false);
+      startNewPracticeGame("classic");
     } else {
       renderActiveGameSession();
+    }
+  } else if (target === "custom") {
+    activeGameMode = "custom";
+    if (!sessions.custom.secretPlayer) {
+      startNewCustomGame(false);
+      openCustomConfigPanel();
+    } else {
+      renderActiveGameSession();
+      if (option === "configure") {
+        openCustomConfigPanel();
+      } else {
+        customConfigPanel.classList.add("hidden");
+      }
     }
   } else if (target === "study") {
     renderStudyDirectory(studySearchInput.value);
   }
 }
 
-function startNewPracticeGame(isRemix = false) {
+function startNewPracticeGame(variant = sessions.practice.variant || "classic") {
   sessions.practice.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
   sessions.practice.guesses = [];
   sessions.practice.gameOver = false;
   sessions.practice.endReason = null;
-  sessions.practice.isRemix = isRemix;
-  sessions.practice.columns = isRemix ? generateRemixedColumns() : [...CLASSIC_COLUMNS];
+  sessions.practice.variant = variant;
+  sessions.practice.hideArrows = variant === "expert";
+
+  if (variant === "remix") {
+    sessions.practice.columns = generateRemixedColumns();
+  } else if (variant === "expert") {
+    sessions.practice.columns = generateExpertColumns();
+  } else {
+    sessions.practice.columns = [...CLASSIC_COLUMNS];
+  }
+
   renderActiveGameSession();
 }
 
-// --- RENDU DE L'EN-TÊTE DE GRILLE AVEC LES INTERVALLES DANS LES TITRES ---
+function startNewCustomGame(hideConfigPanel = true) {
+  if (customSelectedColumns.length < 1) {
+    customSelectedColumns = [...CLASSIC_COLUMNS];
+  }
+  saveCustomPrefs();
+
+  sessions.custom.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+  sessions.custom.guesses = [];
+  sessions.custom.gameOver = false;
+  sessions.custom.endReason = null;
+  sessions.custom.variant = "custom";
+  sessions.custom.hideArrows = !customShowArrows;
+  sessions.custom.columns = [...customSelectedColumns];
+
+  if (hideConfigPanel) {
+    customConfigPanel.classList.add("hidden");
+  }
+  renderActiveGameSession();
+}
+
+function restartCurrentGameSameType() {
+  if (activeGameMode === "practice") {
+    startNewPracticeGame(sessions.practice.variant);
+  } else if (activeGameMode === "custom") {
+    startNewCustomGame(true);
+  }
+}
+
+// --- RENDU DE L'EN-TÊTE DE GRILLE DYNAMIQUE (1 À 6 COLONNES) ---
 function renderBoardHeader(columns) {
+  const colCount = columns.length;
+  const boardEl = boardHeaderEl.parentElement;
+  boardEl.style.setProperty("--col-count", String(colCount));
+  boardEl.style.setProperty("--board-min-width", `${175 + colCount * 85}px`);
+
   boardHeaderEl.innerHTML = `<div class="header-col-cell"><span>Joueur</span></div>`;
   columns.forEach(colKey => {
     const def = CLUE_DEFINITIONS[colKey];
@@ -915,32 +1181,56 @@ function renderBoardHeader(columns) {
 
 function renderActiveGameSession() {
   const session = sessions[activeGameMode];
-  const isAnyDaily = activeGameMode === "daily" || activeGameMode === "dailyRemix";
+  const isAnyDaily =
+    activeGameMode === "daily" ||
+    activeGameMode === "dailyRemix" ||
+    activeGameMode === "dailyExpert";
+  const isCustom = activeGameMode === "custom";
 
+  // Titres et bannières selon le mode actif
   if (activeGameMode === "daily") {
     modeTitleEl.textContent = "Défi Quotidien";
-    modeSubtitleEl.textContent = `Joueur mystère du ${getFormattedTodayFrench()}`;
+    modeSubtitleEl.textContent = `Joueur mystère du ${getFormattedTodayFrench()} • 5 indices standards`;
+    modeActivePill.classList.add("hidden");
   } else if (activeGameMode === "dailyRemix") {
     modeTitleEl.textContent = "Défi Quotidien Mélangé";
-    modeSubtitleEl.textContent = `Défi mélangé du ${getFormattedTodayFrench()}`;
-  } else {
+    modeSubtitleEl.textContent = `Défi mélangé du ${getFormattedTodayFrench()} • 5 indices (2-3 standards + statistiques)`;
+    modeActivePill.textContent = "Mélangé";
+    modeActivePill.className = "mode-pill remix-pill";
+  } else if (activeGameMode === "dailyExpert") {
+    modeTitleEl.textContent = "Défi Quotidien Expert";
+    modeSubtitleEl.textContent = `Défi expert du ${getFormattedTodayFrench()} • 4 indices (0-1 standard, sans indications ▲/▼)`;
+    modeActivePill.textContent = "Expert • Sans ▲/▼";
+    modeActivePill.className = "mode-pill expert-pill";
+  } else if (activeGameMode === "practice") {
     modeTitleEl.textContent = "Mode Pratique";
-    modeSubtitleEl.textContent = session.isRemix
-      ? "Manche mélangée (entre 2 et 4 indices normaux complétés par des statistiques)"
-      : "Manches classiques illimitées pour t'entraîner";
+    if (session.variant === "remix") {
+      modeSubtitleEl.textContent = "Manche mélangée (5 indices : 2 ou 3 standards complétés par des statistiques)";
+      modeActivePill.textContent = "Partie mélangée";
+      modeActivePill.className = "mode-pill remix-pill";
+    } else if (session.variant === "expert") {
+      modeSubtitleEl.textContent = "Manche expert (4 indices : 0 ou 1 standard, aucune indication plus grand / plus petit)";
+      modeActivePill.textContent = "Mode Expert • Sans ▲/▼";
+      modeActivePill.className = "mode-pill expert-pill";
+    } else {
+      modeSubtitleEl.textContent = "Manche classique illimitée (5 indices standards)";
+      modeActivePill.textContent = "Partie classique";
+      modeActivePill.className = "mode-pill classic-pill";
+    }
+  } else if (activeGameMode === "custom") {
+    modeTitleEl.textContent = "Partie Personnalisée";
+    const count = session.columns.length;
+    modeSubtitleEl.textContent = `${count} indice${count > 1 ? "s" : ""} sélectionné${count > 1 ? "s" : ""} • ${session.hideArrows ? "Sans indications ▲/▼" : "Avec indications ▲/▼"}`;
+    modeActivePill.textContent = "Personnalisé";
+    modeActivePill.className = "mode-pill custom-pill";
   }
 
-  remixActivePill.classList.toggle("hidden", !session.isRemix);
-
+  // 5. Un seul bouton "Nouvelle partie" (du même type) + bouton modifier en mode personnalisé
   newGameBtn.classList.toggle("hidden", isAnyDaily);
-  newRemixGameBtn.classList.toggle("hidden", isAnyDaily);
+  customizeCluesBtn.classList.toggle("hidden", !isCustom);
+  endCustomizeCluesBtn.classList.toggle("hidden", !isCustom);
   practiceEndActions.classList.toggle("hidden", isAnyDaily);
   dailyNextInfo.classList.toggle("hidden", !isAnyDaily);
-
-  if (isAnyDaily) {
-    switchOtherDailyBtn.textContent =
-      activeGameMode === "daily" ? "Jouer au défi mélangé" : "Jouer au défi du jour";
-  }
 
   renderBoardHeader(session.columns);
 
@@ -951,7 +1241,7 @@ function renderActiveGameSession() {
   session.guesses.forEach(playerId => {
     const player = PLAYERS.find(p => p.id === playerId);
     if (player) {
-      appendGuessRowDOM(player, session.secretPlayer, session.columns, false);
+      appendGuessRowDOM(player, session.secretPlayer, session.columns, false, session.hideArrows);
     }
   });
 
@@ -961,7 +1251,7 @@ function renderActiveGameSession() {
 
   if (session.gameOver) {
     showEndGameCard(session, false);
-  } else {
+  } else if (customConfigPanel.classList.contains("hidden")) {
     inputEl.focus();
   }
 }
@@ -1019,18 +1309,23 @@ function submitGuess(player) {
   inputEl.value = "";
   autocompleteEl.classList.add("hidden");
 
-  appendGuessRowDOM(player, session.secretPlayer, session.columns, true);
+  appendGuessRowDOM(player, session.secretPlayer, session.columns, true, session.hideArrows);
+
+  const isAnyDaily =
+    activeGameMode === "daily" ||
+    activeGameMode === "dailyRemix" ||
+    activeGameMode === "dailyExpert";
 
   if (player.id === session.secretPlayer.id) {
     finishSession("win");
   } else if (session.guesses.length >= MAX_ATTEMPTS) {
     finishSession("lose");
-  } else if (activeGameMode === "daily" || activeGameMode === "dailyRemix") {
+  } else if (isAnyDaily) {
     saveDailySession(activeGameMode);
   }
 }
 
-function appendGuessRowDOM(player, secretPlayer, columns, animate) {
+function appendGuessRowDOM(player, secretPlayer, columns, animate, hideArrows = false) {
   const nameStatus = player.id === secretPlayer.id ? "exact" : "name-cell";
 
   const cellsData = [
@@ -1045,9 +1340,10 @@ function appendGuessRowDOM(player, secretPlayer, columns, animate) {
     const cell = document.createElement("div");
     cell.className = `cell ${cellInfo.status}`;
     cell.style.animationDelay = animate ? `${index * 90}ms` : "0ms";
+    const arrowText = !hideArrows && cellInfo.sub ? cellInfo.sub : "";
     cell.innerHTML = `
       <span>${cellInfo.text}</span>
-      ${cellInfo.sub ? `<span class="arrow-hint">${cellInfo.sub}</span>` : ""}
+      ${arrowText ? `<span class="arrow-hint">${arrowText}</span>` : ""}
     `;
     row.appendChild(cell);
   });
@@ -1063,7 +1359,11 @@ function finishSession(reason) {
   giveUpBtn.disabled = true;
   autocompleteEl.classList.add("hidden");
 
-  if (activeGameMode === "daily" || activeGameMode === "dailyRemix") {
+  if (
+    activeGameMode === "daily" ||
+    activeGameMode === "dailyRemix" ||
+    activeGameMode === "dailyExpert"
+  ) {
     saveDailySession(activeGameMode);
   }
 
@@ -1287,7 +1587,6 @@ updateDailyCountdown();
 const ARBER_XHEKAJ_ID = 8482964;
 const XHEKAJ_UNLOCK_CLICKS = 11;
 
-// Couleur de départ (--rouge-ch : #af1e2d) et rose cible (#ff5ca8)
 const CH_RED_RGB = { r: 175, g: 30, b: 45 };
 const TARGET_PINK_RGB = { r: 255, g: 92, b: 168 };
 
@@ -1305,7 +1604,7 @@ function spawnXhekajHearts(containerEl, clickEvent) {
   const originY = clickEvent?.clientY || rect.top + rect.height / 2;
 
   const shades = ["#ff5ca8", "#ff7eb9", "#ff3b94", "#ff9ec9", "#ff4da6"];
-  const heartCount = 7 + Math.floor(Math.random() * 4); // 7 à 10 coeurs par clic
+  const heartCount = 7 + Math.floor(Math.random() * 4);
 
   for (let i = 0; i < heartCount; i++) {
     const heart = document.createElement("div");
@@ -1322,11 +1621,9 @@ function spawnXhekajHearts(containerEl, clickEvent) {
 
     document.body.appendChild(heart);
 
-    // Position initiale dispersée autour du clic / de la photo
     let x = originX - size / 2 + (Math.random() - 0.5) * 50;
     let y = originY - size / 2 + (Math.random() - 0.5) * 30;
 
-    // Physique : léger bond initial puis chute naturelle avec balancement
     let vx = (Math.random() - 0.5) * 2.2;
     let vy = -1.2 - Math.random() * 2.0;
     const gravity = 0.065 + Math.random() * 0.025;
@@ -1337,7 +1634,7 @@ function spawnXhekajHearts(containerEl, clickEvent) {
     let rotation = (Math.random() - 0.5) * 30;
     const rotationSpeed = (Math.random() - 0.5) * 1.4;
 
-    const maxOpacity = 0.65 + Math.random() * 0.2; // Légèrement transparent
+    const maxOpacity = 0.65 + Math.random() * 0.2;
     const duration = 1600 + Math.random() * 700;
     const startTime = performance.now();
     let frame = 0;
@@ -1357,7 +1654,6 @@ function spawnXhekajHearts(containerEl, clickEvent) {
       y += vy;
       rotation += rotationSpeed;
 
-      // Apparition douce puis disparition progressive dans le dernier tiers
       const opacity =
         progress < 0.65
           ? maxOpacity
@@ -1378,7 +1674,6 @@ function spawnXhekajHearts(containerEl, clickEvent) {
 function setupXhekajEasterEgg(photoContainer, player) {
   if (!photoContainer) return;
 
-  // Nettoyage de l'état précédent (important pour la carte de fin de partie réutilisée)
   if (photoContainer._xhekajFadeTimer) {
     clearTimeout(photoContainer._xhekajFadeTimer);
   }
@@ -1400,23 +1695,19 @@ function setupXhekajEasterEgg(photoContainer, player) {
       clearTimeout(photoContainer._xhekajFadeTimer);
     }
 
-    // Pour les premiers clics : flash de plus en plus rose puis retour au rouge
     if (clickCount < XHEKAJ_UNLOCK_CLICKS) {
       const { css, ratio } = getInterpolatedPink(clickCount, XHEKAJ_UNLOCK_CLICKS);
 
-      // Changement immédiat vers le rose au clic
       photoContainer.style.transition = "border-color 0.06s ease, box-shadow 0.06s ease, transform 0.1s ease";
       photoContainer.style.borderColor = css;
       photoContainer.style.boxShadow = `0 0 ${6 + clickCount}px rgba(255, 92, 168, ${(ratio * 0.55).toFixed(2)})`;
 
-      // Retour progressif au rouge du CH entre les clics
       photoContainer._xhekajFadeTimer = setTimeout(() => {
         photoContainer.style.transition = "border-color 0.55s ease, box-shadow 0.55s ease, transform 0.12s ease";
         photoContainer.style.borderColor = "";
         photoContainer.style.boxShadow = "";
       }, 260);
     } else {
-      // Au 10e clic et après : contour rose fixe + pluie de coeurs
       photoContainer.style.transition = "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease";
       photoContainer.classList.add("xhekaj-pink-locked");
       spawnXhekajHearts(photoContainer, e);
@@ -1433,17 +1724,66 @@ document.getElementById("menu-start-daily-remix-btn").addEventListener("click", 
   switchView("dailyRemix");
 });
 
+document.getElementById("menu-start-daily-expert-btn").addEventListener("click", () => {
+  switchView("dailyExpert");
+});
+
 document.getElementById("menu-start-practice-classic-btn").addEventListener("click", () => {
-  switchView("practice", false);
+  switchView("practice", "classic");
 });
 
 document.getElementById("menu-start-practice-remix-btn").addEventListener("click", () => {
-  switchView("practice", true);
+  switchView("practice", "remix");
+});
+
+document.getElementById("menu-start-practice-expert-btn").addEventListener("click", () => {
+  switchView("practice", "expert");
+});
+
+document.getElementById("menu-start-custom-btn").addEventListener("click", () => {
+  switchView("custom", "configure");
 });
 
 document.getElementById("menu-card-study").addEventListener("click", () => {
   switchView("study");
 });
+
+// --- ÉVÉNEMENTS DE LA PARTIE PERSONNALISÉE ---
+customArrowsToggle.addEventListener("change", e => {
+  customShowArrows = e.target.checked;
+});
+
+document.querySelectorAll(".preset-chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const preset = chip.dataset.preset;
+    if (preset === "classic") {
+      customSelectedColumns = [...CLASSIC_COLUMNS];
+    } else if (preset === "offense") {
+      customSelectedColumns = ["g", "a", "pts", "shots", "toi"];
+    } else if (preset === "physical") {
+      customSelectedColumns = ["pos", "height", "pim", "plusMinus"];
+    } else if (preset === "random") {
+      const randomCount = 3 + Math.floor(Math.random() * 4); // 3 à 6 indices
+      customSelectedColumns = shuffleArray(ALL_AVAILABLE_COLUMNS).slice(0, randomCount);
+    } else if (preset === "clear") {
+      customSelectedColumns = [];
+    }
+    renderCustomConfigUI();
+  });
+});
+
+applyCustomGameBtn.addEventListener("click", () => {
+  if (customSelectedColumns.length >= 1 && customSelectedColumns.length <= 6) {
+    startNewCustomGame(true);
+  }
+});
+
+cancelCustomConfigBtn.addEventListener("click", () => {
+  customConfigPanel.classList.add("hidden");
+});
+
+customizeCluesBtn.addEventListener("click", openCustomConfigPanel);
+endCustomizeCluesBtn.addEventListener("click", openCustomConfigPanel);
 
 // --- ÉVÉNEMENTS DE NAVIGATION ET BOUTONS DE PARTIE ---
 navTabs.forEach(tab => {
@@ -1456,18 +1796,10 @@ document.getElementById("header-home-trigger").addEventListener("click", () => {
   switchView("menu");
 });
 
-switchOtherDailyBtn.addEventListener("click", () => {
-  switchView(activeGameMode === "daily" ? "dailyRemix" : "daily");
-});
-
-document.getElementById("go-practice-btn").addEventListener("click", () => {
-  switchView("practice", false);
-});
-
-newGameBtn.addEventListener("click", () => startNewPracticeGame(false));
-newRemixGameBtn.addEventListener("click", () => startNewPracticeGame(true));
-playAgainBtn.addEventListener("click", () => startNewPracticeGame(false));
-playAgainRemixBtn.addEventListener("click", () => startNewPracticeGame(true));
+newGameBtn.addEventListener("click", restartCurrentGameSameType);
+playAgainBtn.addEventListener("click", restartCurrentGameSameType);
+backToMenuBtn.addEventListener("click", () => switchView("menu"));
+dailyBackToMenuBtn.addEventListener("click", () => switchView("menu"));
 
 document.getElementById("refresh-api-btn").addEventListener("click", () => {
   syncWithNHLAPI(true);
