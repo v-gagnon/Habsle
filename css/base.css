@@ -1,0 +1,309 @@
+:root {
+  --bleu-ch: #192168;
+  --rouge-ch: #af1e2d;
+  --bg-dark: #0f1424;
+  --card-bg: #182039;
+  --text-main: #f3f6fc;
+  --text-muted: #9ba6c4;
+  --exact-green: #1f8b4c;
+  --close-yellow: #c88a14;
+  --wrong-gray: #2b3553;
+  --remix-indigo: #3b4cca;
+  --expert-amber: #d97706;
+  --image-purple: #7c3aed;
+  --custom-teal: #0d9488;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #1d2852 0%, var(--bg-dark) 70%);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem 1rem;
+  background: rgba(15, 20, 36, 0.85);
+  border-bottom: 3px solid var(--rouge-ch);
+  backdrop-filter: blur(8px);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.logo-badge {
+  background: var(--rouge-ch);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.4rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(175, 30, 45, 0.5);
+}
+
+.app-header h1 {
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Barre de navigation horizontale et menus déroulants */
+.mode-navbar {
+  background: rgba(24, 32, 57, 0.92);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+
+.nav-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.55rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.nav-tab {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  padding: 0.5rem 0.95rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-tab:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-tab.active {
+  background: var(--rouge-ch);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-caret {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  transition: transform 0.15s ease;
+}
+
+.nav-dropdown.open .nav-caret {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 170px;
+  background: #161f38;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 0.4rem;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nav-dropdown-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: background 0.15s ease;
+}
+
+.nav-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-dropdown-item.selected-variant {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.dropdown-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.classic-dot { background: var(--rouge-ch); }
+.remix-dot { background: var(--remix-indigo); }
+.expert-dot { background: var(--expert-amber); }
+.image-dot { background: var(--image-purple); }
+
+/* Boutons globaux */
+.secondary-btn,
+.danger-btn,
+.primary-btn,
+.custom-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.secondary-btn {
+  background: #2b3659;
+  color: var(--text-main);
+}
+
+.secondary-btn:hover {
+  background: #374570;
+  transform: translateY(-1px);
+}
+
+.custom-btn {
+  background: rgba(13, 148, 136, 0.25);
+  color: #99f6e4;
+  border: 1px solid rgba(20, 184, 166, 0.5);
+}
+
+.custom-btn:hover {
+  background: var(--custom-teal);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.danger-btn {
+  background: rgba(175, 30, 45, 0.25);
+  color: #ff9aa5;
+  border: 1px solid rgba(175, 30, 45, 0.55);
+}
+
+.danger-btn:hover:not(:disabled) {
+  background: var(--rouge-ch);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.danger-btn:disabled,
+.primary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.primary-btn {
+  background: var(--rouge-ch);
+  color: #fff;
+  font-size: 0.92rem;
+  padding: 0.62rem 1.15rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #c92435;
+  transform: translateY(-1px);
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes flipTile {
+  0% {
+    opacity: 0;
+    transform: rotateX(-90deg) scale(0.95);
+  }
+  70% {
+    opacity: 1;
+    transform: rotateX(12deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Easter Egg Arber Xhekaj */
+.xhekaj-photo-interactive {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: border-color 0.55s ease, box-shadow 0.55s ease, transform 0.12s ease;
+}
+
+.xhekaj-photo-interactive:active {
+  transform: scale(0.95);
+}
+
+.xhekaj-pink-locked {
+  border-color: #ff5ca8 !important;
+  box-shadow: 0 0 18px rgba(255, 92, 168, 0.65) !important;
+}
+
+.xhekaj-heart-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2px 4px rgba(255, 92, 168, 0.35));
+}

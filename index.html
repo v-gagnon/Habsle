@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Habsle | Le Wordle du Canadien de Montréal</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/study-modals.css" />
 </head>
 <body>
   <header class="app-header">
@@ -17,20 +20,61 @@
     </div>
   </header>
 
-  <!-- Barre de navigation horizontale -->
+  <!-- Barre de navigation horizontale épurée avec menus déroulants -->
   <nav id="mode-navbar" class="mode-navbar hidden" aria-label="Navigation des modes">
     <div class="nav-inner">
       <button class="nav-tab" data-target="menu">Accueil</button>
-      <button class="nav-tab" data-target="daily">Quotidien</button>
-      <button class="nav-tab" data-target="dailyRemix">Mélangé</button>
-      <button class="nav-tab" data-target="dailyExpert">Expert</button>
-      <button class="nav-tab" data-target="practice">Pratique</button>
+
+      <!-- Groupe Quotidien -->
+      <div class="nav-dropdown" id="nav-dropdown-daily">
+        <button type="button" class="nav-tab nav-dropdown-trigger" id="nav-daily-trigger" aria-expanded="false">
+          <span id="nav-daily-label">Quotidien</span>
+          <span class="nav-caret">▾</span>
+        </button>
+        <div class="nav-dropdown-menu hidden" id="nav-daily-menu">
+          <button type="button" class="nav-dropdown-item" data-mode="daily">
+            <span class="dropdown-dot classic-dot"></span> Standard
+          </button>
+          <button type="button" class="nav-dropdown-item" data-mode="dailyRemix">
+            <span class="dropdown-dot remix-dot"></span> Mélangé
+          </button>
+          <button type="button" class="nav-dropdown-item" data-mode="dailyExpert">
+            <span class="dropdown-dot expert-dot"></span> Expert
+          </button>
+          <button type="button" class="nav-dropdown-item" data-mode="dailyImage">
+            <span class="dropdown-dot image-dot"></span> Image
+          </button>
+        </div>
+      </div>
+
+      <!-- Groupe Pratique -->
+      <div class="nav-dropdown" id="nav-dropdown-practice">
+        <button type="button" class="nav-tab nav-dropdown-trigger" id="nav-practice-trigger" aria-expanded="false">
+          <span id="nav-practice-label">Pratique</span>
+          <span class="nav-caret">▾</span>
+        </button>
+        <div class="nav-dropdown-menu hidden" id="nav-practice-menu">
+          <button type="button" class="nav-dropdown-item" data-practice-variant="classic">
+            <span class="dropdown-dot classic-dot"></span> Standard
+          </button>
+          <button type="button" class="nav-dropdown-item" data-practice-variant="remix">
+            <span class="dropdown-dot remix-dot"></span> Mélangé
+          </button>
+          <button type="button" class="nav-dropdown-item" data-practice-variant="expert">
+            <span class="dropdown-dot expert-dot"></span> Expert
+          </button>
+          <button type="button" class="nav-dropdown-item" data-practice-variant="image">
+            <span class="dropdown-dot image-dot"></span> Image
+          </button>
+        </div>
+      </div>
+
       <button class="nav-tab" data-target="custom">Personnalisé</button>
       <button class="nav-tab" data-target="study">Étude</button>
     </div>
   </nav>
 
-  <!-- VUE 1 : MENU PRINCIPAL AU LANCEMENT -->
+  <!-- VUE 1 : MENU PRINCIPAL -->
   <section id="menu-view" class="menu-container">
     <div class="menu-intro">
       <h2>Choisis ton mode de jeu</h2>
@@ -38,20 +82,15 @@
     </div>
 
     <div class="menu-cards">
-      <!-- Carte 1 : Défis Quotidiens (Classique + Mélangé + Expert) -->
+      <!-- Carte 1 : Défis Quotidiens -->
       <div class="menu-card menu-card-static">
         <div class="menu-card-top">
-          <div class="menu-tags-row">
-            <span class="menu-tag daily-tag" id="daily-status-badge">Classique : À jouer</span>
-            <span class="menu-tag remix-tag" id="daily-remix-status-badge">Mélangé : À jouer</span>
-            <span class="menu-tag expert-tag" id="daily-expert-status-badge">Expert : À jouer</span>
-          </div>
           <h3>Défis Quotidiens</h3>
-          <p>Un joueur mystère par jour dans chaque niveau de difficulté.</p>
+          <p>Un joueur mystère par jour dans chaque mode de jeu.</p>
         </div>
         <div class="menu-card-actions">
           <button id="menu-start-daily-btn" class="menu-action-btn primary-action">
-            Défi du jour &rarr;
+            Défi standard &rarr;
           </button>
           <button id="menu-start-daily-remix-btn" class="menu-action-btn remix-action">
             Défi mélangé &rarr;
@@ -59,21 +98,21 @@
           <button id="menu-start-daily-expert-btn" class="menu-action-btn expert-action">
             Défi expert &rarr;
           </button>
+          <button id="menu-start-daily-image-btn" class="menu-action-btn image-action">
+            Défi image &rarr;
+          </button>
         </div>
       </div>
 
-      <!-- Carte 2 : Pratique (Classique, Mélangée ou Expert) -->
+      <!-- Carte 2 : Pratique -->
       <div class="menu-card menu-card-static">
         <div class="menu-card-top">
-          <div class="menu-tags-row">
-            <span class="menu-tag">Illimité</span>
-          </div>
           <h3>Pratique</h3>
           <p>Enchaîne des manches illimitées dans le mode de ton choix.</p>
         </div>
         <div class="menu-card-actions">
           <button id="menu-start-practice-classic-btn" class="menu-action-btn primary-action">
-            Partie classique &rarr;
+            Partie standard &rarr;
           </button>
           <button id="menu-start-practice-remix-btn" class="menu-action-btn remix-action">
             Partie mélangée &rarr;
@@ -81,15 +120,15 @@
           <button id="menu-start-practice-expert-btn" class="menu-action-btn expert-action">
             Partie expert &rarr;
           </button>
+          <button id="menu-start-practice-image-btn" class="menu-action-btn image-action">
+            Partie image &rarr;
+          </button>
         </div>
       </div>
 
       <!-- Carte 3 : Partie Personnalisée -->
       <div class="menu-card menu-card-static">
         <div class="menu-card-top">
-          <div class="menu-tags-row">
-            <span class="menu-tag custom-tag">indices au choix</span>
-          </div>
           <h3>Partie Personnalisée</h3>
           <p>Sélectionne exactement les indices que tu veux voir apparaître.</p>
         </div>
@@ -103,9 +142,6 @@
       <!-- Carte 4 : Mode Étude -->
       <div class="menu-card" id="menu-card-study" role="button" tabindex="0">
         <div class="menu-card-top">
-          <div class="menu-tags-row">
-            <span class="menu-tag">Alignement complet</span>
-          </div>
           <h3>Étude</h3>
           <p>Consulte les fiches, photos, numéros, âges, trios et statistiques des 25 joueurs.</p>
         </div>
@@ -118,23 +154,19 @@
     </div>
   </section>
 
-  <!-- VUE 2 : JEU (PARTAGÉE ENTRE QUOTIDIEN, PRATIQUE ET PERSONNALISÉ) -->
+  <!-- VUE 2 : JEU -->
   <main id="game-view" class="game-container hidden">
     <div class="mode-banner">
       <div class="mode-banner-header">
         <h2 id="current-mode-title">Défi Quotidien</h2>
         <span id="mode-active-pill" class="mode-pill hidden"></span>
       </div>
-      <p id="current-mode-subtitle" class="mode-subtitle"></p>
     </div>
 
     <!-- Panneau de configuration pour la Partie Personnalisée -->
     <section id="custom-config-panel" class="custom-config-panel hidden">
       <div class="custom-config-header">
-        <div>
-          <h3>Choisis tes indices <span id="custom-count-badge" class="custom-count-badge">5 / 6</span></h3>
-          <p class="custom-config-sub">Clique sur 1 à 6 indices. Les colonnes suivront ton ordre de sélection.</p>
-        </div>
+        <h3>Choisis tes indices <span id="custom-count-badge" class="custom-count-badge">5 / 6</span></h3>
         <label class="study-toggle">
           <input type="checkbox" id="custom-arrows-toggle" checked />
           <span>Indications ▲ / ▼</span>
@@ -179,6 +211,21 @@
       </div>
     </div>
 
+    <!-- Zone spécifique au Mode Image -->
+    <section id="image-clue-stage" class="image-clue-stage hidden">
+      <div class="mystery-photo-frame">
+        <img
+          id="mystery-player-img"
+          src=""
+          alt="Joueur mystère"
+          draggable="false"
+        />
+      </div>
+      <div class="blur-status-bar">
+        <span id="blur-level-text" class="blur-level-pill">Flou : 100%</span>
+      </div>
+    </section>
+
     <!-- Zone de recherche avec autocomplétion -->
     <div class="search-wrapper" id="search-wrapper">
       <input
@@ -190,20 +237,20 @@
       <div id="autocomplete-list" class="autocomplete-items hidden"></div>
     </div>
 
-    <!-- Légende des couleurs simplifiée -->
-    <div class="legend">
+    <!-- Légende des couleurs (masquée en mode Image) -->
+    <div id="board-legend" class="legend">
       <span><i class="dot exact"></i> Exact</span>
       <span><i class="dot close"></i> Proche</span>
       <span><i class="dot wrong"></i> Différent</span>
     </div>
 
     <!-- Grille des essais -->
-    <div class="board">
+    <div id="game-board" class="board">
       <div id="board-header" class="board-header"></div>
       <div id="guesses-container" class="guesses-body"></div>
     </div>
 
-    <!-- Carte finale (affichée à la fin ou quand on demande la réponse) -->
+    <!-- Carte finale -->
     <section id="result-card" class="result-card hidden">
       <div class="result-banner" id="result-banner"></div>
       <div class="result-content">
@@ -237,14 +284,11 @@
     </section>
   </main>
 
-  <!-- VUE 3 : MODE ÉTUDE (EN DEHORS DU JEU) -->
+  <!-- VUE 3 : MODE ÉTUDE -->
   <section id="study-view" class="study-container hidden">
     <div class="study-header">
       <div>
         <h2>Mode Étude — Alignement des Canadiens</h2>
-        <p class="mode-subtitle">
-          Clique sur la carte d'un joueur pour afficher son profil en grand avec toutes ses statistiques.
-        </p>
         <div class="api-sync-bar">
           <span id="api-sync-status" class="api-status-pill">Données LNH 2026-2027 chargées</span>
           <button id="refresh-api-btn" class="mini-sync-btn" title="Synchroniser avec l'API officielle de la LNH">
@@ -270,9 +314,6 @@
         <h2>Alignement des Canadiens (25 joueurs)</h2>
         <button id="close-modal-btn" class="close-btn" aria-label="Fermer">&times;</button>
       </div>
-      <p class="modal-subtitle">
-        Astuce : Tu peux cliquer directement sur un joueur de la liste pour le soumettre comme essai !
-      </p>
       <div id="roster-list-content" class="roster-sections"></div>
     </div>
   </div>
@@ -288,6 +329,9 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/state.js"></script>
+  <script defer src="js/ui-components.js"></script>
+  <script defer src="js/game.js"></script>
 </body>
 </html>
