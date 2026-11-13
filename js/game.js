@@ -51,12 +51,22 @@ const studyProfileModal = document.getElementById("study-profile-modal");
 const studySearchInput = document.getElementById("study-search-input");
 
 // --- CALCUL DU FLOU POUR LE MODE IMAGE ---
-const INITIAL_BLUR_PX = 28;
+const INITIAL_BLUR_PX = 20;
+const IMAGE_MAX_ATTEMPTS = 6;
+
+function getMaxAttempts(session) {
+  return isImageSession(session) ? IMAGE_MAX_ATTEMPTS : MAX_ATTEMPTS;
+}
+
+function getImageBlurPct(session) {
+  if (session.gameOver) return 0;
+  const maxSteps = IMAGE_MAX_ATTEMPTS - 1;
+  const remainingSteps = Math.max(0, maxSteps - session.guesses.length);
+  return Math.round((remainingSteps / maxSteps) * 100);
+}
 
 function getImageBlurPx(session) {
-  if (session.gameOver) return 0;
-  const remainingStepsBeforeLast = Math.max(0, (MAX_ATTEMPTS - 1) - session.guesses.length);
-  return Math.round((remainingStepsBeforeLast / (MAX_ATTEMPTS - 1)) * INITIAL_BLUR_PX);
+  return (getImageBlurPct(session) / 100) * INITIAL_BLUR_PX;
 }
 
 function updateImageStageDOM(session) {
@@ -74,16 +84,12 @@ function updateImageStageDOM(session) {
     };
   }
 
+  const blurPct = getImageBlurPct(session);
   const blurPx = getImageBlurPx(session);
-  const blurPct = Math.round((blurPx / INITIAL_BLUR_PX) * 100);
   mysteryPlayerImg.style.filter = `blur(${blurPx}px)`;
   mysteryPlayerImg.style.transform = blurPx > 0 ? "scale(1.08)" : "scale(1)";
 
-  if (session.gameOver || blurPx === 0) {
-    blurLevelText.textContent = "Flou : 0%";
-  } else {
-    blurLevelText.textContent = `Flou : ${blurPct}%`;
-  }
+  blurLevelText.textContent = `Flou : ${blurPct}%`;
 }
 
 // --- MENUS DÉROULANTS DE LA BARRE DE NAVIGATION ---
@@ -112,7 +118,7 @@ function updateNavbarActiveState() {
     classic: "Standard",
     remix: "Mélangé",
     expert: "Expert",
-    image: "Image"
+    image: "Portrait"
   };
 
   document.querySelectorAll(".nav-tab[data-target]").forEach(tab => {
@@ -404,7 +410,7 @@ function renderActiveGameSession() {
     modeActivePill.className = "mode-pill expert-pill";
   } else if (activeGameMode === "dailyImage") {
     modeTitleEl.textContent = "Défi Quotidien";
-    modeActivePill.textContent = "Image";
+    modeActivePill.textContent = "Portrait";
     modeActivePill.className = "mode-pill image-pill";
   } else if (activeGameMode === "practice") {
     modeTitleEl.textContent = "Mode Pratique";
@@ -444,7 +450,7 @@ function renderActiveGameSession() {
     renderBoardHeader(session.columns);
   }
 
-  attemptCountEl.textContent = String(session.guesses.length);
+  attemptCountEl.textContent = `${session.guesses.length} / ${getMaxAttempts(session)}`;
   guessesContainer.innerHTML = "";
   resultCard.classList.add("hidden");
 
@@ -515,7 +521,8 @@ function submitGuess(player) {
 
   session.guesses.push(player.id);
   const attemptNumber = session.guesses.length;
-  attemptCountEl.textContent = String(attemptNumber);
+  const maxAttempts = getMaxAttempts(session);
+  attemptCountEl.textContent = `${attemptNumber} / ${maxAttempts}`;
   inputEl.value = "";
   autocompleteEl.classList.add("hidden");
 
@@ -529,7 +536,7 @@ function submitGuess(player) {
 
   if (player.id === session.secretPlayer.id) {
     finishSession("win");
-  } else if (session.guesses.length >= MAX_ATTEMPTS) {
+  } else if (session.guesses.length >= maxAttempts) {
     finishSession("lose");
   } else {
     if (imageMode) {

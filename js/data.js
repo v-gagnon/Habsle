@@ -577,7 +577,7 @@ async function syncWithNHLAPI(forceRefresh = false) {
       const localData = await localResp.json();
       applyNHLAPIData(localData.roster, localData.stats);
       if (apiSyncStatusEl) {
-        apiSyncStatusEl.textContent = "Données synchronisées (fichier GitHub Pages)";
+        apiSyncStatusEl.textContent = "Données synchronisées";
       }
       if (typeof renderStudyDirectory === "function" && currentView === "study") {
         renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
