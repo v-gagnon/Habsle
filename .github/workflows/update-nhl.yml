@@ -2,8 +2,8 @@ name: Mise a jour quotidienne des stats LNH
 
 on:
   schedule:
-    # S'exécute automatiquement tous les jours à 11h00 UTC (06h00 heure de Montréal)
-    - cron: "0 11 * * *"
+    # 9h48 UTC = 04h48 HNE (hiver) / 05h48 HAE (été) à Montréal
+    - cron: "48 9 * * *"
   # Permet aussi de lancer la mise à jour manuellement avec un bouton sur GitHub
   workflow_dispatch:
 
