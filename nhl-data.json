@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-15T21:08:54Z",
+    "updatedAt": "2026-11-15T21:13:06Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -18,9 +18,9 @@
         "detail": "Opérationnel (28/28 fiches carrière à jour)"
       },
       "dailyFaceoff": {
-        "ok": true,
+        "ok": false,
         "count": 25,
-        "detail": "Opérationnel (20 alignés, 5 blessés/IR)"
+        "detail": "Échec d'extraction (HTTP Error 403: Forbidden) — cache conservé"
       }
     }
   },
