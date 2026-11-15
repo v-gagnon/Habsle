@@ -606,6 +606,32 @@ function normalizeLookupKey(nameStr) {
     .toLowerCase();
 }
 
+function findLineInfoForPlayer(player, linesData) {
+  if (!player || !linesData) return null;
+
+  // 1. Essai avec le nom complet exact
+  const fullKey = normalizeLookupKey(player.name);
+  if (linesData[fullKey]) return linesData[fullKey];
+
+  // 2. Repli : Nom de famille + initiale du prénom (ex: "zack bolduc" <-> "zachary bolduc")
+  const parts = fullKey.split(" ");
+  if (parts.length < 2) return null;
+  const firstInitial = parts[0][0];
+  const lastName = parts[parts.length - 1];
+
+  for (const [dfKey, dfInfo] of Object.entries(linesData)) {
+    const dfParts = dfKey.split(" ");
+    if (dfParts.length < 2) continue;
+    const dfInitial = dfParts[0][0];
+    const dfLast = dfParts[dfParts.length - 1];
+    if (dfLast === lastName && dfInitial === firstInitial) {
+      return dfInfo;
+    }
+  }
+
+  return null;
+}
+
 function applyCareerRegularSeasonObj(player, reg) {
   if (!player || !reg) return;
 
@@ -766,13 +792,23 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
 
     if (dfCount >= 15) {
       PLAYERS.forEach(player => {
-        const key = normalizeLookupKey(player.name);
-        const info = linesData[key];
+        const info = findLineInfoForPlayer(player, linesData);
 
         // Le groupe d'unité pour le jeu reste toujours celui de la LNH (ATT, DEF, GAR)
         player.unitGroup = player.posGroup;
 
         if (info) {
+          // Utilise la vraie position de match issue de Daily Faceoff (ex: Caufield -> AG, Newhook -> AG, Dach -> AD)
+          if (info.pos) {
+            player.pos = info.pos;
+          }
+
+          if (info.injured || info.unit === INJURED_UNIT || !info.unit) {
+            player.unit = INJURED_UNIT;
+          } else {
+            player.unit = info.unit;
+          }
+
           if (info.injured || info.unit === INJURED_UNIT || !info.unit) {
             player.unit = INJURED_UNIT;
           } else {

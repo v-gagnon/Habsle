@@ -47,6 +47,15 @@ UNIT_MAP = {
     "g": "Gardien",
 }
 
+POS_MAP = {
+    "lw": "AG",
+    "c": "C",
+    "rw": "AD",
+    "ld": "D",
+    "rd": "D",
+    "g": "G",
+}
+
 SPECIAL_TEAMS_MAP = {
     "pp1": "SN 1",
     "pp2": "SN 2",
@@ -166,6 +175,7 @@ def fetch_daily_faceoff_lines():
     for entry in players_raw:
         name = entry.get("name")
         group_id = (entry.get("groupIdentifier") or "").lower().strip()
+        pos_id = (entry.get("positionIdentifier") or "").lower().strip()
         if not name or not group_id:
             continue
 
@@ -175,13 +185,19 @@ def fetch_daily_faceoff_lines():
             {
                 "name": name,
                 "unit": None,
+                "pos": None,
                 "injured": False,
                 "specialTeams": [],
             },
         )
 
+        if pos_id in POS_MAP and not info["pos"]:
+            info["pos"] = POS_MAP[pos_id]
+
         if group_id in UNIT_MAP:
             info["unit"] = UNIT_MAP[group_id]
+            if pos_id in POS_MAP:
+                info["pos"] = POS_MAP[pos_id]
         elif group_id in SPECIAL_TEAMS_MAP:
             st_label = SPECIAL_TEAMS_MAP[group_id]
             if st_label not in info["specialTeams"]:

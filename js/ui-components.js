@@ -2,6 +2,36 @@ function normalizeStr(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+const POS_SORT_ORDER = { AG: 1, C: 2, AD: 3, D: 4, G: 5 };
+const SHOOTS_SORT_ORDER = { G: 1, D: 2 };
+const GROUP_SORT_ORDER = { ATT: 1, DEF: 2, GAR: 3 };
+
+function sortPlayersForUnit(players) {
+  return [...players].sort((a, b) => {
+    // 1. Si l'unité mélange plusieurs groupes (ex: Hors alignement) : ATT -> DEF -> GAR
+    const groupDiff = (GROUP_SORT_ORDER[a.posGroup] || 9) - (GROUP_SORT_ORDER[b.posGroup] || 9);
+    if (groupDiff !== 0) return groupDiff;
+
+    // 2. Défenseurs : trier selon le lancer (G -> D)
+    if (a.posGroup === "DEF") {
+      const shootDiff = (SHOOTS_SORT_ORDER[a.shoots] || 9) - (SHOOTS_SORT_ORDER[b.shoots] || 9);
+      if (shootDiff !== 0) return shootDiff;
+      return a.number - b.number;
+    }
+
+    // 3. Attaquants : trier selon la position (AG -> C -> AD), puis par lancer (G -> D) en cas d'égalité
+    if (a.posGroup === "ATT") {
+      const posDiff = (POS_SORT_ORDER[a.pos] || 9) - (POS_SORT_ORDER[b.pos] || 9);
+      if (posDiff !== 0) return posDiff;
+      const shootDiff = (SHOOTS_SORT_ORDER[a.shoots] || 9) - (SHOOTS_SORT_ORDER[b.shoots] || 9);
+      if (shootDiff !== 0) return shootDiff;
+      return a.number - b.number;
+    }
+
+    return a.number - b.number;
+  });
+}
+
 // --- CONSTRUCTION DES GRILLES DE STATISTIQUES HTML ---
 function buildSeasonStatsHTML(player, compact = false, scope = "season") {
   const st = (scope === "career" ? player.careerStats : player.stats) || player.stats || {};
@@ -65,7 +95,7 @@ function openRosterModal() {
   rosterListContent.innerHTML = "";
 
   UNITS_ORDER.forEach(unitName => {
-    const unitPlayers = PLAYERS.filter(p => p.unit === unitName);
+    const unitPlayers = sortPlayersForUnit(PLAYERS.filter(p => p.unit === unitName));
     if (unitPlayers.length === 0) return;
 
     const sectionTitle = UNIT_SECTION_TITLES[unitName] || unitName;
@@ -110,18 +140,20 @@ function renderStudyDirectory(filterText = "") {
   studyDirectoryContent.innerHTML = "";
 
   UNITS_ORDER.forEach(unitName => {
-    const unitPlayers = PLAYERS.filter(p => {
-      if (p.unit !== unitName) return false;
-      if (!query) return true;
-      const specStr = formatSpecialTeams(p);
-      return (
-        normalizeStr(p.name).includes(query) ||
-        String(p.number).includes(query) ||
-        normalizeStr(p.pos).includes(query) ||
-        normalizeStr(p.unit).includes(query) ||
-        normalizeStr(specStr).includes(query)
-      );
-    });
+    const unitPlayers = sortPlayersForUnit(
+      PLAYERS.filter(p => {
+        if (p.unit !== unitName) return false;
+        if (!query) return true;
+        const specStr = formatSpecialTeams(p);
+        return (
+          normalizeStr(p.name).includes(query) ||
+          String(p.number).includes(query) ||
+          normalizeStr(p.pos).includes(query) ||
+          normalizeStr(p.unit).includes(query) ||
+          normalizeStr(specStr).includes(query)
+        );
+      })
+    );
 
     if (unitPlayers.length === 0) return;
 
@@ -192,7 +224,7 @@ function openStudyProfileModal(player) {
     <div>
       <div class="profile-section-title">Informations de base</div>
       <div class="stats-grid">
-        <div class="stat-box"><div class="stat-label">Position (LNH)</div><div class="stat-val">${player.pos} (${player.posGroup})</div></div>
+        <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${player.pos} (${player.posGroup})</div></div>
         <div class="stat-box"><div class="stat-label">Unité (${player.unitGroup})</div><div class="stat-val">${player.unit}</div></div>
         <div class="stat-box highlight-stat"><div class="stat-label">Unités spéciales</div><div class="stat-val">${specText}</div></div>
         <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${player.age} ans</div></div>

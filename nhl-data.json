@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-15T20:36:55Z",
+    "updatedAt": "2026-11-15T21:08:54Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -1874,6 +1874,7 @@
     "cole caufield": {
       "name": "Cole Caufield",
       "unit": "Trio 1",
+      "pos": "AG",
       "injured": false,
       "specialTeams": [
         "SN 1"
@@ -1882,6 +1883,7 @@
     "nick suzuki": {
       "name": "Nick Suzuki",
       "unit": "Trio 1",
+      "pos": "C",
       "injured": false,
       "specialTeams": [
         "SN 1",
@@ -1891,6 +1893,7 @@
     "juraj slafkovsky": {
       "name": "Juraj Slafkovsky",
       "unit": "Trio 1",
+      "pos": "AD",
       "injured": false,
       "specialTeams": [
         "SN 1"
@@ -1899,6 +1902,7 @@
     "zack bolduc": {
       "name": "Zack Bolduc",
       "unit": "Trio 2",
+      "pos": "AG",
       "injured": false,
       "specialTeams": [
         "SN 1"
@@ -1907,6 +1911,7 @@
     "phillip danault": {
       "name": "Phillip Danault",
       "unit": "Trio 2",
+      "pos": "C",
       "injured": false,
       "specialTeams": [
         "IN 1"
@@ -1915,6 +1920,7 @@
     "alexandre texier": {
       "name": "Alexandre Texier",
       "unit": "Trio 2",
+      "pos": "AD",
       "injured": false,
       "specialTeams": [
         "SN 2",
@@ -1924,6 +1930,7 @@
     "alex newhook": {
       "name": "Alex Newhook",
       "unit": "Trio 3",
+      "pos": "AG",
       "injured": false,
       "specialTeams": [
         "SN 2"
@@ -1932,6 +1939,7 @@
     "oliver kapanen": {
       "name": "Oliver Kapanen",
       "unit": "Trio 3",
+      "pos": "C",
       "injured": false,
       "specialTeams": [
         "SN 2"
@@ -1940,6 +1948,7 @@
     "kirby dach": {
       "name": "Kirby Dach",
       "unit": "Trio 3",
+      "pos": "AD",
       "injured": false,
       "specialTeams": [
         "SN 2"
@@ -1948,6 +1957,7 @@
     "florian xhekaj": {
       "name": "Florian Xhekaj",
       "unit": "Trio 4",
+      "pos": "AG",
       "injured": false,
       "specialTeams": [
         "Aucune"
@@ -1956,6 +1966,7 @@
     "jake evans": {
       "name": "Jake Evans",
       "unit": "Trio 4",
+      "pos": "C",
       "injured": false,
       "specialTeams": [
         "IN 1"
@@ -1964,6 +1975,7 @@
     "owen beck": {
       "name": "Owen Beck",
       "unit": "Trio 4",
+      "pos": "AD",
       "injured": false,
       "specialTeams": [
         "Aucune"
@@ -1972,6 +1984,7 @@
     "lane hutson": {
       "name": "Lane Hutson",
       "unit": "Paire 1",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "SN 1"
@@ -1980,6 +1993,7 @@
     "noah dobson": {
       "name": "Noah Dobson",
       "unit": "Paire 1",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "SN 2",
@@ -1989,6 +2003,7 @@
     "kaiden guhle": {
       "name": "Kaiden Guhle",
       "unit": "Paire 2",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "IN 1"
@@ -1997,6 +2012,7 @@
     "alexandre carrier": {
       "name": "Alexandre Carrier",
       "unit": "Paire 2",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "IN 1"
@@ -2005,6 +2021,7 @@
     "arber xhekaj": {
       "name": "Arber Xhekaj",
       "unit": "Paire 3",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "IN 2"
@@ -2013,6 +2030,7 @@
     "adam engstrom": {
       "name": "Adam Engstrom",
       "unit": "Paire 3",
+      "pos": "D",
       "injured": false,
       "specialTeams": [
         "Aucune"
@@ -2021,6 +2039,7 @@
     "jacob fowler": {
       "name": "Jacob Fowler",
       "unit": "Gardien",
+      "pos": null,
       "injured": false,
       "specialTeams": [
         "Aucune"
@@ -2029,6 +2048,7 @@
     "jakub dobes": {
       "name": "Jakub Dobes",
       "unit": "Gardien",
+      "pos": null,
       "injured": false,
       "specialTeams": [
         "Aucune"
@@ -2037,6 +2057,7 @@
     "ivan demidov": {
       "name": "Ivan Demidov",
       "unit": "Hors alignement",
+      "pos": null,
       "injured": true,
       "specialTeams": [
         "Aucune"
@@ -2045,6 +2066,7 @@
     "sam montembeault": {
       "name": "Sam Montembeault",
       "unit": "Hors alignement",
+      "pos": null,
       "injured": true,
       "specialTeams": [
         "Aucune"
@@ -2053,6 +2075,7 @@
     "josh anderson": {
       "name": "Josh Anderson",
       "unit": "Hors alignement",
+      "pos": null,
       "injured": true,
       "specialTeams": [
         "Aucune"
@@ -2061,6 +2084,7 @@
     "mike matheson": {
       "name": "Mike Matheson",
       "unit": "Hors alignement",
+      "pos": null,
       "injured": true,
       "specialTeams": [
         "Aucune"
@@ -2069,6 +2093,7 @@
     "chris kreider": {
       "name": "Chris Kreider",
       "unit": "Hors alignement",
+      "pos": null,
       "injured": true,
       "specialTeams": [
         "Aucune"
