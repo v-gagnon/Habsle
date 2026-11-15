@@ -53,6 +53,8 @@ body {
   font-size: 1.4rem;
   width: 48px;
   height: 48px;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 3px solid #fff;
   display: flex;
@@ -191,7 +193,8 @@ body {
 .secondary-btn,
 .danger-btn,
 .primary-btn,
-.custom-btn {
+.custom-btn,
+.image-btn {
   border: none;
   border-radius: 8px;
   padding: 0.55rem 0.9rem;
@@ -199,6 +202,18 @@ body {
   font-size: 0.85rem;
   cursor: pointer;
   transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.image-btn {
+  background: rgba(124, 58, 237, 0.25);
+  color: #ddd6fe;
+  border: 1px solid rgba(139, 92, 246, 0.55);
+}
+
+.image-btn:hover {
+  background: var(--image-purple);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 .secondary-btn {

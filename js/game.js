@@ -23,6 +23,17 @@ const imageClueStage = document.getElementById("image-clue-stage");
 const mysteryPlayerImg = document.getElementById("mystery-player-img");
 const blurLevelText = document.getElementById("blur-level-text");
 
+const revealStatsHeading = document.getElementById("reveal-stats-heading");
+const revealStatsToggle = document.getElementById("reveal-stats-toggle");
+
+const imageConfigPanel = document.getElementById("image-config-panel");
+const imageRoundsGrid = document.getElementById("image-rounds-grid");
+const imageRoundsBadge = document.getElementById("image-rounds-badge");
+const applyImageGameBtn = document.getElementById("apply-image-game-btn");
+const cancelImageConfigBtn = document.getElementById("cancel-image-config-btn");
+const customizeRoundsBtn = document.getElementById("customize-rounds-btn");
+const endCustomizeRoundsBtn = document.getElementById("end-customize-rounds-btn");
+
 const customConfigPanel = document.getElementById("custom-config-panel");
 const customCluesGrid = document.getElementById("custom-clues-grid");
 const customCountBadge = document.getElementById("custom-count-badge");
@@ -55,14 +66,21 @@ const INITIAL_BLUR_PX = 20;
 const IMAGE_MAX_ATTEMPTS = 6;
 
 function getMaxAttempts(session) {
-  return isImageSession(session) ? IMAGE_MAX_ATTEMPTS : MAX_ATTEMPTS;
+  if (isImageSession(session)) {
+    if (session === sessions.practice) {
+      return session.imageMaxAttempts || practiceImageRounds || IMAGE_MAX_ATTEMPTS;
+    }
+    return IMAGE_MAX_ATTEMPTS;
+  }
+  return MAX_ATTEMPTS;
 }
 
 function getImageBlurPct(session) {
   if (session.gameOver) return 0;
-  const maxSteps = IMAGE_MAX_ATTEMPTS - 1;
-  const remainingSteps = Math.max(0, maxSteps - session.guesses.length);
-  return Math.round((remainingSteps / maxSteps) * 100);
+  const totalMaxSteps = IMAGE_MAX_ATTEMPTS - 1; // 5 paliers de 20%
+  const sessionMaxAttempts = getMaxAttempts(session);
+  const remainingSteps = Math.max(0, (sessionMaxAttempts - 1) - session.guesses.length);
+  return Math.round((remainingSteps / totalMaxSteps) * 100);
 }
 
 function getImageBlurPx(session) {
@@ -163,7 +181,8 @@ function buildHashForRoute(target, option) {
   if (target === "dailyExpert") return "#daily-expert";
   if (target === "dailyImage") return "#daily-image";
   if (target === "practice") {
-    const v = typeof option === "string" ? option : (sessions.practice.variant || "classic");
+    const rawOpt = option === "image-configure" ? "image" : option;
+    const v = typeof rawOpt === "string" ? rawOpt : (sessions.practice.variant || "classic");
     return `#practice-${v}`;
   }
   if (target === "custom") return "#custom";
@@ -208,29 +227,36 @@ function switchView(target, option = null, pushHistory = true) {
   if (target === "daily") {
     activeGameMode = "daily";
     customConfigPanel.classList.add("hidden");
+    imageConfigPanel.classList.add("hidden");
     loadDailySession();
     renderActiveGameSession();
   } else if (target === "dailyRemix") {
     activeGameMode = "dailyRemix";
     customConfigPanel.classList.add("hidden");
+    imageConfigPanel.classList.add("hidden");
     loadDailyRemixSession();
     renderActiveGameSession();
   } else if (target === "dailyExpert") {
     activeGameMode = "dailyExpert";
     customConfigPanel.classList.add("hidden");
+    imageConfigPanel.classList.add("hidden");
     loadDailyExpertSession();
     renderActiveGameSession();
   } else if (target === "dailyImage") {
     activeGameMode = "dailyImage";
     customConfigPanel.classList.add("hidden");
+    imageConfigPanel.classList.add("hidden");
     loadDailyImageSession();
     renderActiveGameSession();
   } else if (target === "practice") {
     activeGameMode = "practice";
     customConfigPanel.classList.add("hidden");
-    if (typeof option === "string") {
-      if (!sessions.practice.secretPlayer || sessions.practice.variant !== option) {
-        startNewPracticeGame(option);
+    const wantImageConfig = option === "image-configure";
+    const variantOpt = wantImageConfig ? "image" : option;
+
+    if (typeof variantOpt === "string") {
+      if (!sessions.practice.secretPlayer || sessions.practice.variant !== variantOpt) {
+        startNewPracticeGame(variantOpt);
       } else {
         renderActiveGameSession();
       }
@@ -239,8 +265,15 @@ function switchView(target, option = null, pushHistory = true) {
     } else {
       renderActiveGameSession();
     }
+
+    if (wantImageConfig) {
+      openImageConfigPanel();
+    } else {
+      imageConfigPanel.classList.add("hidden");
+    }
   } else if (target === "custom") {
     activeGameMode = "custom";
+    imageConfigPanel.classList.add("hidden");
     if (!sessions.custom.secretPlayer) {
       startNewCustomGame(false);
       openCustomConfigPanel();
@@ -319,6 +352,46 @@ function openCustomConfigPanel() {
   customConfigPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
+function renderImageConfigUI() {
+  imageRoundsGrid.innerHTML = "";
+  const totalSteps = IMAGE_MAX_ATTEMPTS - 1; // 5 paliers de 20%
+
+  for (let r = 1; r <= IMAGE_MAX_ATTEMPTS; r++) {
+    const startBlurPct = Math.round(((r - 1) / totalSteps) * 100);
+    const isSelected = r === pendingImageRounds;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `custom-clue-option ${isSelected ? "selected" : ""}`;
+    btn.innerHTML = `
+      <div class="clue-opt-top">
+        <span class="clue-opt-label">${r} ronde${r > 1 ? "s" : ""}</span>
+        ${isSelected ? `<span class="clue-opt-order">✓</span>` : ""}
+      </div>
+      <span class="clue-opt-meta">Flou initial : ${startBlurPct}%</span>
+    `;
+
+    btn.addEventListener("click", () => {
+      pendingImageRounds = r;
+      renderImageConfigUI();
+    });
+
+    imageRoundsGrid.appendChild(btn);
+  }
+
+  const badgeBlur = Math.round(((pendingImageRounds - 1) / totalSteps) * 100);
+  imageRoundsBadge.textContent = `${pendingImageRounds} ronde${pendingImageRounds > 1 ? "s" : ""} • Flou ${badgeBlur}%`;
+  applyImageGameBtn.textContent = `Lancer la partie (${pendingImageRounds} ronde${pendingImageRounds > 1 ? "s" : ""})`;
+  cancelImageConfigBtn.classList.toggle("hidden", !sessions.practice.secretPlayer);
+}
+
+function openImageConfigPanel() {
+  pendingImageRounds = practiceImageRounds;
+  renderImageConfigUI();
+  imageConfigPanel.classList.remove("hidden");
+  imageConfigPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
 function startNewPracticeGame(variant = sessions.practice.variant || "classic") {
   sessions.practice.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
   sessions.practice.guesses = [];
@@ -326,6 +399,7 @@ function startNewPracticeGame(variant = sessions.practice.variant || "classic") 
   sessions.practice.endReason = null;
   sessions.practice.variant = variant;
   sessions.practice.hideArrows = variant === "expert" || variant === "image";
+  sessions.practice.imageMaxAttempts = practiceImageRounds;
 
   if (variant === "remix") {
     sessions.practice.columns = generateRemixedColumns();
@@ -436,6 +510,9 @@ function renderActiveGameSession() {
   newGameBtn.classList.toggle("hidden", isAnyDaily);
   customizeCluesBtn.classList.toggle("hidden", !isCustom);
   endCustomizeCluesBtn.classList.toggle("hidden", !isCustom);
+  const isPracticeImage = activeGameMode === "practice" && imageMode;
+  customizeRoundsBtn.classList.toggle("hidden", !isPracticeImage);
+  endCustomizeRoundsBtn.classList.toggle("hidden", !isPracticeImage);
   practiceEndActions.classList.toggle("hidden", isAnyDaily);
   dailyNextInfo.classList.toggle("hidden", !isAnyDaily);
 
@@ -470,7 +547,10 @@ function renderActiveGameSession() {
 
   if (session.gameOver) {
     showEndGameCard(session, false);
-  } else if (customConfigPanel.classList.contains("hidden")) {
+  } else if (
+    customConfigPanel.classList.contains("hidden") &&
+    imageConfigPanel.classList.contains("hidden")
+  ) {
     inputEl.focus();
   }
 }
@@ -642,7 +722,16 @@ function showEndGameCard(session, waitAnimation) {
     <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${secretPlayer.hometown}</div></div>
   `;
 
-  document.getElementById("reveal-season-stats").innerHTML = buildSeasonStatsHTML(secretPlayer, true);
+  const revealSeasonStatsEl = document.getElementById("reveal-season-stats");
+  if (revealStatsHeading) {
+    revealStatsHeading.textContent = "Statistiques — Saison 2026-2027";
+  }
+  if (revealStatsToggle) {
+    revealStatsToggle.querySelectorAll(".scope-toggle-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.scope === "season");
+    });
+  }
+  revealSeasonStatsEl.innerHTML = buildSeasonStatsHTML(secretPlayer, true, "season");
 
   const delay = waitAnimation ? 650 : 60;
   setTimeout(() => {
@@ -670,8 +759,7 @@ document.getElementById("menu-start-practice-expert-btn").addEventListener("clic
   switchView("practice", "expert");
 });
 document.getElementById("menu-start-practice-image-btn").addEventListener("click", () => {
-  startNewPracticeGame("image");
-  switchView("practice", "image");
+  switchView("practice", "image-configure");
 });
 
 document.getElementById("menu-start-custom-btn").addEventListener("click", () => switchView("custom", "configure"));
@@ -703,6 +791,10 @@ navDailyMenu.querySelectorAll(".nav-dropdown-item").forEach(item => {
 navPracticeMenu.querySelectorAll(".nav-dropdown-item").forEach(item => {
   item.addEventListener("click", () => {
     const variant = item.dataset.practiceVariant;
+    if (variant === "image") {
+      switchView("practice", "image-configure");
+      return;
+    }
     if (sessions.practice.variant !== variant || !sessions.practice.secretPlayer) {
       startNewPracticeGame(variant);
     }
@@ -799,6 +891,51 @@ document.addEventListener("keydown", e => {
     studyProfileModal.classList.add("hidden");
   }
 });
+
+applyImageGameBtn.addEventListener("click", () => {
+  practiceImageRounds = pendingImageRounds;
+  imageConfigPanel.classList.add("hidden");
+  startNewPracticeGame("image");
+});
+
+cancelImageConfigBtn.addEventListener("click", () => {
+  imageConfigPanel.classList.add("hidden");
+});
+
+customizeRoundsBtn.addEventListener("click", openImageConfigPanel);
+endCustomizeRoundsBtn.addEventListener("click", openImageConfigPanel);
+
+// Bascule Saison 26-27 / Carrière dans la carte de fin de partie
+if (revealStatsToggle) {
+  revealStatsToggle.querySelectorAll(".scope-toggle-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const session = sessions[activeGameMode];
+      if (!session || !session.secretPlayer) return;
+      const scope = btn.dataset.scope;
+
+      revealStatsToggle.querySelectorAll(".scope-toggle-btn").forEach(b => {
+        b.classList.toggle("active", b === btn);
+      });
+
+      if (revealStatsHeading) {
+        revealStatsHeading.textContent =
+          scope === "career"
+            ? "Statistiques — Carrière LNH"
+            : "Statistiques — Saison 2026-2027";
+      }
+
+      const revealSeasonStatsEl = document.getElementById("reveal-season-stats");
+      revealSeasonStatsEl.innerHTML = buildSeasonStatsHTML(session.secretPlayer, true, scope);
+
+      if (scope === "career" && typeof fetchPlayerCareerFromAPI === "function") {
+        const updated = await fetchPlayerCareerFromAPI(session.secretPlayer);
+        if (updated && btn.classList.contains("active")) {
+          revealSeasonStatsEl.innerHTML = buildSeasonStatsHTML(session.secretPlayer, true, "career");
+        }
+      }
+    });
+  });
+}
 
 // Initialisation au chargement
 const initialRoute = parseRouteFromHash(window.location.hash);

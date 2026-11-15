@@ -277,7 +277,10 @@
 
 .blur-status-bar {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 0.75rem;
 }
 
 .blur-level-pill {
@@ -288,6 +291,28 @@
   font-weight: 700;
   padding: 0.22rem 0.7rem;
   border-radius: 999px;
+}
+
+/* Panneau de configuration Pratique Visuelle */
+.image-config-panel {
+  border-color: rgba(139, 92, 246, 0.45);
+}
+
+.image-count-badge {
+  background: rgba(124, 58, 237, 0.28);
+  color: #ddd6fe;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.image-config-panel .custom-clue-option.selected {
+  background: rgba(124, 58, 237, 0.22);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.4);
+}
+
+.image-config-panel .clue-opt-order {
+  background: #8b5cf6;
+  color: #fff;
 }
 
 /* Lignes d'essais simplifiées en Mode Image */
@@ -608,12 +633,60 @@
   gap: 0.6rem;
 }
 
+.stats-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 1.1rem 0 0.55rem;
+}
+
 .season-stats-heading {
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #ff9aa5;
-  margin: 1.1rem 0 0.55rem;
+  margin: 0;
+}
+
+.stats-scope-toggle {
+  display: inline-flex;
+  background: #12182e;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.scope-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.scope-toggle-btn:hover {
+  color: var(--text-main);
+}
+
+.scope-toggle-btn.active {
+  background: var(--rouge-ch);
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+  overflow-wrap: break-word;
 }
 
 .season-stats-grid {
@@ -629,12 +702,6 @@
 .stat-box.highlight-stat {
   background: rgba(175, 30, 45, 0.16);
   border: 1px solid rgba(175, 30, 45, 0.35);
-}
-
-.stat-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
 }
 
 .stat-val {

@@ -3,8 +3,8 @@ function normalizeStr(str) {
 }
 
 // --- CONSTRUCTION DES GRILLES DE STATISTIQUES HTML ---
-function buildSeasonStatsHTML(player, compact = false) {
-  const st = player.stats || {};
+function buildSeasonStatsHTML(player, compact = false, scope = "season") {
+  const st = (scope === "career" ? player.careerStats : player.stats) || player.stats || {};
   if (player.posGroup === "GAR") {
     const record = `${st.w ?? 0}-${st.l ?? 0}-${st.otl ?? 0}`;
     if (compact) {
@@ -13,7 +13,7 @@ function buildSeasonStatsHTML(player, compact = false) {
         <div class="stat-box highlight-stat"><div class="stat-label">Fiche (V-D-DP)</div><div class="stat-val">${record}</div></div>
         <div class="stat-box highlight-stat"><div class="stat-label">MOY</div><div class="stat-val">${st.gaa ?? "—"}</div></div>
         <div class="stat-box highlight-stat"><div class="stat-label">% Arrêts</div><div class="stat-val">${st.svPct ?? "—"}</div></div>
-        <div class="stat-box"><div class="stat-label">Blanchissages</div><div class="stat-val">${st.so ?? 0}</div></div>
+        <div class="stat-box"><div class="stat-label">Blanchis&shy;sages</div><div class="stat-val">${st.so ?? 0}</div></div>
       `;
     }
     return `
@@ -22,7 +22,7 @@ function buildSeasonStatsHTML(player, compact = false) {
       <div class="stat-box highlight-stat"><div class="stat-label">Fiche (V-D-DP)</div><div class="stat-val">${record}</div></div>
       <div class="stat-box highlight-stat"><div class="stat-label">Moy. buts alloués</div><div class="stat-val">${st.gaa ?? "—"}</div></div>
       <div class="stat-box highlight-stat"><div class="stat-label">% d'arrêts</div><div class="stat-val">${st.svPct ?? "—"}</div></div>
-      <div class="stat-box"><div class="stat-label">Blanchissages</div><div class="stat-val">${st.so ?? 0}</div></div>
+      <div class="stat-box"><div class="stat-label">Blanchis&shy;sages</div><div class="stat-val">${st.so ?? 0}</div></div>
       <div class="stat-box"><div class="stat-label">Arrêts</div><div class="stat-val">${st.saves ?? 0}</div></div>
       <div class="stat-box"><div class="stat-label">Tirs reçus</div><div class="stat-val">${st.shotsAgainst ?? 0}</div></div>
     `;
@@ -197,12 +197,43 @@ function openStudyProfileModal(player) {
     </div>
 
     <div>
-      <div class="profile-section-title">Statistiques complètes — Saison 2026-2027</div>
-      <div class="stats-grid season-stats-grid">
-        ${buildSeasonStatsHTML(player, false)}
+      <div class="profile-section-header-row">
+        <div class="profile-section-title" id="profile-stats-heading">Statistiques complètes — Saison 2026-2027</div>
+        <div class="stats-scope-toggle" id="profile-stats-toggle" role="group" aria-label="Période des statistiques">
+          <button type="button" class="scope-toggle-btn active" data-scope="season">Saison 26-27</button>
+          <button type="button" class="scope-toggle-btn" data-scope="career">Carrière</button>
+        </div>
+      </div>
+      <div class="stats-grid season-stats-grid" id="profile-season-stats-grid">
+        ${buildSeasonStatsHTML(player, false, "season")}
       </div>
     </div>
   `;
+
+  const toggleContainer = profileModalBody.querySelector("#profile-stats-toggle");
+  const statsHeading = profileModalBody.querySelector("#profile-stats-heading");
+  const statsGrid = profileModalBody.querySelector("#profile-season-stats-grid");
+
+  toggleContainer.querySelectorAll(".scope-toggle-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const scope = btn.dataset.scope;
+      toggleContainer.querySelectorAll(".scope-toggle-btn").forEach(b => {
+        b.classList.toggle("active", b === btn);
+      });
+      statsHeading.textContent =
+        scope === "career"
+          ? "Statistiques complètes — Carrière LNH"
+          : "Statistiques complètes — Saison 2026-2027";
+      statsGrid.innerHTML = buildSeasonStatsHTML(player, false, scope);
+
+      if (scope === "career" && typeof fetchPlayerCareerFromAPI === "function") {
+        const updated = await fetchPlayerCareerFromAPI(player);
+        if (updated && btn.classList.contains("active")) {
+          statsGrid.innerHTML = buildSeasonStatsHTML(player, false, "career");
+        }
+      }
+    });
+  });
 
   const heroPhotoContainer = profileModalBody.querySelector(".profile-hero-photo");
   setupXhekajEasterEgg(heroPhotoContainer, player);

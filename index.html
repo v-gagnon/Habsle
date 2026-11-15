@@ -194,6 +194,27 @@
       </div>
     </section>
 
+    <!-- Panneau de configuration pour la Pratique Visuelle -->
+    <section id="image-config-panel" class="custom-config-panel image-config-panel hidden">
+      <div class="custom-config-header">
+        <h3>
+          Choisis le nombre de rondes
+          <span id="image-rounds-badge" class="custom-count-badge image-count-badge">6 rondes • Flou 100%</span>
+        </h3>
+      </div>
+
+      <div id="image-rounds-grid" class="custom-clues-grid"></div>
+
+      <div class="custom-config-footer">
+        <button type="button" id="apply-image-game-btn" class="primary-btn">
+          Lancer la partie
+        </button>
+        <button type="button" id="cancel-image-config-btn" class="secondary-btn hidden">
+          Fermer
+        </button>
+      </div>
+    </section>
+
     <!-- Barre de contrôle -->
     <div class="top-controls">
       <div class="attempts-counter">
@@ -207,6 +228,7 @@
         <button id="roster-btn" class="secondary-btn">Liste des joueurs</button>
         <button id="give-up-btn" class="danger-btn">Donner la réponse</button>
         <button id="customize-clues-btn" class="custom-btn hidden">Modifier les indices</button>
+        <button id="customize-rounds-btn" class="image-btn hidden">Modifier les rondes</button>
         <button id="new-game-btn" class="secondary-btn">Nouvelle partie</button>
       </div>
     </div>
@@ -263,13 +285,20 @@
           <p id="reveal-role" class="reveal-role"></p>
           <div class="stats-grid" id="reveal-stats"></div>
 
-          <h3 class="season-stats-heading">Statistiques Saison 2026-2027</h3>
+          <div class="stats-header-row">
+            <h3 id="reveal-stats-heading" class="season-stats-heading">Statistiques — Saison 2026-2027</h3>
+            <div id="reveal-stats-toggle" class="stats-scope-toggle" role="group" aria-label="Période des statistiques">
+              <button type="button" class="scope-toggle-btn active" data-scope="season">Saison 26-27</button>
+              <button type="button" class="scope-toggle-btn" data-scope="career">Carrière</button>
+            </div>
+          </div>
           <div class="stats-grid season-stats-grid" id="reveal-season-stats"></div>
 
           <div class="result-actions">
             <div id="practice-end-actions" class="practice-end-actions">
               <button id="play-again-btn" class="primary-btn">Nouvelle partie</button>
               <button id="end-customize-clues-btn" class="custom-btn hidden">Modifier les indices</button>
+              <button id="end-customize-rounds-btn" class="image-btn hidden">Modifier les rondes</button>
               <button id="back-to-menu-btn" class="secondary-btn">Menu principal</button>
             </div>
             <div id="daily-next-info" class="daily-next-info hidden">

@@ -32,7 +32,7 @@ function generateRemixedColumns(rng = Math.random) {
 
 function generateExpertColumns(rng = Math.random) {
   const normalCount = Math.floor(rng() * 2);
-  const statCount = 4 - normalCount;
+  const statCount = 5 - normalCount;
   const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
   const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
   return shuffleArray([...keptBase, ...pickedStats], rng);
@@ -68,6 +68,9 @@ function saveCustomPrefs() {
 }
 
 loadCustomPrefs();
+
+let practiceImageRounds = 6;
+let pendingImageRounds = 6;
 
 let currentView = "menu"; // "menu" | "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom" | "study"
 let activeGameMode = "daily"; // "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom"
@@ -268,7 +271,7 @@ function loadDailyRemixSession() {
 
 function loadDailyExpertSession() {
   const todayKey = getTodayKey();
-  const setup = getDailyExpertSetupForDate(dateKey = todayKey);
+  const setup = getDailyExpertSetupForDate(todayKey);
   sessions.dailyExpert.secretPlayer = setup.secretPlayer;
   sessions.dailyExpert.variant = "expert";
   sessions.dailyExpert.hideArrows = true;
