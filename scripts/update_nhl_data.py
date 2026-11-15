@@ -17,6 +17,7 @@ import sys
 import ssl
 import unicodedata
 import urllib.request
+import urllib.parse
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 DATA_JS_PATH = ROOT_DIR / "js" / "data.js"
@@ -155,9 +156,47 @@ def find_df_players_list(node):
                 return found
     return None
 
+def fetch_daily_faceoff_html() -> str:
+    last_err = None
+
+    # 1. Essai avec curl_cffi (imite l'empreinte TLS/HTTP2 de Chrome sur GitHub Actions)
+    try:
+        from curl_cffi import requests as cffi_requests
+        resp = cffi_requests.get(DAILY_FACEOFF_URL, impersonate="chrome", timeout=15)
+        if resp.status_code == 200 and "__NEXT_DATA__" in resp.text:
+            return resp.text
+        last_err = RuntimeError(f"HTTP {resp.status_code} via curl_cffi")
+    except ImportError:
+        pass
+    except Exception as e:
+        last_err = e
+
+    # 2. Essai direct standard (fonctionne directement sur Mac)
+    try:
+        html = fetch_text(DAILY_FACEOFF_URL, timeout=15)
+        if "__NEXT_DATA__" in html:
+            return html
+    except Exception as e:
+        last_err = e
+
+    # 3. Repli via relais web si l'IP de GitHub Actions reçoit un 403
+    encoded_url = urllib.parse.quote(DAILY_FACEOFF_URL, safe="")
+    proxy_urls = [
+        f"https://api.allorigins.win/raw?url={encoded_url}",
+        f"https://corsproxy.io/?{encoded_url}",
+    ]
+    for proxy_url in proxy_urls:
+        try:
+            html = fetch_text(proxy_url, timeout=20)
+            if "__NEXT_DATA__" in html:
+                return html
+        except Exception as e:
+            last_err = e
+
+    raise last_err or RuntimeError("Impossible de récupérer Daily Faceoff")
 
 def fetch_daily_faceoff_lines():
-    html = fetch_text(DAILY_FACEOFF_URL, timeout=15)
+    html = fetch_daily_faceoff_html()
     match = re.search(
         r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>',
         html,

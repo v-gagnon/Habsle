@@ -14,10 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Recuperer les fichiers du depot
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Mettre a jour nhl-data.json (LNH + Carriere + Daily Faceoff)
-        run: python3 scripts/update_nhl_data.py
+        run: |
+          pip install --quiet curl_cffi
+          python3 scripts/update_nhl_data.py
 
       - name: Enregistrer nhl-data.json dans le depot
         run: |
