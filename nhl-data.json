@@ -1,4 +1,29 @@
 {
+  "meta": {
+    "updatedAt": "2026-11-15T20:36:55Z",
+    "services": {
+      "nhlRoster": {
+        "ok": true,
+        "count": 27,
+        "detail": "Opérationnel (27 joueurs reçus)"
+      },
+      "nhlStats": {
+        "ok": true,
+        "count": 26,
+        "detail": "Opérationnel (26 fiches de saison)"
+      },
+      "nhlCareer": {
+        "ok": true,
+        "count": 28,
+        "detail": "Opérationnel (28/28 fiches carrière à jour)"
+      },
+      "dailyFaceoff": {
+        "ok": true,
+        "count": 25,
+        "detail": "Opérationnel (20 alignés, 5 blessés/IR)"
+      }
+    }
+  },
   "roster": {
     "forwards": [
       {
@@ -721,7 +746,7 @@
         "shots": 29,
         "shootingPctg": 0.068966,
         "avgTimeOnIcePerGame": 1027.0,
-        "avgShiftsPerGame": 21.7500,
+        "avgShiftsPerGame": 21.75,
         "faceoffWinPctg": 0.550523
       },
       {
@@ -799,7 +824,7 @@
         "shots": 16,
         "shootingPctg": 0.1875,
         "avgTimeOnIcePerGame": 927.65,
-        "avgShiftsPerGame": 19.2500,
+        "avgShiftsPerGame": 19.25,
         "faceoffWinPctg": 0.543165
       },
       {
@@ -825,7 +850,7 @@
         "shots": 14,
         "shootingPctg": 0.071429,
         "avgTimeOnIcePerGame": 1228.45,
-        "avgShiftsPerGame": 25.1000,
+        "avgShiftsPerGame": 25.1,
         "faceoffWinPctg": 0.0
       },
       {
@@ -877,7 +902,7 @@
         "shots": 34,
         "shootingPctg": 0.058824,
         "avgTimeOnIcePerGame": 809.65,
-        "avgShiftsPerGame": 16.8500,
+        "avgShiftsPerGame": 16.85,
         "faceoffWinPctg": 0.0
       },
       {
@@ -903,7 +928,7 @@
         "shots": 41,
         "shootingPctg": 0.0,
         "avgTimeOnIcePerGame": 1262.3,
-        "avgShiftsPerGame": 25.6000,
+        "avgShiftsPerGame": 25.6,
         "faceoffWinPctg": 0.0
       },
       {
@@ -955,7 +980,7 @@
         "shots": 67,
         "shootingPctg": 0.179104,
         "avgTimeOnIcePerGame": 1106.1,
-        "avgShiftsPerGame": 21.0500,
+        "avgShiftsPerGame": 21.05,
         "faceoffWinPctg": 0.666667
       },
       {
@@ -1007,7 +1032,7 @@
         "shots": 24,
         "shootingPctg": 0.208333,
         "avgTimeOnIcePerGame": 973.55,
-        "avgShiftsPerGame": 20.6500,
+        "avgShiftsPerGame": 20.65,
         "faceoffWinPctg": 0.502392
       },
       {
@@ -1059,7 +1084,7 @@
         "shots": 32,
         "shootingPctg": 0.1875,
         "avgTimeOnIcePerGame": 860.35,
-        "avgShiftsPerGame": 16.5000,
+        "avgShiftsPerGame": 16.5,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1163,7 +1188,7 @@
         "shots": 42,
         "shootingPctg": 0.071429,
         "avgTimeOnIcePerGame": 1494.35,
-        "avgShiftsPerGame": 25.3000,
+        "avgShiftsPerGame": 25.3,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1189,7 +1214,7 @@
         "shots": 47,
         "shootingPctg": 0.042553,
         "avgTimeOnIcePerGame": 1098.15,
-        "avgShiftsPerGame": 20.2500,
+        "avgShiftsPerGame": 20.25,
         "faceoffWinPctg": 0.333333
       },
       {
@@ -1241,7 +1266,7 @@
         "shots": 1,
         "shootingPctg": 0.0,
         "avgTimeOnIcePerGame": 549.0,
-        "avgShiftsPerGame": 13.0000,
+        "avgShiftsPerGame": 13.0,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1267,7 +1292,7 @@
         "shots": 10,
         "shootingPctg": 0.1,
         "avgTimeOnIcePerGame": 469.75,
-        "avgShiftsPerGame": 10.6250,
+        "avgShiftsPerGame": 10.625,
         "faceoffWinPctg": 0.2
       },
       {
@@ -1293,7 +1318,7 @@
         "shots": 4,
         "shootingPctg": 0.25,
         "avgTimeOnIcePerGame": 937.0,
-        "avgShiftsPerGame": 19.5000,
+        "avgShiftsPerGame": 19.5,
         "faceoffWinPctg": 0.0
       }
     ],
@@ -1843,6 +1868,211 @@
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
       "shots": 136
+    }
+  },
+  "lines": {
+    "cole caufield": {
+      "name": "Cole Caufield",
+      "unit": "Trio 1",
+      "injured": false,
+      "specialTeams": [
+        "SN 1"
+      ]
+    },
+    "nick suzuki": {
+      "name": "Nick Suzuki",
+      "unit": "Trio 1",
+      "injured": false,
+      "specialTeams": [
+        "SN 1",
+        "IN 2"
+      ]
+    },
+    "juraj slafkovsky": {
+      "name": "Juraj Slafkovsky",
+      "unit": "Trio 1",
+      "injured": false,
+      "specialTeams": [
+        "SN 1"
+      ]
+    },
+    "zack bolduc": {
+      "name": "Zack Bolduc",
+      "unit": "Trio 2",
+      "injured": false,
+      "specialTeams": [
+        "SN 1"
+      ]
+    },
+    "phillip danault": {
+      "name": "Phillip Danault",
+      "unit": "Trio 2",
+      "injured": false,
+      "specialTeams": [
+        "IN 1"
+      ]
+    },
+    "alexandre texier": {
+      "name": "Alexandre Texier",
+      "unit": "Trio 2",
+      "injured": false,
+      "specialTeams": [
+        "SN 2",
+        "IN 2"
+      ]
+    },
+    "alex newhook": {
+      "name": "Alex Newhook",
+      "unit": "Trio 3",
+      "injured": false,
+      "specialTeams": [
+        "SN 2"
+      ]
+    },
+    "oliver kapanen": {
+      "name": "Oliver Kapanen",
+      "unit": "Trio 3",
+      "injured": false,
+      "specialTeams": [
+        "SN 2"
+      ]
+    },
+    "kirby dach": {
+      "name": "Kirby Dach",
+      "unit": "Trio 3",
+      "injured": false,
+      "specialTeams": [
+        "SN 2"
+      ]
+    },
+    "florian xhekaj": {
+      "name": "Florian Xhekaj",
+      "unit": "Trio 4",
+      "injured": false,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "jake evans": {
+      "name": "Jake Evans",
+      "unit": "Trio 4",
+      "injured": false,
+      "specialTeams": [
+        "IN 1"
+      ]
+    },
+    "owen beck": {
+      "name": "Owen Beck",
+      "unit": "Trio 4",
+      "injured": false,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "lane hutson": {
+      "name": "Lane Hutson",
+      "unit": "Paire 1",
+      "injured": false,
+      "specialTeams": [
+        "SN 1"
+      ]
+    },
+    "noah dobson": {
+      "name": "Noah Dobson",
+      "unit": "Paire 1",
+      "injured": false,
+      "specialTeams": [
+        "SN 2",
+        "IN 2"
+      ]
+    },
+    "kaiden guhle": {
+      "name": "Kaiden Guhle",
+      "unit": "Paire 2",
+      "injured": false,
+      "specialTeams": [
+        "IN 1"
+      ]
+    },
+    "alexandre carrier": {
+      "name": "Alexandre Carrier",
+      "unit": "Paire 2",
+      "injured": false,
+      "specialTeams": [
+        "IN 1"
+      ]
+    },
+    "arber xhekaj": {
+      "name": "Arber Xhekaj",
+      "unit": "Paire 3",
+      "injured": false,
+      "specialTeams": [
+        "IN 2"
+      ]
+    },
+    "adam engstrom": {
+      "name": "Adam Engstrom",
+      "unit": "Paire 3",
+      "injured": false,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "jacob fowler": {
+      "name": "Jacob Fowler",
+      "unit": "Gardien",
+      "injured": false,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "jakub dobes": {
+      "name": "Jakub Dobes",
+      "unit": "Gardien",
+      "injured": false,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "ivan demidov": {
+      "name": "Ivan Demidov",
+      "unit": "Hors alignement",
+      "injured": true,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "sam montembeault": {
+      "name": "Sam Montembeault",
+      "unit": "Hors alignement",
+      "injured": true,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "josh anderson": {
+      "name": "Josh Anderson",
+      "unit": "Hors alignement",
+      "injured": true,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "mike matheson": {
+      "name": "Mike Matheson",
+      "unit": "Hors alignement",
+      "injured": true,
+      "specialTeams": [
+        "Aucune"
+      ]
+    },
+    "chris kreider": {
+      "name": "Chris Kreider",
+      "unit": "Hors alignement",
+      "injured": true,
+      "specialTeams": [
+        "Aucune"
+      ]
     }
   }
 }

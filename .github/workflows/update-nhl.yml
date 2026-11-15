@@ -4,7 +4,6 @@ on:
   schedule:
     # 9h48 UTC = 04h48 HNE (hiver) / 05h48 HAE (été) à Montréal
     - cron: "48 9 * * *"
-  # Permet aussi de lancer la mise à jour manuellement avec un bouton sur GitHub
   workflow_dispatch:
 
 permissions:
@@ -14,46 +13,16 @@ jobs:
   fetch-nhl-data:
     runs-on: ubuntu-latest
     steps:
-      # 1. Le robot récupère le contenu actuel de ton dépôt
       - name: Recuperer les fichiers du depot
         uses: actions/checkout@v4
 
-      # 2. Le robot interroge la LNH (alignement, saison et carrière) et les fusionne dans nhl-data.json
-      - name: Telecharger l'alignement et les statistiques depuis la LNH
-        run: |
-          curl -sL "https://api-web.nhle.com/v1/roster/MTL/current" > roster.json
-          curl -sL "https://api-web.nhle.com/v1/club-stats/MTL/now" > stats.json
+      - name: Mettre a jour nhl-data.json (LNH + Carriere + Daily Faceoff)
+        run: python3 scripts/update_nhl_data.py
 
-          # Rassembler tous les IDs des joueurs (data.js + alignement + stats)
-          IDS_DATA=$(grep -oE 'id:\s*[0-9]+' js/data.js | grep -oE '[0-9]+' || true)
-          IDS_ROSTER=$(jq -r '(.forwards[]?.id, .defensemen[]?.id, .goalies[]?.id)' roster.json)
-          IDS_STATS=$(jq -r '(.skaters[]?.playerId, .goalies[]?.playerId)' stats.json)
-          ALL_IDS=$(printf "%s\n%s\n%s\n" "$IDS_DATA" "$IDS_ROSTER" "$IDS_STATS" | grep -E '^[0-9]+$' | sort -u)
-
-          echo "{}" > career.json
-          for pid in $ALL_IDS; do
-            curl -sL "https://api-web.nhle.com/v1/player/${pid}/landing" > "player_${pid}.json" || true
-            if [ -s "player_${pid}.json" ]; then
-              jq --arg id "$pid" --slurpfile p "player_${pid}.json" \
-                '. + (if $p[0].careerTotals.regularSeason then {($id): $p[0].careerTotals.regularSeason} else {} end)' \
-                career.json > career_tmp.json && mv career_tmp.json career.json
-            fi
-            rm -f "player_${pid}.json"
-          done
-
-          jq -n \
-            --slurpfile r roster.json \
-            --slurpfile s stats.json \
-            --slurpfile c career.json \
-            '{roster: $r[0], stats: $s[0], career: $c[0]}' > nhl-data.json
-
-          rm -f roster.json stats.json career.json
-
-      # 3. Le robot sauvegarde nhl-data.json dans ton dépôt si les stats ont changé
       - name: Enregistrer nhl-data.json dans le depot
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add nhl-data.json
-          git diff --staged --quiet || git commit -m "Mise a jour automatique des statistiques LNH"
+          git diff --staged --quiet || git commit -m "Mise a jour automatique des statistiques LNH et Daily Faceoff"
           git push

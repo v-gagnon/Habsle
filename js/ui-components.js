@@ -68,8 +68,9 @@ function openRosterModal() {
     const unitPlayers = PLAYERS.filter(p => p.unit === unitName);
     if (unitPlayers.length === 0) return;
 
+    const sectionTitle = UNIT_SECTION_TITLES[unitName] || unitName;
     const section = document.createElement("div");
-    section.innerHTML = `<div class="unit-group-title">${unitName}</div>`;
+    section.innerHTML = `<div class="unit-group-title">${sectionTitle}</div>`;
 
     const grid = document.createElement("div");
     grid.className = "unit-players-grid";
@@ -112,18 +113,21 @@ function renderStudyDirectory(filterText = "") {
     const unitPlayers = PLAYERS.filter(p => {
       if (p.unit !== unitName) return false;
       if (!query) return true;
+      const specStr = formatSpecialTeams(p);
       return (
         normalizeStr(p.name).includes(query) ||
         String(p.number).includes(query) ||
         normalizeStr(p.pos).includes(query) ||
-        normalizeStr(p.unit).includes(query)
+        normalizeStr(p.unit).includes(query) ||
+        normalizeStr(specStr).includes(query)
       );
     });
 
     if (unitPlayers.length === 0) return;
 
+    const sectionTitle = UNIT_SECTION_TITLES[unitName] || unitName;
     const section = document.createElement("div");
-    section.innerHTML = `<div class="unit-group-title">${unitName}</div>`;
+    section.innerHTML = `<div class="unit-group-title">${sectionTitle}</div>`;
 
     const grid = document.createElement("div");
     grid.className = "study-cards-grid";
@@ -133,6 +137,7 @@ function renderStudyDirectory(filterText = "") {
       card.className = "study-player-card";
       const mugUrl = getPlayerPhotoUrl(player);
       const fallbackUrl = getPlayerFallbackPhotoUrl(player);
+      const specText = formatSpecialTeams(player);
 
       card.innerHTML = `
         <img class="study-avatar" src="${mugUrl}" alt="${player.name}" onerror="this.onerror=null;this.src='${fallbackUrl}';" />
@@ -142,7 +147,7 @@ function renderStudyDirectory(filterText = "") {
             <h4>${player.name}</h4>
           </div>
           <div class="study-specs">
-            ${player.pos} • ${player.age} ans • Lancer ${player.shoots} • ${player.height} • ${player.weight} lb • ${player.country}
+            ${player.pos} • ${player.age} ans • Lancer ${player.shoots} • Unités spéc. : ${specText}
           </div>
           <div class="study-note">${player.note} (${player.hometown})</div>
         </div>
@@ -165,6 +170,7 @@ function openStudyProfileModal(player) {
 
   const mugUrl = getPlayerPhotoUrl(player);
   const fallbackUrl = getPlayerFallbackPhotoUrl(player);
+  const specText = formatSpecialTeams(player);
 
   profileModalTitle.textContent = `Profil de ${player.name} (#${player.number})`;
 
@@ -186,11 +192,11 @@ function openStudyProfileModal(player) {
     <div>
       <div class="profile-section-title">Informations de base</div>
       <div class="stats-grid">
-        <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${player.pos} (${player.posGroup})</div></div>
-        <div class="stat-box"><div class="stat-label">Unité</div><div class="stat-val">${player.unit}</div></div>
+        <div class="stat-box"><div class="stat-label">Position (LNH)</div><div class="stat-val">${player.pos} (${player.posGroup})</div></div>
+        <div class="stat-box"><div class="stat-label">Unité (${player.unitGroup})</div><div class="stat-val">${player.unit}</div></div>
+        <div class="stat-box highlight-stat"><div class="stat-label">Unités spéciales</div><div class="stat-val">${specText}</div></div>
         <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${player.age} ans</div></div>
-        <div class="stat-box"><div class="stat-label">Taille</div><div class="stat-val">${player.height}</div></div>
-        <div class="stat-box"><div class="stat-label">Poids</div><div class="stat-val">${player.weight} lb</div></div>
+        <div class="stat-box"><div class="stat-label">Taille / Poids</div><div class="stat-val">${player.height} • ${player.weight} lb</div></div>
         <div class="stat-box"><div class="stat-label">Lancer</div><div class="stat-val">${player.shoots === "G" ? "Gauche (G)" : "Droite (D)"}</div></div>
         <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${player.hometown} (${player.country})</div></div>
       </div>
@@ -239,6 +245,76 @@ function openStudyProfileModal(player) {
   setupXhekajEasterEgg(heroPhotoContainer, player);
 
   studyProfileModal.classList.remove("hidden");
+}
+
+// --- FENÊTRE MODALE 3 : TABLEAU DE BORD #ADMIN ---
+function openServiceStatusModal() {
+  const statusModal = document.getElementById("status-modal");
+  const statusModalBody = document.getElementById("status-modal-body");
+  if (!statusModal || !statusModalBody) return;
+
+  const renderBadge = ok =>
+    ok
+      ? `<span class="status-pill ok">● Opérationnel</span>`
+      : `<span class="status-pill err">● Hors ligne / Fallback</span>`;
+
+  const formattedDate = SERVICE_STATUS.lastUpdated
+    ? new Date(SERVICE_STATUS.lastUpdated).toLocaleString("fr-CA")
+    : "Non disponible (données locales)";
+
+  const injuredPlayers = PLAYERS.filter(p => p.unit === INJURED_UNIT).map(p => p.name);
+
+  statusModalBody.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Source de données active</div>
+        <div class="stat-val">${SERVICE_STATUS.source}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Dernière mise à jour (GitHub Actions)</div>
+        <div class="stat-val">${formattedDate}</div>
+      </div>
+    </div>
+
+    <table class="status-table">
+      <thead>
+        <tr>
+          <th>Service / Source</th>
+          <th>État</th>
+          <th>Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>API LNH — Alignement & Positions</strong><br><small>api-web.nhle.com/v1/roster/MTL/current</small></td>
+          <td>${renderBadge(SERVICE_STATUS.nhlRoster?.ok)}</td>
+          <td>${SERVICE_STATUS.nhlRoster?.detail || "—"}</td>
+        </tr>
+        <tr>
+          <td><strong>API LNH — Statistiques Saison</strong><br><small>api-web.nhle.com/v1/club-stats/MTL/now</small></td>
+          <td>${renderBadge(SERVICE_STATUS.nhlStats?.ok)}</td>
+          <td>${SERVICE_STATUS.nhlStats?.detail || "—"}</td>
+        </tr>
+        <tr>
+          <td><strong>API LNH — Statistiques Carrière</strong><br><small>api-web.nhle.com/v1/player/{id}/landing</small></td>
+          <td>${renderBadge(SERVICE_STATUS.nhlCareer?.ok)}</td>
+          <td>${SERVICE_STATUS.nhlCareer?.detail || "—"}</td>
+        </tr>
+        <tr>
+          <td><strong>Daily Faceoff — Trios, SN/IN & Blessés</strong><br><small>dailyfaceoff.com/.../line-combinations</small></td>
+          <td>${renderBadge(SERVICE_STATUS.dailyFaceoff?.ok)}</td>
+          <td>${SERVICE_STATUS.dailyFaceoff?.detail || "—"}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="stat-box">
+      <div class="stat-label">Joueurs actuellement dans « Blessés / Hors de l'alignement » (${injuredPlayers.length})</div>
+      <div class="stat-val">${injuredPlayers.length > 0 ? injuredPlayers.join(", ") : "Aucun joueur hors alignement"}</div>
+    </div>
+  `;
+
+  statusModal.classList.remove("hidden");
 }
 
 // --- COMPTE À REBOURS DE MINUIT ---

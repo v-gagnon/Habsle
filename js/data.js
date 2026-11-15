@@ -3,21 +3,24 @@
 const PLAYERS = [
   // --- TRIO 1 ---
   {
-    id: 8480018, name: "Nick Suzuki", number: 14, pos: "C", posGroup: "ATT", unit: "Trio 1", unitGroup: "Trio",
+    id: 8480018, name: "Nick Suzuki", number: 14, pos: "C", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
+    specialTeams: ["SN 1", "IN 2"],
     age: 27, shoots: "D", country: "CAN", height: "5'11\"", weight: 207, hometown: "London, ON",
     note: "Capitaine du CH, centre du 1er trio",
     stats: { gp: 10, g: 6, a: 9, pts: 15, plusMinus: 8, pim: 2, ppg: 1, gwg: 0, shots: 30, shPct: "20.0%", toi: "21:37", fowPct: "53.9%" },
     careerStats: { gp: 465, g: 144, a: 247, pts: 391, plusMinus: -62, pim: 149, ppg: 46, gwg: 22, shots: 975, shPct: "14.8%", toi: "20:08", fowPct: "50.2%" }
   },
   {
-    id: 8481540, name: "Cole Caufield", number: 13, pos: "AD", posGroup: "ATT", unit: "Trio 1", unitGroup: "Trio",
+    id: 8481540, name: "Cole Caufield", number: 13, pos: "AD", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
     age: 25, shoots: "D", country: "USA", height: "5'8\"", weight: 175, hometown: "Mosinee, WI",
     note: "Franc-tireur de 1er trio et 1re vague d'avantage numérique",
     stats: { gp: 16, g: 11, a: 4, pts: 15, plusMinus: 5, pim: 8, ppg: 2, gwg: 3, shots: 54, shPct: "20.4%", toi: "18:39", fowPct: "60.0%" },
     careerStats: { gp: 303, g: 129, a: 105, pts: 234, plusMinus: -46, pim: 62, ppg: 39, gwg: 24, shots: 965, shPct: "13.4%", toi: "18:10", fowPct: "42.9%" }
   },
   {
-    id: 8483515, name: "Juraj Slafkovský", number: 20, pos: "AG", posGroup: "ATT", unit: "Trio 1", unitGroup: "Trio",
+    id: 8483515, name: "Juraj Slafkovský", number: 20, pos: "AG", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
     age: 22, shoots: "G", country: "SVK", height: "6'3\"", weight: 225, hometown: "Košice, SVK",
     note: "1er choix au total en 2022, ailier de puissance du 1er trio",
     stats: { gp: 16, g: 2, a: 10, pts: 12, plusMinus: 0, pim: 14, ppg: 0, gwg: 0, shots: 39, shPct: "5.1%", toi: "18:14", fowPct: "31.3%" },
@@ -26,28 +29,32 @@ const PLAYERS = [
 
   // --- TRIO 2 ---
   {
-    id: 8481618, name: "Alex Newhook", number: 15, pos: "AG", posGroup: "ATT", unit: "Trio 2", unitGroup: "Trio",
+    id: 8481618, name: "Alex Newhook", number: 15, pos: "AG", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["SN 2"],
     age: 25, shoots: "G", country: "CAN", height: "5'11\"", weight: 200, hometown: "St. John's, NL",
     note: "Attaquant rapide polyvalent (centre / ailier gauche)",
     stats: { gp: 16, g: 3, a: 4, pts: 7, plusMinus: -3, pim: 12, ppg: 0, gwg: 0, shots: 15, shPct: "20.0%", toi: "16:30", fowPct: "50.3%" },
     careerStats: { gp: 312, g: 60, a: 73, pts: 133, plusMinus: -28, pim: 94, ppg: 12, gwg: 11, shots: 495, shPct: "12.1%", toi: "15:12", fowPct: "44.8%" }
   },
   {
-    id: 8482775, name: "Oliver Kapanen", number: 91, pos: "C", posGroup: "ATT", unit: "Trio 2", unitGroup: "Trio",
+    id: 8482775, name: "Oliver Kapanen", number: 91, pos: "C", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["IN 2"],
     age: 23, shoots: "D", country: "FIN", height: "6'2\"", weight: 194, hometown: "Timrå, SWE",
     note: "Centre intelligent repêché au 2e tour en 2021",
     stats: { gp: 9, g: 1, a: 0, pts: 1, plusMinus: -1, pim: 2, ppg: 0, gwg: 0, shots: 8, shPct: "12.5%", toi: "11:40", fowPct: "47.5%" },
     careerStats: { gp: 27, g: 1, a: 2, pts: 3, plusMinus: -5, pim: 6, ppg: 0, gwg: 0, shots: 21, shPct: "4.8%", toi: "11:32", fowPct: "46.8%" }
   },
   {
-    id: 8481523, name: "Kirby Dach", number: 77, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "Trio",
+    id: 8481523, name: "Kirby Dach", number: 77, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["SN 2"],
     age: 25, shoots: "D", country: "CAN", height: "6'4\"", weight: 221, hometown: "Fort Saskatchewan, AB",
     note: "Attaquant format géant évoluant au centre et à l'aile droite",
     stats: { gp: 14, g: 1, a: 4, pts: 5, plusMinus: 0, pim: 6, ppg: 1, gwg: 0, shots: 11, shPct: "9.1%", toi: "10:48", fowPct: "43.8%" },
     careerStats: { gp: 283, g: 44, a: 87, pts: 131, plusMinus: -52, pim: 167, ppg: 13, gwg: 6, shots: 442, shPct: "10.0%", toi: "16:54", fowPct: "38.6%" }
   },
   {
-    id: 8484984, name: "Ivan Demidov", number: 93, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "Trio",
+    id: 8484984, name: "Ivan Demidov", number: 93, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["SN 2"],
     age: 20, shoots: "G", country: "RUS", height: "6'1\"", weight: 192, hometown: "Sergiyev Posad, RUS",
     note: "5e choix au total en 2024, ailier créatif électrisant",
     stats: { gp: 2, g: 1, a: 1, pts: 2, plusMinus: 0, pim: 2, ppg: 0, gwg: 0, shots: 4, shPct: "25.0%", toi: "15:37", fowPct: "—" },
@@ -56,21 +63,24 @@ const PLAYERS = [
 
   // --- TRIO 3 ---
   {
-    id: 8482737, name: "Zachary Bolduc", number: 76, pos: "AD", posGroup: "ATT", unit: "Trio 3", unitGroup: "Trio",
+    id: 8482737, name: "Zachary Bolduc", number: 76, pos: "AD", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
+    specialTeams: ["SN 2"],
     age: 23, shoots: "G", country: "CAN", height: "6'0\"", weight: 187, hometown: "Trois-Rivières, QC",
     note: "Ailier québécois acquis de Saint-Louis en juillet 2025",
     stats: { gp: 16, g: 5, a: 2, pts: 7, plusMinus: 1, pim: 4, ppg: 2, gwg: 1, shots: 27, shPct: "18.5%", toi: "13:58", fowPct: "—" },
     careerStats: { gp: 113, g: 29, a: 23, pts: 52, plusMinus: 16, pim: 47, ppg: 8, gwg: 5, shots: 169, shPct: "17.2%", toi: "13:05", fowPct: "41.7%" }
   },
   {
-    id: 8476479, name: "Phillip Danault", number: 24, pos: "C", posGroup: "ATT", unit: "Trio 3", unitGroup: "Trio",
+    id: 8476479, name: "Phillip Danault", number: 24, pos: "C", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
+    specialTeams: ["IN 1"],
     age: 33, shoots: "G", country: "CAN", height: "6'1\"", weight: 200, hometown: "Victoriaville, QC",
     note: "Spécialiste défensif et des mises au jeu revenu à Montréal",
     stats: { gp: 16, g: 1, a: 5, pts: 6, plusMinus: 4, pim: 0, ppg: 0, gwg: 0, shots: 22, shPct: "4.5%", toi: "17:05", fowPct: "54.7%" },
     careerStats: { gp: 736, g: 126, a: 268, pts: 394, plusMinus: 83, pim: 330, ppg: 13, gwg: 20, shots: 1260, shPct: "10.0%", toi: "17:42", fowPct: "54.5%" }
   },
   {
-    id: 8480074, name: "Alexandre Texier", number: 85, pos: "AG", posGroup: "ATT", unit: "Trio 3", unitGroup: "Trio",
+    id: 8480074, name: "Alexandre Texier", number: 85, pos: "AG", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
+    specialTeams: ["Aucune"],
     age: 27, shoots: "G", country: "FRA", height: "6'1\"", weight: 196, hometown: "Saint-Martin-d'Hères, FRA",
     note: "Attaquant français agile sur le 3e trio",
     stats: { gp: 16, g: 2, a: 3, pts: 5, plusMinus: -2, pim: 10, ppg: 0, gwg: 0, shots: 22, shPct: "9.1%", toi: "13:14", fowPct: "—" },
@@ -79,35 +89,40 @@ const PLAYERS = [
 
   // --- TRIO 4 & ATTAQUANTS DE PROFONDEUR ---
   {
-    id: 8475184, name: "Chris Kreider", number: 22, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "Trio",
+    id: 8475184, name: "Chris Kreider", number: 22, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
     age: 35, shoots: "G", country: "USA", height: "6'3\"", weight: 232, hometown: "Boxford, MA",
     note: "Vétéran expérimenté redoutable devant le filet",
     stats: { gp: 16, g: 2, a: 6, pts: 8, plusMinus: 4, pim: 6, ppg: 0, gwg: 0, shots: 17, shPct: "11.8%", toi: "13:46", fowPct: "33.3%" },
     careerStats: { gp: 901, g: 328, a: 262, pts: 590, plusMinus: 118, pim: 594, ppg: 116, gwg: 50, shots: 2150, shPct: "15.3%", toi: "17:20", fowPct: "45.2%" }
   },
   {
-    id: 8478133, name: "Jake Evans", number: 71, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "Trio",
+    id: 8478133, name: "Jake Evans", number: 71, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["IN 1"],
     age: 30, shoots: "D", country: "CAN", height: "6'0\"", weight: 190, hometown: "Toronto, ON",
     note: "Pilier du désavantage numérique au centre du 4e trio",
     stats: { gp: 16, g: 2, a: 4, pts: 6, plusMinus: 5, pim: 2, ppg: 0, gwg: 1, shots: 12, shPct: "16.7%", toi: "15:24", fowPct: "54.8%" },
     careerStats: { gp: 366, g: 42, a: 82, pts: 124, plusMinus: -12, pim: 112, ppg: 1, gwg: 7, shots: 412, shPct: "10.2%", toi: "14:52", fowPct: "52.1%" }
   },
   {
-    id: 8483424, name: "Owen Beck", number: 62, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "Trio",
+    id: 8483424, name: "Owen Beck", number: 62, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["Aucune"],
     age: 22, shoots: "D", country: "CAN", height: "6'0\"", weight: 199, hometown: "Port Hope, ON",
     note: "Jeune centre fiable dans les deux sens de la patinoire",
     stats: { gp: 5, g: 1, a: 2, pts: 3, plusMinus: 0, pim: 5, ppg: 0, gwg: 0, shots: 6, shPct: "16.7%", toi: "08:42", fowPct: "57.1%" },
     careerStats: { gp: 18, g: 1, a: 3, pts: 4, plusMinus: -2, pim: 7, ppg: 0, gwg: 0, shots: 17, shPct: "5.9%", toi: "09:48", fowPct: "51.4%" }
   },
   {
-    id: 8476981, name: "Josh Anderson", number: 17, pos: "AD", posGroup: "ATT", unit: "Trio 4", unitGroup: "Trio",
+    id: 8476981, name: "Josh Anderson", number: 17, pos: "AD", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["IN 2"],
     age: 32, shoots: "D", country: "CAN", height: "6'3\"", weight: 226, hometown: "Burlington, ON",
     note: "Ailier droit robuste et très rapide en transition",
     stats: { gp: 16, g: 7, a: 3, pts: 10, plusMinus: 8, pim: 16, ppg: 0, gwg: 1, shots: 33, shPct: "21.2%", toi: "14:28", fowPct: "33.3%" },
     careerStats: { gp: 641, g: 155, a: 114, pts: 269, plusMinus: -55, pim: 572, ppg: 18, gwg: 24, shots: 1385, shPct: "11.2%", toi: "15:56", fowPct: "41.8%" }
   },
   {
-    id: 8484403, name: "Florian Xhekaj", number: 63, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "Trio",
+    id: 8484403, name: "Florian Xhekaj", number: 63, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["Aucune"],
     age: 22, shoots: "G", country: "CAN", height: "6'3\"", weight: 195, hometown: "Hamilton, ON",
     note: "Frère cadet d'Arber, attaquant robuste et énergique",
     stats: { gp: 7, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 13, ppg: 0, gwg: 0, shots: 9, shPct: "11.1%", toi: "07:53", fowPct: "20.0%" },
@@ -116,49 +131,56 @@ const PLAYERS = [
 
   // --- DÉFENSEURS (PAIRES 1 À 3) ---
   {
-    id: 8483457, name: "Lane Hutson", number: 48, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "Paire",
+    id: 8483457, name: "Lane Hutson", number: 48, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "DEF",
+    specialTeams: ["SN 1"],
     age: 22, shoots: "G", country: "USA", height: "5'9\"", weight: 162, hometown: "Holland, MI",
     note: "Quart-arrière offensif ultra-mobile à la ligne bleue",
     stats: { gp: 16, g: 3, a: 13, pts: 16, plusMinus: 8, pim: 8, ppg: 1, gwg: 0, shots: 29, shPct: "10.3%", toi: "24:59", fowPct: "—" },
     careerStats: { gp: 100, g: 9, a: 75, pts: 84, plusMinus: 4, pim: 44, ppg: 2, gwg: 1, shots: 156, shPct: "5.8%", toi: "23:12", fowPct: "—" }
   },
   {
-    id: 8480865, name: "Noah Dobson", number: 53, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "Paire",
+    id: 8480865, name: "Noah Dobson", number: 53, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "DEF",
+    specialTeams: ["SN 2", "IN 2"],
     age: 26, shoots: "D", country: "CAN", height: "6'4\"", weight: 200, hometown: "Summerside, PE",
     note: "Défenseur droitier numéro un sur la première paire",
     stats: { gp: 16, g: 0, a: 8, pts: 8, plusMinus: 1, pim: 12, ppg: 0, gwg: 0, shots: 34, shPct: "0.0%", toi: "20:56", fowPct: "—" },
     careerStats: { gp: 405, g: 50, a: 188, pts: 238, plusMinus: 8, pim: 166, ppg: 14, gwg: 10, shots: 912, shPct: "5.5%", toi: "21:45", fowPct: "—" }
   },
   {
-    id: 8482087, name: "Kaiden Guhle", number: 21, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "Paire",
+    id: 8482087, name: "Kaiden Guhle", number: 21, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
+    specialTeams: ["IN 1"],
     age: 24, shoots: "G", country: "CAN", height: "6'3\"", weight: 202, hometown: "Edmonton, AB",
     note: "Défenseur complet affrontant les meilleurs trios adverses",
     stats: { gp: 12, g: 2, a: 3, pts: 5, plusMinus: 3, pim: 10, ppg: 0, gwg: 1, shots: 14, shPct: "14.3%", toi: "23:03", fowPct: "—" },
     careerStats: { gp: 181, g: 18, a: 45, pts: 63, plusMinus: -18, pim: 140, ppg: 1, gwg: 3, shots: 282, shPct: "6.4%", toi: "21:08", fowPct: "—" }
   },
   {
-    id: 8478851, name: "Alexandre Carrier", number: 45, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "Paire",
+    id: 8478851, name: "Alexandre Carrier", number: 45, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
+    specialTeams: ["IN 2"],
     age: 30, shoots: "D", country: "CAN", height: "5'11\"", weight: 174, hometown: "Québec, QC",
     note: "Défenseur droitier québécois fiable en relance",
     stats: { gp: 16, g: 1, a: 5, pts: 6, plusMinus: 5, pim: 12, ppg: 0, gwg: 1, shots: 14, shPct: "7.1%", toi: "20:36", fowPct: "—" },
     careerStats: { gp: 310, g: 14, a: 84, pts: 98, plusMinus: 26, pim: 176, ppg: 1, gwg: 3, shots: 335, shPct: "4.2%", toi: "19:34", fowPct: "—" }
   },
   {
-    id: 8476875, name: "Mike Matheson", number: 8, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "Paire",
+    id: 8476875, name: "Mike Matheson", number: 8, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
+    specialTeams: ["SN 2", "IN 1"],
     age: 32, shoots: "G", country: "CAN", height: "6'2\"", weight: 196, hometown: "Pointe-Claire, QC",
     note: "Vétéran originaire de Pointe-Claire au coup de patin élite",
     stats: { gp: 8, g: 1, a: 3, pts: 4, plusMinus: 1, pim: 6, ppg: 0, gwg: 0, shots: 15, shPct: "6.7%", toi: "23:45", fowPct: "—" },
     careerStats: { gp: 635, g: 74, a: 205, pts: 279, plusMinus: -42, pim: 382, ppg: 19, gwg: 13, shots: 1290, shPct: "5.7%", toi: "21:38", fowPct: "—" }
   },
   {
-    id: 8482964, name: "Arber Xhekaj", number: 72, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "Paire",
+    id: 8482964, name: "Arber Xhekaj", number: 72, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "DEF",
+    specialTeams: ["Aucune"],
     age: 25, shoots: "G", country: "CAN", height: "6'4\"", weight: 240, hometown: "Hamilton, ON",
     note: "Surnommé le Shérif, défenseur physique au tir frappé lourd",
     stats: { gp: 15, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 30, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "11:51", fowPct: "—" },
     careerStats: { gp: 180, g: 10, a: 22, pts: 32, plusMinus: -16, pim: 330, ppg: 1, gwg: 1, shots: 198, shPct: "5.1%", toi: "14:46", fowPct: "—" }
   },
   {
-    id: 8483686, name: "Adam Engström", number: 42, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "Paire",
+    id: 8483686, name: "Adam Engström", number: 42, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "DEF",
+    specialTeams: ["Aucune"],
     age: 22, shoots: "G", country: "SWE", height: "6'2\"", weight: 193, hometown: "Järna, SWE",
     note: "Défenseur suédois fluide repêché en 2022",
     stats: { gp: 10, g: 1, a: 1, pts: 2, plusMinus: 5, pim: 0, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "11:25", fowPct: "—" },
@@ -167,21 +189,24 @@ const PLAYERS = [
 
   // --- GARDIENS ---
   {
-    id: 8484170, name: "Jacob Fowler", number: 32, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "Gardien",
+    id: 8484170, name: "Jacob Fowler", number: 32, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
+    specialTeams: ["Aucune"],
     age: 21, shoots: "G", country: "USA", height: "6'1\"", weight: 223, hometown: "Melbourne, FL",
     note: "Jeune gardien calme et technique devant le filet",
     stats: { gp: 9, gs: 9, w: 7, l: 1, otl: 1, gaa: "2.17", svPct: ".925", so: 2, saves: 247, shotsAgainst: 267 },
     careerStats: { gp: 9, gs: 9, w: 7, l: 1, otl: 1, gaa: "2.17", svPct: ".925", so: 2, saves: 247, shotsAgainst: 267 }
   },
   {
-    id: 8482487, name: "Jakub Dobeš", number: 75, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "Gardien",
+    id: 8482487, name: "Jakub Dobeš", number: 75, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
+    specialTeams: ["Aucune"],
     age: 25, shoots: "G", country: "CZE", height: "6'4\"", weight: 215, hometown: "Ostrava, CZE",
     note: "Gardien tchèque imposant de 6 pieds 4 pouces",
     stats: { gp: 7, gs: 7, w: 3, l: 2, otl: 2, gaa: "4.04", svPct: ".860", so: 0, saves: 172, shotsAgainst: 200 },
     careerStats: { gp: 23, gs: 21, w: 10, l: 8, otl: 4, gaa: "3.12", svPct: ".896", so: 1, saves: 565, shotsAgainst: 631 }
   },
   {
-    id: 8478470, name: "Samuel Montembeault", number: 35, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "Gardien",
+    id: 8478470, name: "Samuel Montembeault", number: 35, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
+    specialTeams: ["Aucune"],
     age: 30, shoots: "G", country: "CAN", height: "6'3\"", weight: 218, hometown: "Bécancour, QC",
     note: "Gardien québécois vétéran devant le filet du Tricolore",
     stats: { gp: 0, gs: 0, w: 0, l: 0, otl: 0, gaa: "—", svPct: "—", so: 0, saves: 0, shotsAgainst: 0 },
@@ -195,12 +220,72 @@ const DAILY_REMIX_STORAGE_KEY = "habsle_daily_remix_state_v2";
 const DAILY_EXPERT_STORAGE_KEY = "habsle_daily_expert_state_v1";
 const DAILY_IMAGE_STORAGE_KEY = "habsle_daily_image_state_v1";
 const CUSTOM_PREFS_STORAGE_KEY = "habsle_custom_prefs_v1";
-const NHL_CACHE_KEY = "habsle_nhl_api_cache_v1";
+const NHL_CACHE_KEY = "habsle_nhl_api_cache_v2";
 
-const UNITS_ORDER = ["Trio 1", "Trio 2", "Trio 3", "Trio 4", "Paire 1", "Paire 2", "Paire 3", "Gardien"];
+const INJURED_UNIT = "Hors alignement";
+const UNITS_ORDER = [
+  "Trio 1",
+  "Trio 2",
+  "Trio 3",
+  "Trio 4",
+  "Paire 1",
+  "Paire 2",
+  "Paire 3",
+  "Gardien",
+  INJURED_UNIT
+];
+
+const UNIT_SECTION_TITLES = {
+  "Trio 1": "Trio 1",
+  "Trio 2": "Trio 2",
+  "Trio 3": "Trio 3",
+  "Trio 4": "Trio 4",
+  "Paire 1": "Paire 1",
+  "Paire 2": "Paire 2",
+  "Paire 3": "Paire 3",
+  "Gardien": "Gardiens",
+  [INJURED_UNIT]: "Blessés / Hors de l'alignement"
+};
+
 const CLASSIC_COLUMNS = ["number", "pos", "unit", "shoots", "age"];
-const STAT_POOL_COLUMNS = ["country", "gp", "g", "a", "pts", "plusMinus", "pim", "shots", "toi", "height", "weight"];
+const STAT_POOL_COLUMNS = [
+  "specialTeams",
+  "country",
+  "gp",
+  "g",
+  "a",
+  "pts",
+  "plusMinus",
+  "pim",
+  "shots",
+  "toi",
+  "height",
+  "weight"
+];
 const ALL_AVAILABLE_COLUMNS = [...CLASSIC_COLUMNS, ...STAT_POOL_COLUMNS];
+
+// État des services pour le tableau #admin
+const SERVICE_STATUS = {
+  source: "Données locales intégrées (data.js)",
+  lastUpdated: null,
+  nhlRoster: { ok: false, detail: "En attente de synchronisation" },
+  nhlStats: { ok: false, detail: "En attente de synchronisation" },
+  nhlCareer: { ok: false, detail: "En attente de synchronisation" },
+  dailyFaceoff: { ok: false, detail: "En attente de synchronisation" }
+};
+
+function formatSpecialTeams(player) {
+  const list = Array.isArray(player.specialTeams) && player.specialTeams.length > 0
+    ? player.specialTeams
+    : ["Aucune"];
+  return list.join(" • ");
+}
+
+function getSpecialTeamsList(player) {
+  return Array.isArray(player.specialTeams) && player.specialTeams.length > 0
+    ? player.specialTeams
+    : ["Aucune"];
+}
 
 function getPlayerPhotoUrl(player) {
   return player.headshotUrl || `https://assets.nhle.com/mugs/nhl/20262027/MTL/${player.id}.png`;
@@ -270,12 +355,15 @@ const CLUE_DEFINITIONS = {
     interval: "(Groupe)",
     isStat: false,
     evaluate(player, secret) {
-      const status =
-        player.unit === secret.unit
-          ? "exact"
-          : player.unitGroup === secret.unitGroup
-          ? "close"
-          : "wrong";
+      // Un joueur "Hors alignement" garde son unitGroup LNH (ATT, DEF ou GAR).
+      // Ainsi, un ATT blessé comparé à un joueur du Trio 1 (ATT) donne "close" (jaune).
+      const sameExactUnit =
+        player.unit === secret.unit && player.unitGroup === secret.unitGroup;
+      const status = sameExactUnit
+        ? "exact"
+        : player.unitGroup === secret.unitGroup
+        ? "close"
+        : "wrong";
       return { text: player.unit, status, sub: "" };
     }
   },
@@ -306,6 +394,36 @@ const CLUE_DEFINITIONS = {
         "▲ Plus vieux",
         "▼ Plus jeune"
       );
+    }
+  },
+  specialTeams: {
+    label: "Unités spéc.",
+    fullName: "Unités spéciales",
+    interval: "(SN/IN)",
+    isStat: true,
+    evaluate(player, secret) {
+      const gList = getSpecialTeamsList(player);
+      const sList = getSpecialTeamsList(secret);
+      const gText = formatSpecialTeams(player);
+
+      const isExact =
+        gList.length === sList.length && gList.every(u => sList.includes(u));
+      if (isExact) {
+        return { text: gText, status: "exact", sub: "" };
+      }
+
+      const sharesExactUnit = gList.some(u => u !== "Aucune" && sList.includes(u));
+      const gHasSN = gList.some(u => u.startsWith("SN"));
+      const sHasSN = sList.some(u => u.startsWith("SN"));
+      const gHasIN = gList.some(u => u.startsWith("IN"));
+      const sHasIN = sList.some(u => u.startsWith("IN"));
+
+      const isClose = sharesExactUnit || (gHasSN && sHasSN) || (gHasIN && sHasIN);
+      return {
+        text: gText,
+        status: isClose ? "close" : "wrong",
+        sub: ""
+      };
     }
   },
   country: {
@@ -458,7 +576,7 @@ const CLUE_DEFINITIONS = {
   }
 };
 
-// --- SYNCHRONISATION AVEC L'API OFFICIELLE DE LA LNH ---
+// --- SYNCHRONISATION AVEC L'API LNH ET DAILY FACEOFF ---
 function formatSecondsToMMSS(seconds) {
   if (!seconds || isNaN(seconds)) return "—";
   const mins = Math.floor(seconds / 60);
@@ -476,6 +594,16 @@ function calculateAgeFromBirthDate(birthDateStr) {
     age--;
   }
   return age;
+}
+
+function normalizeLookupKey(nameStr) {
+  return (nameStr || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[-'.]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 function applyCareerRegularSeasonObj(player, reg) {
@@ -505,7 +633,7 @@ function applyCareerRegularSeasonObj(player, reg) {
       ppg: reg.powerPlayGoals ?? 0,
       gwg: reg.gameWinningGoals ?? 0,
       shots: reg.shots ?? 0,
-      shPct: typeof reg.shootingPctg === "number" ? `${(reg.shootingPctg * 100).toFixed(1)}%` : "0.0%",
+      shPct: typeof reg.shootingPctg === "number" ? `${(s = reg.shootingPctg * 100).toFixed(1)}%` : "0.0%",
       toi: reg.avgToi || "—",
       fowPct: typeof reg.faceoffWinningPctg === "number" && reg.faceoffWinningPctg > 0
         ? `${(reg.faceoffWinningPctg * 100).toFixed(1)}%`
@@ -515,17 +643,36 @@ function applyCareerRegularSeasonObj(player, reg) {
   player._careerSynced = true;
 }
 
-function applyNHLAPIData(rosterData, statsData, careerData = null) {
+const NHL_POS_CODE_MAP = {
+  C: { pos: "C", group: "ATT" },
+  L: { pos: "AG", group: "ATT" },
+  R: { pos: "AD", group: "ATT" },
+  D: { pos: "D", group: "DEF" },
+  G: { pos: "G", group: "GAR" }
+};
+
+function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = null, metaData = null) {
+  // 1. Alignement et positions depuis le fichier de la LNH
+  let rosterCount = 0;
   if (rosterData) {
     const allRosterEntries = [
       ...(rosterData.forwards || []),
       ...(rosterData.defensemen || []),
       ...(rosterData.goalies || [])
     ];
+    rosterCount = allRosterEntries.length;
 
     allRosterEntries.forEach(entry => {
       const player = PLAYERS.find(p => p.id === entry.id);
       if (!player) return;
+
+      // La position et le groupe (ATT, DEF, GAR) viennent exclusivement de la LNH
+      if (entry.positionCode && NHL_POS_CODE_MAP[entry.positionCode]) {
+        const mapped = NHL_POS_CODE_MAP[entry.positionCode];
+        player.pos = mapped.pos;
+        player.posGroup = mapped.group;
+        player.unitGroup = mapped.group;
+      }
 
       if (typeof entry.sweaterNumber === "number") {
         player.number = entry.sweaterNumber;
@@ -549,8 +696,11 @@ function applyNHLAPIData(rosterData, statsData, careerData = null) {
     });
   }
 
+  // 2. Statistiques de la saison actuelle LNH
+  let statsCount = 0;
   if (statsData) {
     if (Array.isArray(statsData.skaters)) {
+      statsCount += statsData.skaters.length;
       statsData.skaters.forEach(s => {
         const player = PLAYERS.find(p => p.id === s.playerId);
         if (!player || player.posGroup === "GAR") return;
@@ -575,6 +725,7 @@ function applyNHLAPIData(rosterData, statsData, careerData = null) {
     }
 
     if (Array.isArray(statsData.goalies)) {
+      statsCount += statsData.goalies.length;
       statsData.goalies.forEach(g => {
         const player = PLAYERS.find(p => p.id === g.playerId);
         if (!player || player.posGroup !== "GAR") return;
@@ -595,13 +746,81 @@ function applyNHLAPIData(rosterData, statsData, careerData = null) {
     }
   }
 
+  // 3. Statistiques en carrière LNH
+  let careerCount = 0;
   if (careerData && typeof careerData === "object") {
+    careerCount = Object.keys(careerData).length;
     PLAYERS.forEach(player => {
       const reg = careerData[String(player.id)] || careerData[player.id];
       if (reg) {
         applyCareerRegularSeasonObj(player, reg);
       }
     });
+  }
+
+  // 4. Trios, Blessés / Hors alignement et Unités spéciales depuis Daily Faceoff
+  let dfCount = 0;
+  if (linesData && typeof linesData === "object") {
+    const dfKeys = Object.keys(linesData);
+    dfCount = dfKeys.length;
+
+    if (dfCount >= 15) {
+      PLAYERS.forEach(player => {
+        const key = normalizeLookupKey(player.name);
+        const info = linesData[key];
+
+        // Le groupe d'unité pour le jeu reste toujours celui de la LNH (ATT, DEF, GAR)
+        player.unitGroup = player.posGroup;
+
+        if (info) {
+          if (info.injured || info.unit === INJURED_UNIT || !info.unit) {
+            player.unit = INJURED_UNIT;
+          } else {
+            player.unit = info.unit;
+          }
+
+          if (Array.isArray(info.specialTeams) && info.specialTeams.length > 0) {
+            player.specialTeams = info.specialTeams;
+          } else {
+            player.specialTeams = ["Aucune"];
+          }
+        } else {
+          // Joueur non habillé dans l'alignement actif sur Daily Faceoff -> Hors alignement
+          player.unit = INJURED_UNIT;
+          player.specialTeams = ["Aucune"];
+        }
+      });
+    }
+  }
+
+  // 5. Mise à jour du rapport d'état pour #admin
+  if (metaData && metaData.updatedAt) {
+    SERVICE_STATUS.lastUpdated = metaData.updatedAt;
+  }
+
+  if (metaData && metaData.services) {
+    const sv = metaData.services;
+    if (sv.nhlRoster) SERVICE_STATUS.nhlRoster = sv.nhlRoster;
+    if (sv.nhlStats) SERVICE_STATUS.nhlStats = sv.nhlStats;
+    if (sv.nhlCareer) SERVICE_STATUS.nhlCareer = sv.nhlCareer;
+    if (sv.dailyFaceoff) SERVICE_STATUS.dailyFaceoff = sv.dailyFaceoff;
+  } else {
+    SERVICE_STATUS.nhlRoster = {
+      ok: rosterCount > 0,
+      detail: rosterCount > 0 ? `Opérationnel (${rosterCount} joueurs LNH)` : "Non disponible (fallback local)"
+    };
+    SERVICE_STATUS.nhlStats = {
+      ok: statsCount > 0,
+      detail: statsCount > 0 ? `Opérationnel (${statsCount} fiches saison)` : "Non disponible (fallback local)"
+    };
+    SERVICE_STATUS.nhlCareer = {
+      ok: careerCount > 0,
+      detail: careerCount > 0 ? `Opérationnel (${careerCount} fiches carrière)` : "Préchargé dans data.js / À la demande"
+    };
+    SERVICE_STATUS.dailyFaceoff = {
+      ok: dfCount > 0,
+      detail: dfCount > 0 ? `Opérationnel (${dfCount} joueurs extraits)` : "Non disponible (trios par défaut actifs)"
+    };
   }
 }
 
@@ -639,7 +858,8 @@ async function syncWithNHLAPI(forceRefresh = false) {
     try {
       const cached = JSON.parse(localStorage.getItem(NHL_CACHE_KEY) || "null");
       if (cached && Date.now() - cached.timestamp < 6 * 3600 * 1000) {
-        applyNHLAPIData(cached.roster, cached.stats, cached.career);
+        SERVICE_STATUS.source = "Cache navigateur (localStorage)";
+        applyNHLAPIData(cached.roster, cached.stats, cached.career, cached.lines, cached.meta);
         if (apiSyncStatusEl) {
           apiSyncStatusEl.textContent = "Synchronisé avec l'API LNH (cache du jour)";
         }
@@ -656,9 +876,16 @@ async function syncWithNHLAPI(forceRefresh = false) {
     const localResp = await fetch("./nhl-data.json", { cache: "no-store" });
     if (localResp.ok) {
       const localData = await localResp.json();
-      applyNHLAPIData(localData.roster, localData.stats, localData.career);
+      SERVICE_STATUS.source = "nhl-data.json (GitHub Actions)";
+      applyNHLAPIData(
+        localData.roster,
+        localData.stats,
+        localData.career,
+        localData.lines,
+        localData.meta
+      );
       if (apiSyncStatusEl) {
-        apiSyncStatusEl.textContent = "Données synchronisées";
+        apiSyncStatusEl.textContent = "Données synchronisées (LNH + Daily Faceoff)";
       }
       if (typeof renderStudyDirectory === "function" && currentView === "study") {
         renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
@@ -673,6 +900,7 @@ async function syncWithNHLAPI(forceRefresh = false) {
   ]);
 
   if (rosterData || statsData) {
+    SERVICE_STATUS.source = "Direct via proxy CORS (api-web.nhle.com)";
     applyNHLAPIData(rosterData, statsData);
     try {
       localStorage.setItem(
@@ -688,6 +916,7 @@ async function syncWithNHLAPI(forceRefresh = false) {
       renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
     }
   } else if (apiSyncStatusEl) {
+    SERVICE_STATUS.source = "Données locales de secours (data.js)";
     apiSyncStatusEl.textContent = "Données LNH 2026-2027 intégrées actives";
   }
 }

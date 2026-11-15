@@ -716,10 +716,11 @@ function showEndGameCard(session, waitAnimation) {
   document.getElementById("reveal-role").textContent = secretPlayer.note;
 
   document.getElementById("reveal-stats").innerHTML = `
-    <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${secretPlayer.pos} (${secretPlayer.unit})</div></div>
-    <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${secretPlayer.age} ans</div></div>
-    <div class="stat-box"><div class="stat-label">Taille / Lancer</div><div class="stat-val">${secretPlayer.height} • ${secretPlayer.shoots}</div></div>
-    <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${secretPlayer.hometown}</div></div>
+  <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${secretPlayer.pos} (${secretPlayer.unit})</div></div>
+  <div class="stat-box"><div class="stat-label">Unités spéc.</div><div class="stat-val">${formatSpecialTeams(secretPlayer)}</div></div>
+  <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${secretPlayer.age} ans</div></div>
+  <div class="stat-box"><div class="stat-label">Taille / Lancer</div><div class="stat-val">${secretPlayer.height} • ${secretPlayer.shoots}</div></div>
+  <div class="stat-box"><div class="stat-label">Origine</div><div class="stat-val">${secretPlayer.hometown}</div></div>
   `;
 
   const revealSeasonStatsEl = document.getElementById("reveal-season-stats");
@@ -937,8 +938,46 @@ if (revealStatsToggle) {
   });
 }
 
+const statusModal = document.getElementById("status-modal");
+const closeStatusModalBtn = document.getElementById("close-status-modal-btn");
+
+function closeAdminModal() {
+  if (statusModal) statusModal.classList.add("hidden");
+  if (window.location.hash === "#admin") {
+    window.history.replaceState(null, "", buildHashForRoute(currentView, null));
+  }
+}
+
+if (closeStatusModalBtn) {
+  closeStatusModalBtn.addEventListener("click", closeAdminModal);
+}
+if (statusModal) {
+  statusModal.addEventListener("click", e => {
+    if (e.target === statusModal) closeAdminModal();
+  });
+}
+
+function checkAdminHash() {
+  if (window.location.hash === "#admin") {
+    openServiceStatusModal();
+  }
+}
+
+window.addEventListener("hashchange", checkAdminHash);
+
 // Initialisation au chargement
-const initialRoute = parseRouteFromHash(window.location.hash);
-window.history.replaceState(initialRoute, "", buildHashForRoute(initialRoute.target, initialRoute.option));
+const isInitialAdmin = window.location.hash === "#admin";
+const initialRoute = parseRouteFromHash(isInitialAdmin ? "#menu" : window.location.hash);
+if (!isInitialAdmin) {
+  window.history.replaceState(initialRoute, "", buildHashForRoute(initialRoute.target, initialRoute.option));
+}
 switchView(initialRoute.target, initialRoute.option, false);
-syncWithNHLAPI(false);
+if (isInitialAdmin) {
+  openServiceStatusModal();
+}
+
+syncWithNHLAPI(false).then(() => {
+  if (window.location.hash === "#admin" || (statusModal && !statusModal.classList.contains("hidden"))) {
+    openServiceStatusModal();
+  }
+});

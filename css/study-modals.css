@@ -358,3 +358,53 @@
   font-size: 0.76rem;
   color: var(--text-muted);
 }
+
+/* Tableau de diagnostic #admin */
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.status-table th,
+.status-table td {
+  padding: 0.75rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: middle;
+}
+
+.status-table th {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.status-table small {
+  color: var(--text-muted);
+  font-size: 0.73rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-pill.ok {
+  background: rgba(31, 139, 76, 0.22);
+  color: #7ee2a8;
+  border: 1px solid rgba(31, 139, 76, 0.5);
+}
+
+.status-pill.err {
+  background: rgba(175, 30, 45, 0.25);
+  color: #ff9aa5;
+  border: 1px solid rgba(175, 30, 45, 0.55);
+}
