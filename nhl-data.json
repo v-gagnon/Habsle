@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-15T21:35:27Z",
+    "updatedAt": "2026-11-16T19:52:44Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -1593,9 +1593,9 @@
     },
     "8481593": {
       "assists": 29,
-      "avgToi": "15:00",
+      "avgToi": "15:01",
       "gameWinningGoals": 0,
-      "gamesPlayed": 190,
+      "gamesPlayed": 191,
       "goals": 10,
       "otGoals": 0,
       "pim": 174,
