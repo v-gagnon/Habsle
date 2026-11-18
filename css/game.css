@@ -421,6 +421,15 @@
   background: #283663;
 }
 
+.autocomplete-item.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.autocomplete-item.disabled:hover {
+  background: transparent;
+}
+
 .hint-pill {
   font-size: 0.8rem;
   color: var(--text-muted);

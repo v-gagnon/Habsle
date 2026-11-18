@@ -131,6 +131,21 @@ function toggleNavDropdown(dropdownEl, menuEl, triggerEl) {
   }
 }
 
+function updateDailyMenuButtons() {
+  const dailyButtons = [
+    { id: "menu-start-daily-btn", mode: "daily" },
+    { id: "menu-start-daily-remix-btn", mode: "dailyRemix" },
+    { id: "menu-start-daily-expert-btn", mode: "dailyExpert" },
+    { id: "menu-start-daily-image-btn", mode: "dailyImage" }
+  ];
+
+  dailyButtons.forEach(({ id, mode }) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.toggle("daily-completed", isDailyModeCompletedToday(mode));
+  });
+}
+
 function updateNavbarActiveState() {
   const variantNames = {
     classic: "Standard",
@@ -289,6 +304,7 @@ function switchView(target, option = null, pushHistory = true) {
     renderStudyDirectory(studySearchInput.value);
   }
 
+  updateDailyMenuButtons();
   updateNavbarActiveState();
 
   if (pushHistory) {
@@ -393,7 +409,8 @@ function openImageConfigPanel() {
 }
 
 function startNewPracticeGame(variant = sessions.practice.variant || "classic") {
-  sessions.practice.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+  const pool = getPlayablePlayers();
+  sessions.practice.secretPlayer = pool[Math.floor(Math.random() * pool.length)];
   sessions.practice.guesses = [];
   sessions.practice.gameOver = false;
   sessions.practice.endReason = null;
@@ -421,7 +438,8 @@ function startNewCustomGame(hideConfigPanel = true) {
   }
   saveCustomPrefs();
 
-  sessions.custom.secretPlayer = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+  const pool = getPlayablePlayers();
+  sessions.custom.secretPlayer = pool[Math.floor(Math.random() * pool.length)];
   sessions.custom.guesses = [];
   sessions.custom.gameOver = false;
   sessions.custom.endReason = null;
@@ -581,13 +599,16 @@ function updateAutocomplete() {
   const showHints = studyModeCheckbox.checked;
 
   matches.forEach(player => {
+    const playable = isPlayablePlayer(player);
     const item = document.createElement("div");
-    item.className = "autocomplete-item";
+    item.className = `autocomplete-item ${playable ? "" : "disabled"}`;
     item.innerHTML = `
       <strong>${player.name}</strong>
       ${showHints ? `<span class="hint-pill">#${player.number} • ${player.pos} • ${player.unit}</span>` : ""}
     `;
-    item.addEventListener("click", () => submitGuess(player));
+    if (playable) {
+      item.addEventListener("click", () => submitGuess(player));
+    }
     autocompleteEl.appendChild(item);
   });
 
@@ -597,7 +618,7 @@ function updateAutocomplete() {
 // --- SOUMISSION D'UN ESSAI ---
 function submitGuess(player) {
   const session = sessions[activeGameMode];
-  if (session.gameOver || session.guesses.includes(player.id)) return;
+  if (!isPlayablePlayer(player) || session.gameOver || session.guesses.includes(player.id)) return;
 
   session.guesses.push(player.id);
   const attemptNumber = session.guesses.length;
@@ -682,6 +703,7 @@ function finishSession(reason) {
 
   if (isDailyMode(activeGameMode)) {
     saveDailySession(activeGameMode);
+    updateDailyMenuButtons();
   }
 
   showEndGameCard(session, reason !== "giveup" && !isImageSession(session));
@@ -856,7 +878,6 @@ playAgainBtn.addEventListener("click", restartCurrentGameSameType);
 backToMenuBtn.addEventListener("click", () => switchView("menu"));
 dailyBackToMenuBtn.addEventListener("click", () => switchView("menu"));
 
-document.getElementById("refresh-api-btn").addEventListener("click", () => syncWithNHLAPI(true));
 studySearchInput.addEventListener("input", e => renderStudyDirectory(e.target.value));
 
 inputEl.addEventListener("input", updateAutocomplete);
@@ -864,7 +885,7 @@ studyModeCheckbox.addEventListener("change", updateAutocomplete);
 
 inputEl.addEventListener("keydown", e => {
   if (e.key === "Enter") {
-    const firstItem = autocompleteEl.querySelector(".autocomplete-item");
+    const firstItem = autocompleteEl.querySelector(".autocomplete-item:not(.disabled)");
     if (firstItem) firstItem.click();
   }
 });

@@ -23,6 +23,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 DATA_JS_PATH = ROOT_DIR / "js" / "data.js"
 OUTPUT_JSON_PATH = ROOT_DIR / "nhl-data.json"
 
+NHL_SEARCH_URL = "https://search.d3.nhle.com/api/v1/search/player?culture=en-us&limit=5&q={query}"
 NHL_ROSTER_URL = "https://api-web.nhle.com/v1/roster/MTL/current"
 NHL_STATS_URL = "https://api-web.nhle.com/v1/club-stats/MTL/now"
 NHL_PLAYER_URL = "https://api-web.nhle.com/v1/player/{pid}/landing"
@@ -244,6 +245,13 @@ def fetch_daily_faceoff_lines():
         elif group_id in INJURED_GROUPS or entry.get("injuryStatus"):
             info["injured"] = True
 
+        jersey_num = entry.get("jerseyNumber") or entry.get("number")
+        if jersey_num is not None and "number" not in info:
+            try:
+                info["number"] = int(jersey_num)
+            except (ValueError, TypeError):
+                pass
+
     # Tri SN avant IN et ajout de "Aucune" si vide
     order = {"SN 1": 1, "SN 2": 2, "IN 1": 3, "IN 2": 4}
     for info in lines.values():
@@ -256,7 +264,83 @@ def fetch_daily_faceoff_lines():
 
     return lines
 
+def names_match(key_a: str, key_b: str) -> bool:
+    if not key_a or not key_b:
+        return False
+    if key_a == key_b:
+        return True
+    parts_a = key_a.split(" ")
+    parts_b = key_b.split(" ")
+    if len(parts_a) < 2 or len(parts_b) < 2:
+        return False
+    return parts_a[0][0] == parts_b[0][0] and parts_a[-1] == parts_b[-1]
 
+
+def enrich_missing_df_players(lines_data: dict, roster_data: dict, career_data: dict):
+    """Cherche dans l'API LNH tout joueur présent sur Daily Faceoff mais absent de roster_data."""
+    if not isinstance(lines_data, dict) or not isinstance(roster_data, dict):
+        return
+
+    existing_keys = set()
+    for group in ("forwards", "defensemen", "goalies"):
+        for p in roster_data.get(group, []):
+            full_name = f"{p.get('firstName', {}).get('default', '')} {p.get('lastName', {}).get('default', '')}"
+            existing_keys.add(normalize_name(full_name))
+
+    for df_key, df_info in lines_data.items():
+        if any(names_match(df_key, ek) for ek in existing_keys):
+            # Assure-toi que l'ID est bien propagé dans df_info si le joueur existe déjà dans le roster
+            for group in ("forwards", "defensemen", "goalies"):
+                for p in roster_data.get(group, []):
+                    full_name = f"{p.get('firstName', {}).get('default', '')} {p.get('lastName', {}).get('default', '')}"
+                    if names_match(df_key, normalize_name(full_name)):
+                        df_info["id"] = p.get("id")
+            continue
+
+        raw_name = df_info.get("name") or df_key
+        try:
+            q = urllib.parse.quote(raw_name)
+            results = fetch_json(NHL_SEARCH_URL.format(query=q), timeout=10)
+            if not isinstance(results, list) or not results:
+                continue
+
+            chosen = next(
+                (r for r in results if r.get("teamAbbrev") == "MTL" or r.get("lastTeamAbbrev") == "MTL"),
+                results[0],
+            )
+            pid = int(chosen["playerId"])
+            landing = fetch_json(NHL_PLAYER_URL.format(pid=pid), timeout=12)
+            if not isinstance(landing, dict):
+                continue
+
+            df_info["id"] = pid
+            pos_code = landing.get("position", "C")
+            synthetic_entry = {
+                "id": pid,
+                "headshot": landing.get("headshot"),
+                "firstName": landing.get("firstName", {"default": raw_name.split(" ")[0]}),
+                "lastName": landing.get("lastName", {"default": " ".join(raw_name.split(" ")[1:])}),
+                "sweaterNumber": landing.get("sweaterNumber") or df_info.get("number"),
+                "positionCode": pos_code,
+                "shootsCatches": landing.get("shootsCatches"),
+                "heightInInches": landing.get("heightInInches"),
+                "weightInPounds": landing.get("weightInPounds"),
+                "birthDate": landing.get("birthDate"),
+                "birthCity": landing.get("birthCity"),
+                "birthCountry": landing.get("birthCountry"),
+                "birthStateProvince": landing.get("birthStateProvince"),
+            }
+
+            target_group = "goalies" if pos_code == "G" else "defensemen" if pos_code == "D" else "forwards"
+            roster_data.setdefault(target_group, []).append(synthetic_entry)
+            existing_keys.add(df_key)
+
+            reg = landing.get("careerTotals", {}).get("regularSeason")
+            if isinstance(reg, dict):
+                career_data[str(pid)] = reg
+        except Exception as e:
+            print(f"[Enrichissement DF -> LNH] Erreur pour {raw_name}: {e}", file=sys.stderr)
+            
 def main():
     prev = load_previous_nhl_data()
     services_status = {}
@@ -332,8 +416,9 @@ def main():
     # 4. Daily Faceoff (Trios, Hors alignement, SN/IN)
     try:
         lines_data = fetch_daily_faceoff_lines()
+        enrich_missing_df_players(lines_data, roster_data, career_data)
         active_count = sum(1 for v in lines_data.values() if v.get("unit") and v.get("unit") != "Hors alignement")
-        inj_count = sum(1 for v in lines_data.values() if v.get("injured"))
+        inj_count = sum(1 for v in lines_data.values() if not v.get("unit") or v.get("unit") == "Hors alignement")
         services_status["dailyFaceoff"] = {
             "ok": len(lines_data) > 0,
             "count": len(lines_data),
@@ -364,7 +449,6 @@ def main():
         encoding="utf-8",
     )
     print(f"nhl-data.json généré avec succès ({len(all_ids)} joueurs).")
-
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-18T18:24:50Z",
+    "updatedAt": "2026-11-18T21:18:38Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -20,7 +20,7 @@
       "dailyFaceoff": {
         "ok": true,
         "count": 25,
-        "detail": "Opérationnel (20 alignés, 6 blessés/IR)"
+        "detail": "Opérationnel (20 alignés, 5 blessés/IR)"
       }
     }
   },
@@ -1878,7 +1878,9 @@
       "injured": false,
       "specialTeams": [
         "SN 1"
-      ]
+      ],
+      "number": 13,
+      "id": 8481540
     },
     "nick suzuki": {
       "name": "Nick Suzuki",
@@ -1888,7 +1890,9 @@
       "specialTeams": [
         "SN 1",
         "IN 2"
-      ]
+      ],
+      "number": 14,
+      "id": 8480018
     },
     "juraj slafkovsky": {
       "name": "Juraj Slafkovsky",
@@ -1897,7 +1901,9 @@
       "injured": false,
       "specialTeams": [
         "SN 1"
-      ]
+      ],
+      "number": 20,
+      "id": 8483515
     },
     "zack bolduc": {
       "name": "Zack Bolduc",
@@ -1906,7 +1912,9 @@
       "injured": false,
       "specialTeams": [
         "SN 1"
-      ]
+      ],
+      "number": 76,
+      "id": 8482737
     },
     "phillip danault": {
       "name": "Phillip Danault",
@@ -1915,7 +1923,9 @@
       "injured": false,
       "specialTeams": [
         "IN 1"
-      ]
+      ],
+      "number": 24,
+      "id": 8476479
     },
     "alexandre texier": {
       "name": "Alexandre Texier",
@@ -1925,7 +1935,9 @@
       "specialTeams": [
         "SN 2",
         "IN 2"
-      ]
+      ],
+      "number": 85,
+      "id": 8480074
     },
     "alex newhook": {
       "name": "Alex Newhook",
@@ -1934,7 +1946,9 @@
       "injured": false,
       "specialTeams": [
         "SN 2"
-      ]
+      ],
+      "number": 15,
+      "id": 8481618
     },
     "oliver kapanen": {
       "name": "Oliver Kapanen",
@@ -1943,7 +1957,8 @@
       "injured": false,
       "specialTeams": [
         "SN 2"
-      ]
+      ],
+      "id": 8482775
     },
     "kirby dach": {
       "name": "Kirby Dach",
@@ -1952,7 +1967,9 @@
       "injured": false,
       "specialTeams": [
         "SN 2"
-      ]
+      ],
+      "number": 77,
+      "id": 8481523
     },
     "florian xhekaj": {
       "name": "Florian Xhekaj",
@@ -1961,7 +1978,9 @@
       "injured": false,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 63,
+      "id": 8484403
     },
     "jake evans": {
       "name": "Jake Evans",
@@ -1970,7 +1989,9 @@
       "injured": false,
       "specialTeams": [
         "IN 1"
-      ]
+      ],
+      "number": 71,
+      "id": 8478133
     },
     "owen beck": {
       "name": "Owen Beck",
@@ -1979,7 +2000,8 @@
       "injured": false,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "id": 8483424
     },
     "lane hutson": {
       "name": "Lane Hutson",
@@ -1988,7 +2010,9 @@
       "injured": false,
       "specialTeams": [
         "SN 1"
-      ]
+      ],
+      "number": 48,
+      "id": 8483457
     },
     "noah dobson": {
       "name": "Noah Dobson",
@@ -1998,7 +2022,9 @@
       "specialTeams": [
         "SN 2",
         "IN 2"
-      ]
+      ],
+      "number": 8,
+      "id": 8480865
     },
     "kaiden guhle": {
       "name": "Kaiden Guhle",
@@ -2007,7 +2033,9 @@
       "injured": false,
       "specialTeams": [
         "IN 1"
-      ]
+      ],
+      "number": 21,
+      "id": 8482087
     },
     "alexandre carrier": {
       "name": "Alexandre Carrier",
@@ -2016,7 +2044,9 @@
       "injured": false,
       "specialTeams": [
         "IN 1"
-      ]
+      ],
+      "number": 45,
+      "id": 8478851
     },
     "arber xhekaj": {
       "name": "Arber Xhekaj",
@@ -2025,7 +2055,9 @@
       "injured": false,
       "specialTeams": [
         "IN 2"
-      ]
+      ],
+      "number": 72,
+      "id": 8482964
     },
     "adam engstrom": {
       "name": "Adam Engstrom",
@@ -2034,7 +2066,9 @@
       "injured": false,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 42,
+      "id": 8483686
     },
     "jacob fowler": {
       "name": "Jacob Fowler",
@@ -2043,7 +2077,9 @@
       "injured": false,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 32,
+      "id": 8484170
     },
     "jakub dobes": {
       "name": "Jakub Dobes",
@@ -2052,7 +2088,9 @@
       "injured": false,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 75,
+      "id": 8482487
     },
     "ivan demidov": {
       "name": "Ivan Demidov",
@@ -2061,7 +2099,8 @@
       "injured": true,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "id": 8484984
     },
     "sam montembeault": {
       "name": "Sam Montembeault",
@@ -2070,7 +2109,9 @@
       "injured": true,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 35,
+      "id": 8478470
     },
     "josh anderson": {
       "name": "Josh Anderson",
@@ -2079,7 +2120,9 @@
       "injured": true,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 17,
+      "id": 8476981
     },
     "chris kreider": {
       "name": "Chris Kreider",
@@ -2088,7 +2131,9 @@
       "injured": true,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 22,
+      "id": 8475184
     },
     "mike matheson": {
       "name": "Mike Matheson",
@@ -2097,7 +2142,9 @@
       "injured": true,
       "specialTeams": [
         "Aucune"
-      ]
+      ],
+      "number": 8,
+      "id": 8476875
     }
   }
 }

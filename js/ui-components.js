@@ -8,27 +8,27 @@ const GROUP_SORT_ORDER = { ATT: 1, DEF: 2, GAR: 3 };
 
 function sortPlayersForUnit(players) {
   return [...players].sort((a, b) => {
-    // 1. Si l'unité mélange plusieurs groupes (ex: Hors alignement) : ATT -> DEF -> GAR
     const groupDiff = (GROUP_SORT_ORDER[a.posGroup] || 9) - (GROUP_SORT_ORDER[b.posGroup] || 9);
     if (groupDiff !== 0) return groupDiff;
 
-    // 2. Défenseurs : trier selon le lancer (G -> D)
+    const numA = typeof a.number === "number" ? a.number : 999;
+    const numB = typeof b.number === "number" ? b.number : 999;
+
     if (a.posGroup === "DEF") {
       const shootDiff = (SHOOTS_SORT_ORDER[a.shoots] || 9) - (SHOOTS_SORT_ORDER[b.shoots] || 9);
       if (shootDiff !== 0) return shootDiff;
-      return a.number - b.number;
+      return numA - numB;
     }
 
-    // 3. Attaquants : trier selon la position (AG -> C -> AD), puis par lancer (G -> D) en cas d'égalité
     if (a.posGroup === "ATT") {
       const posDiff = (POS_SORT_ORDER[a.pos] || 9) - (POS_SORT_ORDER[b.pos] || 9);
       if (posDiff !== 0) return posDiff;
       const shootDiff = (SHOOTS_SORT_ORDER[a.shoots] || 9) - (SHOOTS_SORT_ORDER[b.shoots] || 9);
       if (shootDiff !== 0) return shootDiff;
-      return a.number - b.number;
+      return numA - numB;
     }
 
-    return a.number - b.number;
+    return numA - numB;
   });
 }
 
@@ -90,6 +90,11 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
 function openRosterModal() {
   const rosterModal = document.getElementById("roster-modal");
   const rosterListContent = document.getElementById("roster-list-content");
+  const modalHeaderTitle = rosterModal.querySelector(".modal-header h2");
+  if (modalHeaderTitle) {
+    modalHeaderTitle.textContent = `Alignement des Canadiens (${PLAYERS.length} joueurs)`;
+  }
+
   const session = sessions[activeGameMode];
   const guessedSet = new Set(session.guesses);
   rosterListContent.innerHTML = "";
@@ -107,17 +112,20 @@ function openRosterModal() {
 
     unitPlayers.forEach(player => {
       const isGuessed = guessedSet.has(player.id);
+      const isSelectable = isPlayablePlayer(player) && !isGuessed && !session.gameOver;
+      const ageLabel = typeof player.age === "number" ? `${player.age}a` : player.age;
+
       const card = document.createElement("div");
-      card.className = `roster-player-card ${isGuessed || session.gameOver ? "already-guessed" : ""}`;
+      card.className = `roster-player-card ${isSelectable ? "" : "already-guessed"}`;
       card.innerHTML = `
         <div class="roster-player-main">
           <span class="roster-num">#${player.number}</span>
           <span class="roster-name">${player.name}</span>
         </div>
-        <span class="roster-meta">${player.pos} • ${player.age}a • ${player.country}</span>
+        <span class="roster-meta">${player.pos} • ${ageLabel} • ${player.country}</span>
       `;
 
-      if (!isGuessed && !session.gameOver) {
+      if (isSelectable) {
         card.addEventListener("click", () => {
           rosterModal.classList.add("hidden");
           submitGuess(player);

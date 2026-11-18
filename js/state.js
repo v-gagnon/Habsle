@@ -154,19 +154,20 @@ function getTodayKey() {
 }
 
 function getDailyPlayerForDate(dateKey) {
+  const pool = getPlayablePlayers();
   let hash = 2166136261;
   for (let i = 0; i < dateKey.length; i++) {
     hash ^= dateKey.charCodeAt(i);
     hash = Math.imul(hash, 16777619);
   }
-  const index = Math.abs(hash) % PLAYERS.length;
-  return PLAYERS[index];
+  const index = Math.abs(hash) % pool.length;
+  return pool[index];
 }
 
 function getDailyRemixSetupForDate(dateKey) {
   const rng = createSeededRNG(`${dateKey}-habsle-remix-v2`);
   const classicPlayer = getDailyPlayerForDate(dateKey);
-  const candidates = PLAYERS.filter(p => p.id !== classicPlayer.id);
+  const candidates = getPlayablePlayers().filter(p => p.id !== classicPlayer.id);
   const secretPlayer = candidates[Math.floor(rng() * candidates.length)];
   const columns = generateRemixedColumns(rng);
   return { secretPlayer, columns };
@@ -176,7 +177,7 @@ function getDailyExpertSetupForDate(dateKey) {
   const rng = createSeededRNG(`${dateKey}-habsle-expert-v1`);
   const classicPlayer = getDailyPlayerForDate(dateKey);
   const remixSetup = getDailyRemixSetupForDate(dateKey);
-  const candidates = PLAYERS.filter(
+  const candidates = getPlayablePlayers().filter(
     p => p.id !== classicPlayer.id && p.id !== remixSetup.secretPlayer.id
   );
   const secretPlayer = candidates[Math.floor(rng() * candidates.length)];
@@ -194,7 +195,7 @@ function getDailyImagePlayerForDate(dateKey) {
     remixSetup.secretPlayer.id,
     expertSetup.secretPlayer.id
   ]);
-  const candidates = PLAYERS.filter(p => !excludedIds.has(p.id));
+  const candidates = getPlayablePlayers().filter(p => !excludedIds.has(p.id));
   return candidates[Math.floor(rng() * candidates.length)];
 }
 
@@ -205,12 +206,30 @@ function getStorageKeyForDailyMode(modeKey) {
   return DAILY_STORAGE_KEY;
 }
 
+function isDailyModeCompletedToday(modeKey) {
+  const todayKey = getTodayKey();
+  const session = sessions[modeKey];
+  if (session && session.dateKey === todayKey && session.gameOver) {
+    return true;
+  }
+  try {
+    const raw = localStorage.getItem(getStorageKeyForDailyMode(modeKey));
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    return parsed.dateKey === todayKey && Boolean(parsed.gameOver);
+  } catch (e) {
+    return false;
+  }
+}
+
 function saveDailySession(modeKey) {
   const session = sessions[modeKey];
   const storageKey = getStorageKeyForDailyMode(modeKey);
+  const todayKey = getTodayKey();
+  session.dateKey = todayKey;
 
   const payload = {
-    dateKey: getTodayKey(),
+    dateKey: todayKey,
     guesses: session.guesses,
     gameOver: session.gameOver,
     endReason: session.endReason
@@ -220,6 +239,7 @@ function saveDailySession(modeKey) {
 
 function loadDailySession() {
   const todayKey = getTodayKey();
+  sessions.daily.dateKey = todayKey;
   sessions.daily.secretPlayer = getDailyPlayerForDate(todayKey);
   sessions.daily.variant = "classic";
   sessions.daily.hideArrows = false;
@@ -246,6 +266,7 @@ function loadDailySession() {
 function loadDailyRemixSession() {
   const todayKey = getTodayKey();
   const setup = getDailyRemixSetupForDate(todayKey);
+  sessions.dailyRemix.dateKey = todayKey;
   sessions.dailyRemix.secretPlayer = setup.secretPlayer;
   sessions.dailyRemix.variant = "remix";
   sessions.dailyRemix.hideArrows = false;
@@ -272,6 +293,7 @@ function loadDailyRemixSession() {
 function loadDailyExpertSession() {
   const todayKey = getTodayKey();
   const setup = getDailyExpertSetupForDate(todayKey);
+  sessions.dailyExpert.dateKey = todayKey;
   sessions.dailyExpert.secretPlayer = setup.secretPlayer;
   sessions.dailyExpert.variant = "expert";
   sessions.dailyExpert.hideArrows = true;
@@ -297,6 +319,7 @@ function loadDailyExpertSession() {
 
 function loadDailyImageSession() {
   const todayKey = getTodayKey();
+  sessions.dailyImage.dateKey = todayKey;
   sessions.dailyImage.secretPlayer = getDailyImagePlayerForDate(todayKey);
   sessions.dailyImage.variant = "image";
   sessions.dailyImage.hideArrows = true;

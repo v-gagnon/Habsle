@@ -264,6 +264,20 @@ const STAT_POOL_COLUMNS = [
 ];
 const ALL_AVAILABLE_COLUMNS = [...CLASSIC_COLUMNS, ...STAT_POOL_COLUMNS];
 
+// Identifiants des 25 joueurs de base éligibles aux défis et parties
+const CORE_PLAYER_IDS = new Set(PLAYERS.map(p => p.id));
+PLAYERS.forEach(p => {
+  p.isPlayable = true;
+});
+
+function isPlayablePlayer(player) {
+  return Boolean(player && player.isPlayable !== false);
+}
+
+function getPlayablePlayers() {
+  return PLAYERS.filter(isPlayablePlayer);
+}
+
 // État des services pour le tableau #admin
 const SERVICE_STATUS = {
   source: "Données locales intégrées (data.js)",
@@ -292,7 +306,10 @@ function getPlayerPhotoUrl(player) {
 }
 
 function getPlayerFallbackPhotoUrl(player) {
-  return `https://assets.nhle.com/mugs/nhl/latest/${player.id}.png`;
+  if (player && typeof player.id === "number" && player.id >= 8000000) {
+    return `https://assets.nhle.com/mugs/nhl/latest/${player.id}.png`;
+  }
+  return "https://assets.nhle.com/mugs/nhl/default-skater.png";
 }
 
 function parseHeightToInches(heightStr) {
@@ -606,30 +623,117 @@ function normalizeLookupKey(nameStr) {
     .toLowerCase();
 }
 
-function findLineInfoForPlayer(player, linesData) {
+function formatInchesToHeight(inches) {
+  if (typeof inches !== "number" || inches <= 0) return "—";
+  return `${Math.floor(inches / 12)}'${inches % 12}"`;
+}
+
+function formatHometownFromRoster(entry) {
+  if (!entry) return "—";
+  const city = entry.birthCity?.default;
+  const region = entry.birthStateProvince?.default || entry.birthCountry;
+  if (city && region) return `${city}, ${region}`;
+  return city || region || "—";
+}
+
+function matchesNormalizedNames(keyA, keyB) {
+  if (!keyA || !keyB) return false;
+  if (keyA === keyB) return true;
+  const partsA = keyA.split(" ");
+  const partsB = keyB.split(" ");
+  if (partsA.length < 2 || partsB.length < 2) return false;
+  return (
+    partsA[0][0] === partsB[0][0] &&
+    partsA[partsA.length - 1] === partsB[partsB.length - 1]
+  );
+}
+
+function findLineEntryForPlayer(player, linesData, usedKeys = null) {
   if (!player || !linesData) return null;
 
-  // 1. Essai avec le nom complet exact
   const fullKey = normalizeLookupKey(player.name);
-  if (linesData[fullKey]) return linesData[fullKey];
-
-  // 2. Repli : Nom de famille + initiale du prénom (ex: "zack bolduc" <-> "zachary bolduc")
-  const parts = fullKey.split(" ");
-  if (parts.length < 2) return null;
-  const firstInitial = parts[0][0];
-  const lastName = parts[parts.length - 1];
+  if (linesData[fullKey] && (!usedKeys || !usedKeys.has(fullKey))) {
+    return { key: fullKey, info: linesData[fullKey] };
+  }
 
   for (const [dfKey, dfInfo] of Object.entries(linesData)) {
-    const dfParts = dfKey.split(" ");
-    if (dfParts.length < 2) continue;
-    const dfInitial = dfParts[0][0];
-    const dfLast = dfParts[dfParts.length - 1];
-    if (dfLast === lastName && dfInitial === firstInitial) {
-      return dfInfo;
+    if (usedKeys && usedKeys.has(dfKey)) continue;
+    if (matchesNormalizedNames(fullKey, dfKey)) {
+      return { key: dfKey, info: dfInfo };
     }
   }
 
   return null;
+}
+
+function findLineInfoForPlayer(player, linesData) {
+  const match = findLineEntryForPlayer(player, linesData);
+  return match ? match.info : null;
+}
+
+function createDefaultStatsForGroup(posGroup) {
+  if (posGroup === "GAR") {
+    return { gp: 0, gs: 0, w: 0, l: 0, otl: 0, gaa: "—", svPct: "—", so: 0, saves: 0, shotsAgainst: 0 };
+  }
+  return { gp: 0, g: 0, a: 0, pts: 0, plusMinus: 0, pim: 0, ppg: 0, gwg: 0, shots: 0, shPct: "0.0%", toi: "—", fowPct: "—" };
+}
+
+function buildDynamicPlayerFromDailyFaceoff(dfKey, dfInfo, allRosterEntries, allStatsEntries, indexSeed) {
+  const rosterEntry = allRosterEntries.find(e => {
+    if (dfInfo.id && e.id === dfInfo.id) return true;
+    const eName = `${e.firstName?.default || ""} ${e.lastName?.default || ""}`;
+    return matchesNormalizedNames(normalizeLookupKey(eName), dfKey);
+  });
+
+  const statsEntry = allStatsEntries.find(s => {
+    if (rosterEntry && s.playerId === rosterEntry.id) return true;
+    if (dfInfo.id && s.playerId === dfInfo.id) return true;
+    const sName = `${s.firstName?.default || ""} ${s.lastName?.default || ""}`;
+    return matchesNormalizedNames(normalizeLookupKey(sName), dfKey);
+  });
+
+  const posCode = rosterEntry?.positionCode || statsEntry?.positionCode;
+  const mappedPos = posCode && NHL_POS_CODE_MAP[posCode] ? NHL_POS_CODE_MAP[posCode] : null;
+
+  const pos = dfInfo.pos || mappedPos?.pos || "C";
+  const posGroup = mappedPos?.group || (pos === "G" ? "GAR" : pos === "D" ? "DEF" : "ATT");
+
+  const fullName = rosterEntry?.firstName?.default && rosterEntry?.lastName?.default
+    ? `${rosterEntry.firstName.default} ${rosterEntry.lastName.default}`
+    : statsEntry?.firstName?.default && statsEntry?.lastName?.default
+    ? `${statsEntry.firstName.default} ${statsEntry.lastName.default}`
+    : dfInfo.name || dfKey;
+
+  const roleLabel =
+    posGroup === "GAR" ? "Gardien" : posGroup === "DEF" ? "Défenseur" : "Attaquant";
+
+  return {
+    id: rosterEntry?.id || statsEntry?.playerId || dfInfo.id || (1000000 + indexSeed),
+    name: fullName,
+    number: rosterEntry?.sweaterNumber ?? dfInfo.number ?? "—",
+    pos,
+    posGroup,
+    unit: dfInfo.unit && dfInfo.unit !== INJURED_UNIT ? dfInfo.unit : INJURED_UNIT,
+    unitGroup: posGroup,
+    specialTeams: Array.isArray(dfInfo.specialTeams) && dfInfo.specialTeams.length > 0
+      ? dfInfo.specialTeams
+      : ["Aucune"],
+    age: calculateAgeFromBirthDate(rosterEntry?.birthDate) ?? dfInfo.age ?? "—",
+    shoots: rosterEntry?.shootsCatches ? (rosterEntry.shootsCatches === "L" ? "G" : "D") : (dfInfo.shoots || "—"),
+    country: rosterEntry?.birthCountry || dfInfo.country || "—",
+    height: formatInchesToHeight(rosterEntry?.heightInInches) !== "—"
+      ? formatInchesToHeight(rosterEntry?.heightInInches)
+      : (dfInfo.height || "—"),
+    weight: rosterEntry?.weightInPounds ?? dfInfo.weight ?? "—",
+    hometown: formatHometownFromRoster(rosterEntry) !== "—"
+      ? formatHometownFromRoster(rosterEntry)
+      : (dfInfo.hometown || "—"),
+    note: `${roleLabel} de l'alignement des Canadiens (Daily Faceoff)`,
+    headshotUrl: rosterEntry?.headshot || statsEntry?.headshot || dfInfo.headshotUrl || null,
+    stats: createDefaultStatsForGroup(posGroup),
+    careerStats: createDefaultStatsForGroup(posGroup),
+    isPlayable: false
+  };
 }
 
 function applyCareerRegularSeasonObj(player, reg) {
@@ -659,7 +763,7 @@ function applyCareerRegularSeasonObj(player, reg) {
       ppg: reg.powerPlayGoals ?? 0,
       gwg: reg.gameWinningGoals ?? 0,
       shots: reg.shots ?? 0,
-      shPct: typeof reg.shootingPctg === "number" ? `${(s = reg.shootingPctg * 100).toFixed(1)}%` : "0.0%",
+      shPct: typeof reg.shootingPctg === "number" ? `${(reg.shootingPctg * 100).toFixed(1)}%` : "0.0%",
       toi: reg.avgToi || "—",
       fowPct: typeof reg.faceoffWinningPctg === "number" && reg.faceoffWinningPctg > 0
         ? `${(reg.faceoffWinningPctg * 100).toFixed(1)}%`
@@ -678,49 +782,88 @@ const NHL_POS_CODE_MAP = {
 };
 
 function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = null, metaData = null) {
-  // 1. Alignement et positions depuis le fichier de la LNH
-  let rosterCount = 0;
-  if (rosterData) {
-    const allRosterEntries = [
-      ...(rosterData.forwards || []),
-      ...(rosterData.defensemen || []),
-      ...(rosterData.goalies || [])
-    ];
-    rosterCount = allRosterEntries.length;
+  const allRosterEntries = rosterData
+    ? [
+        ...(rosterData.forwards || []),
+        ...(rosterData.defensemen || []),
+        ...(rosterData.goalies || [])
+      ]
+    : [];
 
-    allRosterEntries.forEach(entry => {
-      const player = PLAYERS.find(p => p.id === entry.id);
-      if (!player) return;
+  const allStatsEntries = statsData
+    ? [
+        ...(statsData.skaters || []),
+        ...(statsData.goalies || [])
+      ]
+    : [];
 
-      // La position et le groupe (ATT, DEF, GAR) viennent exclusivement de la LNH
-      if (entry.positionCode && NHL_POS_CODE_MAP[entry.positionCode]) {
-        const mapped = NHL_POS_CODE_MAP[entry.positionCode];
-        player.pos = mapped.pos;
-        player.posGroup = mapped.group;
-        player.unitGroup = mapped.group;
+  // 0. Ajout propre des joueurs présents sur Daily Faceoff mais absents des 25 joueurs de base
+  if (linesData && typeof linesData === "object" && Object.keys(linesData).length >= 15) {
+    for (let i = PLAYERS.length - 1; i >= 0; i--) {
+      if (!CORE_PLAYER_IDS.has(PLAYERS[i].id)) {
+        PLAYERS.splice(i, 1);
       }
+    }
 
-      if (typeof entry.sweaterNumber === "number") {
-        player.number = entry.sweaterNumber;
-      }
-      if (entry.shootsCatches) {
-        player.shoots = entry.shootsCatches === "L" ? "G" : "D";
-      }
-      if (entry.birthCountry) {
-        player.country = entry.birthCountry;
-      }
-      if (entry.birthDate) {
-        const computedAge = calculateAgeFromBirthDate(entry.birthDate);
-        if (computedAge) player.age = computedAge;
-      }
-      if (entry.headshot) {
-        player.headshotUrl = entry.headshot;
-      }
-      if (typeof entry.weightInPounds === "number") {
-        player.weight = entry.weightInPounds;
-      }
+    const matchedDfKeys = new Set();
+    PLAYERS.forEach(corePlayer => {
+      const match = findLineEntryForPlayer(corePlayer, linesData, matchedDfKeys);
+      if (match) matchedDfKeys.add(match.key);
     });
+
+    let extraIndex = 1;
+    for (const [dfKey, dfInfo] of Object.entries(linesData)) {
+      if (matchedDfKeys.has(dfKey)) continue;
+      const dynamicPlayer = buildDynamicPlayerFromDailyFaceoff(
+        dfKey,
+        dfInfo,
+        allRosterEntries,
+        allStatsEntries,
+        extraIndex++
+      );
+      PLAYERS.push(dynamicPlayer);
+    }
   }
+
+  // 1. Alignement et positions depuis le fichier de la LNH
+  const rosterCount = allRosterEntries.length;
+  allRosterEntries.forEach(entry => {
+    const player = PLAYERS.find(p => p.id === entry.id);
+    if (!player) return;
+
+    if (entry.positionCode && NHL_POS_CODE_MAP[entry.positionCode]) {
+      const mapped = NHL_POS_CODE_MAP[entry.positionCode];
+      player.pos = mapped.pos;
+      player.posGroup = mapped.group;
+      player.unitGroup = mapped.group;
+    }
+
+    if (typeof entry.sweaterNumber === "number") {
+      player.number = entry.sweaterNumber;
+    }
+    if (entry.shootsCatches) {
+      player.shoots = entry.shootsCatches === "L" ? "G" : "D";
+    }
+    if (entry.birthCountry) {
+      player.country = entry.birthCountry;
+    }
+    if (entry.birthDate) {
+      const computedAge = calculateAgeFromBirthDate(entry.birthDate);
+      if (computedAge) player.age = computedAge;
+    }
+    if (entry.headshot) {
+      player.headshotUrl = entry.headshot;
+    }
+    if (typeof entry.weightInPounds === "number") {
+      player.weight = entry.weightInPounds;
+    }
+    if (typeof entry.heightInInches === "number" && (!player.height || player.height === "—")) {
+      player.height = formatInchesToHeight(entry.heightInInches);
+    }
+    if (!player.hometown || player.hometown === "—") {
+      player.hometown = formatHometownFromRoster(entry);
+    }
+  });
 
   // 2. Statistiques de la saison actuelle LNH
   let statsCount = 0;
@@ -791,28 +934,23 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
     dfCount = dfKeys.length;
 
     if (dfCount >= 15) {
+      const usedKeys = new Set();
       PLAYERS.forEach(player => {
-        const info = findLineInfoForPlayer(player, linesData);
+        const match = findLineEntryForPlayer(player, linesData, usedKeys);
+        const info = match ? match.info : null;
+        if (match) usedKeys.add(match.key);
 
-        // Le groupe d'unité pour le jeu reste toujours celui de la LNH (ATT, DEF, GAR)
         player.unitGroup = player.posGroup;
 
         if (info) {
-          // Utilise la vraie position de match issue de Daily Faceoff (ex: Caufield -> AG, Newhook -> AG, Dach -> AD)
           if (info.pos) {
             player.pos = info.pos;
           }
 
-          if (info.injured || info.unit === INJURED_UNIT || !info.unit) {
-            player.unit = INJURED_UNIT;
-          } else {
+          if (info.unit && info.unit !== INJURED_UNIT) {
             player.unit = info.unit;
-          }
-
-          if (info.injured || info.unit === INJURED_UNIT || !info.unit) {
-            player.unit = INJURED_UNIT;
           } else {
-            player.unit = info.unit;
+            player.unit = INJURED_UNIT;
           }
 
           if (Array.isArray(info.specialTeams) && info.specialTeams.length > 0) {
@@ -821,7 +959,6 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
             player.specialTeams = ["Aucune"];
           }
         } else {
-          // Joueur non habillé dans l'alignement actif sur Daily Faceoff -> Hors alignement
           player.unit = INJURED_UNIT;
           player.specialTeams = ["Aucune"];
         }
@@ -878,7 +1015,9 @@ async function fetchViaCORSFallback(targetUrl) {
 }
 
 async function fetchPlayerCareerFromAPI(player) {
-  if (!player || player._careerSynced) return false;
+  if (!player || player._careerSynced || typeof player.id !== "number" || player.id < 8000000) {
+    return false;
+  }
   const data = await fetchViaCORSFallback(`https://api-web.nhle.com/v1/player/${player.id}/landing`);
   const reg = data?.careerTotals?.regularSeason;
   if (!reg) return false;
