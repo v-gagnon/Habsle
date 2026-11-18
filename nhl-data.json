@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-17T18:45:51Z",
+    "updatedAt": "2026-11-18T18:24:50Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -20,7 +20,7 @@
       "dailyFaceoff": {
         "ok": true,
         "count": 25,
-        "detail": "Opérationnel (20 alignés, 5 blessés/IR)"
+        "detail": "Opérationnel (20 alignés, 6 blessés/IR)"
       }
     }
   },
@@ -1593,20 +1593,20 @@
     },
     "8481593": {
       "assists": 29,
-      "avgToi": "15:01",
+      "avgToi": "15:02",
       "gameWinningGoals": 0,
-      "gamesPlayed": 191,
+      "gamesPlayed": 192,
       "goals": 10,
       "otGoals": 0,
       "pim": 174,
-      "plusMinus": 0,
+      "plusMinus": 1,
       "points": 39,
       "powerPlayGoals": 0,
       "powerPlayPoints": 0,
-      "shootingPctg": 0.0781,
+      "shootingPctg": 0.0775,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 128
+      "shots": 129
     },
     "8481618": {
       "assists": 86,
@@ -1921,7 +1921,7 @@
       "name": "Alexandre Texier",
       "unit": "Trio 2",
       "pos": "AD",
-      "injured": false,
+      "injured": true,
       "specialTeams": [
         "SN 2",
         "IN 2"
@@ -2081,8 +2081,8 @@
         "Aucune"
       ]
     },
-    "mike matheson": {
-      "name": "Mike Matheson",
+    "chris kreider": {
+      "name": "Chris Kreider",
       "unit": "Hors alignement",
       "pos": null,
       "injured": true,
@@ -2090,8 +2090,8 @@
         "Aucune"
       ]
     },
-    "chris kreider": {
-      "name": "Chris Kreider",
+    "mike matheson": {
+      "name": "Mike Matheson",
       "unit": "Hors alignement",
       "pos": null,
       "injured": true,
