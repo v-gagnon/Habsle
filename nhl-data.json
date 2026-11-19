@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-18T21:18:38Z",
+    "updatedAt": "2026-11-19T18:41:12Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -9,8 +9,8 @@
       },
       "nhlStats": {
         "ok": true,
-        "count": 26,
-        "detail": "Opérationnel (26 fiches de saison)"
+        "count": 27,
+        "detail": "Opérationnel (27 fiches de saison)"
       },
       "nhlCareer": {
         "ok": true,
@@ -733,7 +733,7 @@
           "default": "Danault"
         },
         "positionCode": "C",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 3,
         "assists": 5,
         "points": 8,
@@ -745,9 +745,9 @@
         "overtimeGoals": 0,
         "shots": 34,
         "shootingPctg": 0.088235,
-        "avgTimeOnIcePerGame": 1030.0952,
-        "avgShiftsPerGame": 21.6667,
-        "faceoffWinPctg": 0.549342
+        "avgTimeOnIcePerGame": 1036.3636,
+        "avgShiftsPerGame": 21.5,
+        "faceoffWinPctg": 0.557325
       },
       {
         "playerId": 8476875,
@@ -811,21 +811,21 @@
           "default": "Evans"
         },
         "positionCode": "C",
-        "gamesPlayed": 21,
-        "goals": 3,
+        "gamesPlayed": 22,
+        "goals": 4,
         "assists": 5,
-        "points": 8,
-        "plusMinus": 3,
+        "points": 9,
+        "plusMinus": 5,
         "penaltyMinutes": 2,
         "powerPlayGoals": 0,
         "shorthandedGoals": 1,
-        "gameWinningGoals": 2,
+        "gameWinningGoals": 3,
         "overtimeGoals": 0,
-        "shots": 16,
-        "shootingPctg": 0.1875,
-        "avgTimeOnIcePerGame": 918.8095,
-        "avgShiftsPerGame": 19.1429,
-        "faceoffWinPctg": 0.548276
+        "shots": 18,
+        "shootingPctg": 0.222222,
+        "avgTimeOnIcePerGame": 926.6364,
+        "avgShiftsPerGame": 19.1818,
+        "faceoffWinPctg": 0.55298
       },
       {
         "playerId": 8478851,
@@ -837,20 +837,20 @@
           "default": "Carrier"
         },
         "positionCode": "D",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 1,
         "assists": 6,
         "points": 7,
-        "plusMinus": 6,
+        "plusMinus": 7,
         "penaltyMinutes": 14,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 1,
         "overtimeGoals": 0,
-        "shots": 16,
-        "shootingPctg": 0.0625,
-        "avgTimeOnIcePerGame": 1219.381,
-        "avgShiftsPerGame": 24.9048,
+        "shots": 17,
+        "shootingPctg": 0.058824,
+        "avgTimeOnIcePerGame": 1230.1818,
+        "avgShiftsPerGame": 25.0455,
         "faceoffWinPctg": 0.0
       },
       {
@@ -863,21 +863,21 @@
           "default": "Suzuki"
         },
         "positionCode": "C",
-        "gamesPlayed": 15,
-        "goals": 8,
+        "gamesPlayed": 16,
+        "goals": 9,
         "assists": 9,
-        "points": 17,
-        "plusMinus": 9,
+        "points": 18,
+        "plusMinus": 8,
         "penaltyMinutes": 2,
-        "powerPlayGoals": 1,
+        "powerPlayGoals": 2,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 38,
-        "shootingPctg": 0.210526,
-        "avgTimeOnIcePerGame": 1256.1333,
-        "avgShiftsPerGame": 22.3333,
-        "faceoffWinPctg": 0.554348
+        "shots": 43,
+        "shootingPctg": 0.209302,
+        "avgTimeOnIcePerGame": 1251.1875,
+        "avgShiftsPerGame": 22.25,
+        "faceoffWinPctg": 0.561224
       },
       {
         "playerId": 8480074,
@@ -889,20 +889,20 @@
           "default": "Texier"
         },
         "positionCode": "L",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 2,
         "assists": 3,
         "points": 5,
-        "plusMinus": -1,
-        "penaltyMinutes": 10,
+        "plusMinus": -3,
+        "penaltyMinutes": 14,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 35,
-        "shootingPctg": 0.057143,
-        "avgTimeOnIcePerGame": 817.0952,
-        "avgShiftsPerGame": 16.9048,
+        "shots": 39,
+        "shootingPctg": 0.051282,
+        "avgTimeOnIcePerGame": 826.6364,
+        "avgShiftsPerGame": 17.1364,
         "faceoffWinPctg": 0.0
       },
       {
@@ -915,20 +915,20 @@
           "default": "Dobson"
         },
         "positionCode": "D",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 0,
         "assists": 9,
         "points": 9,
-        "plusMinus": -3,
+        "plusMinus": -5,
         "penaltyMinutes": 16,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 42,
+        "shots": 44,
         "shootingPctg": 0.0,
-        "avgTimeOnIcePerGame": 1259.8095,
-        "avgShiftsPerGame": 25.6667,
+        "avgTimeOnIcePerGame": 1258.3636,
+        "avgShiftsPerGame": 25.6364,
         "faceoffWinPctg": 0.0
       },
       {
@@ -941,20 +941,20 @@
           "default": "Dach"
         },
         "positionCode": "C",
-        "gamesPlayed": 19,
+        "gamesPlayed": 20,
         "goals": 2,
         "assists": 5,
         "points": 7,
-        "plusMinus": 2,
+        "plusMinus": 1,
         "penaltyMinutes": 10,
         "powerPlayGoals": 1,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 17,
-        "shootingPctg": 0.117647,
-        "avgTimeOnIcePerGame": 682.2105,
-        "avgShiftsPerGame": 14.6316,
+        "shots": 18,
+        "shootingPctg": 0.111111,
+        "avgTimeOnIcePerGame": 702.1,
+        "avgShiftsPerGame": 14.8,
         "faceoffWinPctg": 0.444444
       },
       {
@@ -967,20 +967,20 @@
           "default": "Caufield"
         },
         "positionCode": "R",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 12,
         "assists": 7,
         "points": 19,
-        "plusMinus": 5,
+        "plusMinus": 4,
         "penaltyMinutes": 10,
         "powerPlayGoals": 2,
         "shorthandedGoals": 0,
         "gameWinningGoals": 3,
         "overtimeGoals": 2,
-        "shots": 69,
-        "shootingPctg": 0.173913,
-        "avgTimeOnIcePerGame": 1116.8095,
-        "avgShiftsPerGame": 21.0476,
+        "shots": 70,
+        "shootingPctg": 0.171429,
+        "avgTimeOnIcePerGame": 1112.5,
+        "avgShiftsPerGame": 21.0,
         "faceoffWinPctg": 0.666667
       },
       {
@@ -1019,21 +1019,21 @@
           "default": "Newhook"
         },
         "positionCode": "C",
-        "gamesPlayed": 21,
-        "goals": 5,
+        "gamesPlayed": 22,
+        "goals": 6,
         "assists": 5,
-        "points": 10,
+        "points": 11,
         "plusMinus": -3,
         "penaltyMinutes": 12,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 25,
-        "shootingPctg": 0.2,
-        "avgTimeOnIcePerGame": 968.7619,
-        "avgShiftsPerGame": 20.5238,
-        "faceoffWinPctg": 0.504587
+        "shots": 27,
+        "shootingPctg": 0.222222,
+        "avgTimeOnIcePerGame": 972.4091,
+        "avgShiftsPerGame": 20.6364,
+        "faceoffWinPctg": 0.511211
       },
       {
         "playerId": 8482087,
@@ -1045,20 +1045,46 @@
           "default": "Guhle"
         },
         "positionCode": "D",
-        "gamesPlayed": 17,
+        "gamesPlayed": 18,
         "goals": 2,
         "assists": 4,
         "points": 6,
-        "plusMinus": 7,
-        "penaltyMinutes": 10,
+        "plusMinus": 6,
+        "penaltyMinutes": 12,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 1,
         "overtimeGoals": 0,
-        "shots": 20,
-        "shootingPctg": 0.1,
-        "avgTimeOnIcePerGame": 1359.8235,
-        "avgShiftsPerGame": 26.1176,
+        "shots": 23,
+        "shootingPctg": 0.086957,
+        "avgTimeOnIcePerGame": 1357.1111,
+        "avgShiftsPerGame": 26.2222,
+        "faceoffWinPctg": 0.0
+      },
+      {
+        "playerId": 8482132,
+        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8482132.png",
+        "firstName": {
+          "default": "Brett"
+        },
+        "lastName": {
+          "default": "Berard"
+        },
+        "positionCode": "L",
+        "gamesPlayed": 1,
+        "goals": 0,
+        "assists": 0,
+        "points": 0,
+        "plusMinus": 0,
+        "penaltyMinutes": 0,
+        "powerPlayGoals": 0,
+        "shorthandedGoals": 0,
+        "gameWinningGoals": 0,
+        "overtimeGoals": 0,
+        "shots": 2,
+        "shootingPctg": 0.0,
+        "avgTimeOnIcePerGame": 442.0,
+        "avgShiftsPerGame": 12.0,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1071,7 +1097,7 @@
           "default": "Bolduc"
         },
         "positionCode": "R",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 6,
         "assists": 3,
         "points": 9,
@@ -1081,10 +1107,10 @@
         "shorthandedGoals": 0,
         "gameWinningGoals": 1,
         "overtimeGoals": 0,
-        "shots": 33,
-        "shootingPctg": 0.181818,
-        "avgTimeOnIcePerGame": 872.8571,
-        "avgShiftsPerGame": 16.5714,
+        "shots": 34,
+        "shootingPctg": 0.176471,
+        "avgTimeOnIcePerGame": 867.4545,
+        "avgShiftsPerGame": 16.3182,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1097,21 +1123,21 @@
           "default": "Kapanen"
         },
         "positionCode": "C",
-        "gamesPlayed": 14,
+        "gamesPlayed": 15,
         "goals": 1,
-        "assists": 1,
-        "points": 2,
-        "plusMinus": 3,
+        "assists": 2,
+        "points": 3,
+        "plusMinus": 4,
         "penaltyMinutes": 6,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 17,
-        "shootingPctg": 0.058824,
-        "avgTimeOnIcePerGame": 711.2857,
-        "avgShiftsPerGame": 15.9286,
-        "faceoffWinPctg": 0.439024
+        "shots": 18,
+        "shootingPctg": 0.055556,
+        "avgTimeOnIcePerGame": 697.6667,
+        "avgShiftsPerGame": 15.7333,
+        "faceoffWinPctg": 0.452381
       },
       {
         "playerId": 8482964,
@@ -1123,7 +1149,7 @@
           "default": "Xhekaj"
         },
         "positionCode": "D",
-        "gamesPlayed": 20,
+        "gamesPlayed": 21,
         "goals": 1,
         "assists": 3,
         "points": 4,
@@ -1133,10 +1159,10 @@
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 17,
-        "shootingPctg": 0.058824,
-        "avgTimeOnIcePerGame": 733.3,
-        "avgShiftsPerGame": 15.3,
+        "shots": 19,
+        "shootingPctg": 0.052632,
+        "avgTimeOnIcePerGame": 729.0476,
+        "avgShiftsPerGame": 15.2857,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1149,11 +1175,11 @@
           "default": "Beck"
         },
         "positionCode": "C",
-        "gamesPlayed": 7,
+        "gamesPlayed": 8,
         "goals": 1,
         "assists": 2,
         "points": 3,
-        "plusMinus": 0,
+        "plusMinus": 1,
         "penaltyMinutes": 7,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
@@ -1161,9 +1187,9 @@
         "overtimeGoals": 0,
         "shots": 6,
         "shootingPctg": 0.166667,
-        "avgTimeOnIcePerGame": 538.4286,
-        "avgShiftsPerGame": 11.8571,
-        "faceoffWinPctg": 0.5
+        "avgTimeOnIcePerGame": 528.75,
+        "avgShiftsPerGame": 12.0,
+        "faceoffWinPctg": 0.545455
       },
       {
         "playerId": 8483457,
@@ -1175,11 +1201,11 @@
           "default": "Hutson"
         },
         "positionCode": "D",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 3,
-        "assists": 16,
-        "points": 19,
-        "plusMinus": 4,
+        "assists": 19,
+        "points": 22,
+        "plusMinus": 6,
         "penaltyMinutes": 10,
         "powerPlayGoals": 1,
         "shorthandedGoals": 0,
@@ -1187,8 +1213,8 @@
         "overtimeGoals": 0,
         "shots": 43,
         "shootingPctg": 0.069767,
-        "avgTimeOnIcePerGame": 1505.0,
-        "avgShiftsPerGame": 25.2857,
+        "avgTimeOnIcePerGame": 1509.5,
+        "avgShiftsPerGame": 25.4091,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1201,21 +1227,21 @@
           "default": "Slafkovský"
         },
         "positionCode": "L",
-        "gamesPlayed": 21,
+        "gamesPlayed": 22,
         "goals": 2,
-        "assists": 11,
-        "points": 13,
-        "plusMinus": 0,
+        "assists": 12,
+        "points": 14,
+        "plusMinus": 1,
         "penaltyMinutes": 18,
         "powerPlayGoals": 0,
         "shorthandedGoals": 0,
         "gameWinningGoals": 0,
         "overtimeGoals": 0,
-        "shots": 50,
-        "shootingPctg": 0.04,
-        "avgTimeOnIcePerGame": 1102.381,
-        "avgShiftsPerGame": 20.1429,
-        "faceoffWinPctg": 0.333333
+        "shots": 51,
+        "shootingPctg": 0.039216,
+        "avgTimeOnIcePerGame": 1099.5455,
+        "avgShiftsPerGame": 20.0909,
+        "faceoffWinPctg": 0.35
       },
       {
         "playerId": 8483686,
@@ -1227,7 +1253,7 @@
           "default": "Engstrom"
         },
         "positionCode": "D",
-        "gamesPlayed": 14,
+        "gamesPlayed": 15,
         "goals": 1,
         "assists": 1,
         "points": 2,
@@ -1239,8 +1265,8 @@
         "overtimeGoals": 0,
         "shots": 13,
         "shootingPctg": 0.076923,
-        "avgTimeOnIcePerGame": 695.4286,
-        "avgShiftsPerGame": 16.0,
+        "avgTimeOnIcePerGame": 687.6,
+        "avgShiftsPerGame": 16.0667,
         "faceoffWinPctg": 0.0
       },
       {
@@ -1358,22 +1384,22 @@
         "lastName": {
           "default": "Fowler"
         },
-        "gamesPlayed": 13,
-        "gamesStarted": 13,
-        "wins": 9,
+        "gamesPlayed": 14,
+        "gamesStarted": 14,
+        "wins": 10,
         "losses": 2,
         "overtimeLosses": 2,
-        "goalsAgainstAverage": 2.205929,
-        "savePercentage": 0.923077,
-        "shotsAgainst": 377,
-        "saves": 348,
-        "goalsAgainst": 29,
+        "goalsAgainstAverage": 2.191372,
+        "savePercentage": 0.923457,
+        "shotsAgainst": 405,
+        "saves": 374,
+        "goalsAgainst": 31,
         "shutouts": 2,
         "goals": 0,
         "assists": 0,
         "points": 0,
         "penaltyMinutes": 2,
-        "timeOnIce": 47327
+        "timeOnIce": 50927
       }
     ]
   },
@@ -1398,10 +1424,10 @@
     },
     "8476479": {
       "assists": 285,
-      "avgToi": "17:03",
-      "faceoffWinningPctg": 0.5327000000000001,
+      "avgToi": "17:04",
+      "faceoffWinningPctg": 0.5329,
       "gameWinningGoals": 20,
-      "gamesPlayed": 807,
+      "gamesPlayed": 808,
       "goals": 134,
       "otGoals": 2,
       "pim": 349,
@@ -1452,21 +1478,21 @@
     },
     "8478133": {
       "assists": 105,
-      "avgToi": "14:55",
-      "faceoffWinningPctg": 0.5243,
-      "gameWinningGoals": 10,
-      "gamesPlayed": 439,
-      "goals": 55,
+      "avgToi": "14:56",
+      "faceoffWinningPctg": 0.5246999999999999,
+      "gameWinningGoals": 11,
+      "gamesPlayed": 440,
+      "goals": 56,
       "otGoals": 1,
       "pim": 143,
-      "plusMinus": -12,
-      "points": 160,
+      "plusMinus": -10,
+      "points": 161,
       "powerPlayGoals": 1,
       "powerPlayPoints": 1,
-      "shootingPctg": 0.11,
+      "shootingPctg": 0.1115,
       "shorthandedGoals": 8,
       "shorthandedPoints": 15,
-      "shots": 500
+      "shots": 502
     },
     "8478470": {
       "assists": 4,
@@ -1486,110 +1512,110 @@
     },
     "8478851": {
       "assists": 95,
-      "avgToi": "19:35",
+      "avgToi": "19:36",
       "faceoffWinningPctg": 0.0,
       "gameWinningGoals": 4,
-      "gamesPlayed": 390,
+      "gamesPlayed": 391,
       "goals": 21,
       "otGoals": 1,
       "pim": 219,
-      "plusMinus": 37,
+      "plusMinus": 38,
       "points": 116,
       "powerPlayGoals": 1,
       "powerPlayPoints": 5,
-      "shootingPctg": 0.0512,
+      "shootingPctg": 0.051,
       "shorthandedGoals": 1,
       "shorthandedPoints": 3,
-      "shots": 410
+      "shots": 411
     },
     "8480018": {
       "assists": 318,
       "avgToi": "19:53",
-      "faceoffWinningPctg": 0.4953,
+      "faceoffWinningPctg": 0.49570000000000003,
       "gameWinningGoals": 20,
-      "gamesPlayed": 552,
-      "goals": 175,
+      "gamesPlayed": 553,
+      "goals": 176,
       "otGoals": 7,
       "pim": 169,
-      "plusMinus": -11,
-      "points": 493,
-      "powerPlayGoals": 54,
-      "powerPlayPoints": 168,
-      "shootingPctg": 0.149,
+      "plusMinus": -12,
+      "points": 494,
+      "powerPlayGoals": 55,
+      "powerPlayPoints": 169,
+      "shootingPctg": 0.1492,
       "shorthandedGoals": 8,
       "shorthandedPoints": 11,
-      "shots": 1174
+      "shots": 1179
     },
     "8480074": {
       "assists": 66,
       "avgToi": "14:17",
-      "faceoffWinningPctg": 0.35009999999999997,
+      "faceoffWinningPctg": 0.34950000000000003,
       "gameWinningGoals": 4,
-      "gamesPlayed": 304,
+      "gamesPlayed": 305,
       "goals": 50,
       "otGoals": 1,
-      "pim": 128,
-      "plusMinus": -7,
+      "pim": 132,
+      "plusMinus": -9,
       "points": 116,
       "powerPlayGoals": 1,
       "powerPlayPoints": 7,
-      "shootingPctg": 0.1094,
+      "shootingPctg": 0.1084,
       "shorthandedGoals": 3,
       "shorthandedPoints": 4,
-      "shots": 457
+      "shots": 461
     },
     "8480865": {
       "assists": 224,
       "avgToi": "21:09",
       "gameWinningGoals": 12,
-      "gamesPlayed": 489,
+      "gamesPlayed": 490,
       "goals": 62,
       "otGoals": 2,
       "pim": 168,
-      "plusMinus": -1,
+      "plusMinus": -3,
       "points": 286,
       "powerPlayGoals": 12,
       "powerPlayPoints": 91,
-      "shootingPctg": 0.057800000000000004,
+      "shootingPctg": 0.057699999999999994,
       "shorthandedGoals": 0,
       "shorthandedPoints": 3,
-      "shots": 1072
+      "shots": 1074
     },
     "8481523": {
       "assists": 90,
-      "avgToi": "16:04",
+      "avgToi": "16:05",
       "faceoffWinningPctg": 0.3661,
       "gameWinningGoals": 6,
-      "gamesPlayed": 325,
+      "gamesPlayed": 326,
       "goals": 53,
       "otGoals": 1,
       "pim": 195,
-      "plusMinus": -51,
+      "plusMinus": -52,
       "points": 143,
       "powerPlayGoals": 11,
       "powerPlayPoints": 36,
-      "shootingPctg": 0.1057,
+      "shootingPctg": 0.10550000000000001,
       "shorthandedGoals": 0,
       "shorthandedPoints": 3,
-      "shots": 501
+      "shots": 502
     },
     "8481540": {
       "assists": 145,
       "avgToi": "18:04",
       "faceoffWinningPctg": 0.4307,
       "gameWinningGoals": 38,
-      "gamesPlayed": 389,
+      "gamesPlayed": 390,
       "goals": 181,
       "otGoals": 15,
       "pim": 68,
-      "plusMinus": 4,
+      "plusMinus": 3,
       "points": 326,
       "powerPlayGoals": 44,
       "powerPlayPoints": 94,
-      "shootingPctg": 0.1439,
+      "shootingPctg": 0.1438,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 1257
+      "shots": 1258
     },
     "8481593": {
       "assists": 29,
@@ -1610,45 +1636,45 @@
     },
     "8481618": {
       "assists": 86,
-      "avgToi": "14:47",
-      "faceoffWinningPctg": 0.4316,
+      "avgToi": "14:48",
+      "faceoffWinningPctg": 0.43229999999999996,
       "gameWinningGoals": 15,
-      "gamesPlayed": 359,
-      "goals": 75,
+      "gamesPlayed": 360,
+      "goals": 76,
       "otGoals": 1,
       "pim": 100,
       "plusMinus": -10,
-      "points": 161,
+      "points": 162,
       "powerPlayGoals": 9,
       "powerPlayPoints": 24,
-      "shootingPctg": 0.1425,
+      "shootingPctg": 0.1439,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 526
+      "shots": 528
     },
     "8482087": {
       "assists": 55,
       "avgToi": "20:46",
       "gameWinningGoals": 5,
-      "gamesPlayed": 225,
+      "gamesPlayed": 226,
       "goals": 20,
       "otGoals": 1,
-      "pim": 181,
-      "plusMinus": -9,
+      "pim": 183,
+      "plusMinus": -10,
       "points": 75,
       "powerPlayGoals": 0,
       "powerPlayPoints": 0,
-      "shootingPctg": 0.0729,
+      "shootingPctg": 0.0722,
       "shorthandedGoals": 0,
       "shorthandedPoints": 2,
-      "shots": 274
+      "shots": 277
     },
     "8482132": {
       "assists": 4,
-      "avgToi": "10:40",
+      "avgToi": "10:36",
       "faceoffWinningPctg": 0.4285,
       "gameWinningGoals": 1,
-      "gamesPlayed": 48,
+      "gamesPlayed": 49,
       "goals": 6,
       "otGoals": 0,
       "pim": 14,
@@ -1656,10 +1682,10 @@
       "points": 10,
       "powerPlayGoals": 0,
       "powerPlayPoints": 0,
-      "shootingPctg": 0.08689999999999999,
+      "shootingPctg": 0.08449999999999999,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 69
+      "shots": 71
     },
     "8482487": {
       "assists": 0,
@@ -1682,7 +1708,7 @@
       "avgToi": "13:13",
       "faceoffWinningPctg": 0.431,
       "gameWinningGoals": 4,
-      "gamesPlayed": 196,
+      "gamesPlayed": 197,
       "goals": 42,
       "otGoals": 0,
       "pim": 75,
@@ -1690,34 +1716,34 @@
       "points": 84,
       "powerPlayGoals": 13,
       "powerPlayPoints": 21,
-      "shootingPctg": 0.1438,
+      "shootingPctg": 0.1433,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 292
+      "shots": 293
     },
     "8482775": {
-      "assists": 18,
-      "avgToi": "13:35",
-      "faceoffWinningPctg": 0.4518,
+      "assists": 19,
+      "avgToi": "13:33",
+      "faceoffWinningPctg": 0.4532,
       "gameWinningGoals": 2,
-      "gamesPlayed": 114,
+      "gamesPlayed": 115,
       "goals": 23,
       "otGoals": 0,
       "pim": 30,
-      "plusMinus": 2,
-      "points": 41,
+      "plusMinus": 3,
+      "points": 42,
       "powerPlayGoals": 1,
       "powerPlayPoints": 2,
-      "shootingPctg": 0.1402,
+      "shootingPctg": 0.1393,
       "shorthandedGoals": 1,
       "shorthandedPoints": 3,
-      "shots": 164
+      "shots": 165
     },
     "8482964": {
       "assists": 26,
-      "avgToi": "13:58",
+      "avgToi": "13:57",
       "gameWinningGoals": 0,
-      "gamesPlayed": 250,
+      "gamesPlayed": 251,
       "goals": 11,
       "otGoals": 0,
       "pim": 448,
@@ -1725,21 +1751,21 @@
       "points": 37,
       "powerPlayGoals": 2,
       "powerPlayPoints": 3,
-      "shootingPctg": 0.04190000000000001,
+      "shootingPctg": 0.0416,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 262
+      "shots": 264
     },
     "8483424": {
       "assists": 3,
-      "avgToi": "9:26",
-      "faceoffWinningPctg": 0.56,
+      "avgToi": "9:23",
+      "faceoffWinningPctg": 0.5625,
       "gameWinningGoals": 0,
-      "gamesPlayed": 35,
+      "gamesPlayed": 36,
       "goals": 2,
       "otGoals": 0,
       "pim": 13,
-      "plusMinus": 1,
+      "plusMinus": 2,
       "points": 5,
       "powerPlayGoals": 0,
       "powerPlayPoints": 0,
@@ -1749,45 +1775,45 @@
       "shots": 27
     },
     "8483457": {
-      "assists": 144,
-      "avgToi": "23:27",
+      "assists": 147,
+      "avgToi": "23:28",
       "gameWinningGoals": 3,
-      "gamesPlayed": 187,
+      "gamesPlayed": 188,
       "goals": 21,
       "otGoals": 1,
       "pim": 78,
-      "plusMinus": 36,
-      "points": 165,
+      "plusMinus": 38,
+      "points": 168,
       "powerPlayGoals": 4,
-      "powerPlayPoints": 51,
+      "powerPlayPoints": 52,
       "shootingPctg": 0.08039999999999999,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
       "shots": 261
     },
     "8483515": {
-      "assists": 123,
+      "assists": 124,
       "avgToi": "17:14",
-      "faceoffWinningPctg": 0.3593,
+      "faceoffWinningPctg": 0.3615,
       "gameWinningGoals": 7,
-      "gamesPlayed": 303,
+      "gamesPlayed": 304,
       "goals": 74,
       "otGoals": 0,
       "pim": 203,
-      "plusMinus": -19,
-      "points": 197,
+      "plusMinus": -18,
+      "points": 198,
       "powerPlayGoals": 27,
-      "powerPlayPoints": 58,
-      "shootingPctg": 0.1328,
+      "powerPlayPoints": 59,
+      "shootingPctg": 0.1326,
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
-      "shots": 557
+      "shots": 558
     },
     "8483686": {
       "assists": 2,
-      "avgToi": "12:21",
+      "avgToi": "12:15",
       "gameWinningGoals": 0,
-      "gamesPlayed": 29,
+      "gamesPlayed": 30,
       "goals": 1,
       "otGoals": 0,
       "pim": 10,
@@ -1802,19 +1828,19 @@
     },
     "8484170": {
       "assists": 0,
-      "gamesPlayed": 30,
-      "gamesStarted": 30,
+      "gamesPlayed": 31,
+      "gamesStarted": 31,
       "goals": 0,
-      "goalsAgainst": 70,
-      "goalsAgainstAvg": 2.334002,
+      "goalsAgainst": 72,
+      "goalsAgainstAvg": 2.323224,
       "losses": 8,
       "otLosses": 4,
       "pim": 2,
-      "savePctg": 0.915152,
-      "shotsAgainst": 825,
+      "savePctg": 0.915592,
+      "shotsAgainst": 853,
       "shutouts": 3,
-      "timeOnIce": "1799:29",
-      "wins": 18
+      "timeOnIce": "1859:29",
+      "wins": 19
     },
     "8484220": {
       "assists": 1,
@@ -1894,10 +1920,22 @@
       "number": 14,
       "id": 8480018
     },
-    "juraj slafkovsky": {
-      "name": "Juraj Slafkovsky",
+    "alexandre texier": {
+      "name": "Alexandre Texier",
       "unit": "Trio 1",
       "pos": "AD",
+      "injured": false,
+      "specialTeams": [
+        "SN 2",
+        "IN 2"
+      ],
+      "number": 85,
+      "id": 8480074
+    },
+    "juraj slafkovsky": {
+      "name": "Juraj Slafkovsky",
+      "unit": "Trio 2",
+      "pos": "AG",
       "injured": false,
       "specialTeams": [
         "SN 1"
@@ -1905,11 +1943,33 @@
       "number": 20,
       "id": 8483515
     },
+    "jake evans": {
+      "name": "Jake Evans",
+      "unit": "Trio 2",
+      "pos": "C",
+      "injured": false,
+      "specialTeams": [
+        "IN 1"
+      ],
+      "number": 71,
+      "id": 8478133
+    },
+    "alex newhook": {
+      "name": "Alex Newhook",
+      "unit": "Trio 2",
+      "pos": "AD",
+      "injured": false,
+      "specialTeams": [
+        "SN 2"
+      ],
+      "number": 15,
+      "id": 8481618
+    },
     "zack bolduc": {
       "name": "Zack Bolduc",
-      "unit": "Trio 2",
+      "unit": "Trio 3",
       "pos": "AG",
-      "injured": false,
+      "injured": true,
       "specialTeams": [
         "SN 1"
       ],
@@ -1918,7 +1978,7 @@
     },
     "phillip danault": {
       "name": "Phillip Danault",
-      "unit": "Trio 2",
+      "unit": "Trio 3",
       "pos": "C",
       "injured": false,
       "specialTeams": [
@@ -1926,39 +1986,6 @@
       ],
       "number": 24,
       "id": 8476479
-    },
-    "alexandre texier": {
-      "name": "Alexandre Texier",
-      "unit": "Trio 2",
-      "pos": "AD",
-      "injured": true,
-      "specialTeams": [
-        "SN 2",
-        "IN 2"
-      ],
-      "number": 85,
-      "id": 8480074
-    },
-    "alex newhook": {
-      "name": "Alex Newhook",
-      "unit": "Trio 3",
-      "pos": "AG",
-      "injured": false,
-      "specialTeams": [
-        "SN 2"
-      ],
-      "number": 15,
-      "id": 8481618
-    },
-    "oliver kapanen": {
-      "name": "Oliver Kapanen",
-      "unit": "Trio 3",
-      "pos": "C",
-      "injured": false,
-      "specialTeams": [
-        "SN 2"
-      ],
-      "id": 8482775
     },
     "kirby dach": {
       "name": "Kirby Dach",
@@ -1971,27 +1998,26 @@
       "number": 77,
       "id": 8481523
     },
-    "florian xhekaj": {
-      "name": "Florian Xhekaj",
+    "brett berard": {
+      "name": "Brett Berard",
       "unit": "Trio 4",
       "pos": "AG",
       "injured": false,
       "specialTeams": [
         "Aucune"
       ],
-      "number": 63,
-      "id": 8484403
+      "number": 65,
+      "id": 8482132
     },
-    "jake evans": {
-      "name": "Jake Evans",
+    "oliver kapanen": {
+      "name": "Oliver Kapanen",
       "unit": "Trio 4",
       "pos": "C",
       "injured": false,
       "specialTeams": [
-        "IN 1"
+        "SN 2"
       ],
-      "number": 71,
-      "id": 8478133
+      "id": 8482775
     },
     "owen beck": {
       "name": "Owen Beck",
@@ -2003,16 +2029,16 @@
       ],
       "id": 8483424
     },
-    "lane hutson": {
-      "name": "Lane Hutson",
+    "kaiden guhle": {
+      "name": "Kaiden Guhle",
       "unit": "Paire 1",
       "pos": "D",
       "injured": false,
       "specialTeams": [
-        "SN 1"
+        "IN 1"
       ],
-      "number": 48,
-      "id": 8483457
+      "number": 21,
+      "id": 8482087
     },
     "noah dobson": {
       "name": "Noah Dobson",
@@ -2026,16 +2052,16 @@
       "number": 8,
       "id": 8480865
     },
-    "kaiden guhle": {
-      "name": "Kaiden Guhle",
+    "lane hutson": {
+      "name": "Lane Hutson",
       "unit": "Paire 2",
       "pos": "D",
       "injured": false,
       "specialTeams": [
-        "IN 1"
+        "SN 1"
       ],
-      "number": 21,
-      "id": 8482087
+      "number": 48,
+      "id": 8483457
     },
     "alexandre carrier": {
       "name": "Alexandre Carrier",
