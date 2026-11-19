@@ -1,13 +1,19 @@
 name: Mise a jour quotidienne des stats LNH
 
 on:
-  # schedule:
-  #   # 9h48 UTC = 04h48 HNE (hiver) / 05h48 HAE (été) à Montréal
-  #   - cron: "48 9 * * *"
+  schedule:
+    # Créneau 1 : 03h17 UTC (22h17 HNE / 23h17 HAE) -> compense un délai GitHub de 4h à 9h pour arriver avant ~7h00
+    - cron: "17 3 * * *"
+    # Créneau 2 : 07h23 UTC (02h23 HNE / 03h23 HAE) -> garantit les matchs de l'Ouest si le délai est faible
+    - cron: "23 7 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: update-nhl-data
+  cancel-in-progress: false
 
 jobs:
   fetch-nhl-data:
