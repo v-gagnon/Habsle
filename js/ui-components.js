@@ -288,6 +288,23 @@ function openStudyProfileModal(player) {
 }
 
 // --- FENÊTRE MODALE 3 : TABLEAU DE BORD #ADMIN ---
+const adminDispatchState = {
+  running: false,
+  message: "",
+  tone: "neutral" // "neutral" | "ok" | "err"
+};
+
+function setAdminDispatchMessage(message, tone = "neutral") {
+  adminDispatchState.message = message;
+  adminDispatchState.tone = tone;
+
+  const statusEl = document.getElementById("admin-dispatch-status");
+  if (!statusEl) return;
+  statusEl.textContent = message;
+  statusEl.className = `admin-dispatch-status ${tone}`;
+  statusEl.classList.toggle("hidden", !message);
+}
+
 function openServiceStatusModal() {
   const statusModal = document.getElementById("status-modal");
   const statusModalBody = document.getElementById("status-modal-body");
@@ -303,6 +320,9 @@ function openServiceStatusModal() {
     : "Non disponible (données locales)";
 
   const injuredPlayers = PLAYERS.filter(p => p.unit === INJURED_UNIT).map(p => p.name);
+  const storedToken = typeof getStoredGitHubToken === "function" ? getStoredGitHubToken() : "";
+  const hasToken = Boolean(storedToken);
+  const maskedHint = hasToken ? `Jeton enregistré (••••${storedToken.slice(-4)})` : "Colle ton Fine-grained PAT GitHub";
 
   statusModalBody.innerHTML = `
     <div class="stats-grid">
@@ -314,6 +334,50 @@ function openServiceStatusModal() {
         <div class="stat-label">Dernière mise à jour (GitHub Actions)</div>
         <div class="stat-val">${formattedDate}</div>
       </div>
+    </div>
+
+    <div class="admin-dispatch-panel">
+      <div class="admin-dispatch-header">
+        <div class="stat-label">Mise à jour manuelle — GitHub Actions (update-nhl.yml)</div>
+        <span class="status-pill ${hasToken ? "ok" : "err"}">
+          ${hasToken ? "● Jeton configuré" : "● Jeton requis"}
+        </span>
+      </div>
+
+      <div class="admin-token-row">
+        <input
+          type="password"
+          id="admin-github-token-input"
+          class="admin-token-input"
+          placeholder="${maskedHint}"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button type="button" id="admin-save-token-btn" class="secondary-btn">Enregistrer</button>
+        ${hasToken ? `<button type="button" id="admin-clear-token-btn" class="danger-btn">Effacer</button>` : ""}
+      </div>
+
+      <div class="admin-dispatch-actions">
+        <button
+          type="button"
+          id="admin-trigger-action-btn"
+          class="primary-btn"
+          ${!hasToken || adminDispatchState.running ? "disabled" : ""}
+        >
+          ${adminDispatchState.running ? "Mise à jour en cours..." : "Déclencher la mise à jour GitHub"}
+        </button>
+        <button
+          type="button"
+          id="admin-fast-reload-btn"
+          class="secondary-btn"
+          ${adminDispatchState.running ? "disabled" : ""}
+          title="Télécharge immédiatement le dernier nhl-data.json commité sans attendre GitHub Pages"
+        >
+          Recharger depuis GitHub (rapide)
+        </button>
+      </div>
+
+      <div id="admin-dispatch-status" class="admin-dispatch-status hidden"></div>
     </div>
 
     <table class="status-table">
@@ -353,6 +417,89 @@ function openServiceStatusModal() {
       <div class="stat-val">${injuredPlayers.length > 0 ? injuredPlayers.join(", ") : "Aucun joueur hors alignement"}</div>
     </div>
   `;
+
+  if (adminDispatchState.message) {
+    setAdminDispatchMessage(adminDispatchState.message, adminDispatchState.tone);
+  }
+
+  const tokenInput = document.getElementById("admin-github-token-input");
+  const saveTokenBtn = document.getElementById("admin-save-token-btn");
+  const clearTokenBtn = document.getElementById("admin-clear-token-btn");
+  const triggerBtn = document.getElementById("admin-trigger-action-btn");
+  const fastReloadBtn = document.getElementById("admin-fast-reload-btn");
+
+  if (saveTokenBtn && tokenInput) {
+    saveTokenBtn.addEventListener("click", () => {
+      const val = tokenInput.value.trim();
+      if (!val) {
+        setAdminDispatchMessage("Colle un jeton valide avant d'enregistrer.", "err");
+        return;
+      }
+      saveStoredGitHubToken(val);
+      adminDispatchState.message = "Jeton enregistré localement dans ce navigateur.";
+      adminDispatchState.tone = "ok";
+      openServiceStatusModal();
+    });
+  }
+
+  if (clearTokenBtn) {
+    clearTokenBtn.addEventListener("click", () => {
+      saveStoredGitHubToken("");
+      adminDispatchState.message = "Jeton supprimé de ce navigateur.";
+      adminDispatchState.tone = "neutral";
+      openServiceStatusModal();
+    });
+  }
+
+  if (triggerBtn) {
+    triggerBtn.addEventListener("click", async () => {
+      if (adminDispatchState.running) return;
+      adminDispatchState.running = true;
+      triggerBtn.disabled = true;
+      if (fastReloadBtn) fastReloadBtn.disabled = true;
+      triggerBtn.textContent = "Mise à jour en cours...";
+
+      try {
+        const res = await triggerGitHubWorkflowUpdate(msg => {
+          setAdminDispatchMessage(msg, "neutral");
+        });
+        adminDispatchState.running = false;
+        adminDispatchState.message =
+          `Mise à jour terminée (run #${res.runNumber}, commit ${res.sha.slice(0, 7)}). Données chargées immédiatement.`;
+        adminDispatchState.tone = "ok";
+        openServiceStatusModal();
+      } catch (err) {
+        adminDispatchState.running = false;
+        adminDispatchState.message = err?.message || "Erreur inconnue lors du déclenchement.";
+        adminDispatchState.tone = "err";
+        openServiceStatusModal();
+      }
+    });
+  }
+
+  if (fastReloadBtn) {
+    fastReloadBtn.addEventListener("click", async () => {
+      if (adminDispatchState.running) return;
+      adminDispatchState.running = true;
+      if (triggerBtn) triggerBtn.disabled = true;
+      fastReloadBtn.disabled = true;
+      setAdminDispatchMessage("Téléchargement rapide de nhl-data.json depuis GitHub...", "neutral");
+
+      try {
+        const res = await loadLatestDataFromGitHubRaw();
+        adminDispatchState.running = false;
+        adminDispatchState.message =
+          `Dernier nhl-data.json chargé depuis GitHub (commit ${res.sha.slice(0, 7)}).`;
+        adminDispatchState.tone = "ok";
+        openServiceStatusModal();
+      } catch (err) {
+        adminDispatchState.running = false;
+        adminDispatchState.message = err?.message || "Impossible de recharger depuis GitHub.";
+        adminDispatchState.tone = "err";
+        openServiceStatusModal();
+      }
+    });
+  }
 
   statusModal.classList.remove("hidden");
 }

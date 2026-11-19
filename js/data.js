@@ -1095,3 +1095,193 @@ async function syncWithNHLAPI(forceRefresh = false) {
     apiSyncStatusEl.textContent = "Données LNH 2026-2027 intégrées actives";
   }
 }
+
+// --- DÉCLENCHEMENT GITHUB ACTIONS (#admin) & MISE À JOUR RAPIDE ---
+const GITHUB_REPO_OWNER = "v-gagnon";
+const GITHUB_REPO_NAME = "Habsle";
+const GITHUB_WORKFLOW_FILE = "update-nhl.yml";
+const GITHUB_BRANCH = "main";
+const GITHUB_PAT_STORAGE_KEY = "habsle_github_pat_v1";
+
+function getStoredGitHubToken() {
+  try {
+    return (localStorage.getItem(GITHUB_PAT_STORAGE_KEY) || "").trim();
+  } catch (e) {
+    return "";
+  }
+}
+
+function saveStoredGitHubToken(token) {
+  const clean = (token || "").trim();
+  if (clean) {
+    localStorage.setItem(GITHUB_PAT_STORAGE_KEY, clean);
+  } else {
+    localStorage.removeItem(GITHUB_PAT_STORAGE_KEY);
+  }
+}
+
+function buildGitHubHeaders(token = "") {
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28"
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+async function loadLatestDataFromGitHubRaw(token = getStoredGitHubToken()) {
+  const commitsUrl =
+    `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}` +
+    `/commits?sha=${GITHUB_BRANCH}&path=nhl-data.json&per_page=1`;
+
+  const commitsResp = await fetch(commitsUrl, {
+    headers: buildGitHubHeaders(token),
+    cache: "no-store"
+  });
+
+  if (!commitsResp.ok) {
+    throw new Error(`Impossible de lire le dernier commit (HTTP ${commitsResp.status})`);
+  }
+
+  const commits = await commitsResp.json();
+  const latestSha = Array.isArray(commits) && commits[0]?.sha ? commits[0].sha : GITHUB_BRANCH;
+
+  // Aucun en-tête personnalisé sur raw.githubusercontent.com pour éviter un blocage CORS preflight
+  const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${latestSha}/nhl-data.json`;
+  const rawResp = await fetch(rawUrl, { cache: "no-store" });
+  if (!rawResp.ok) {
+    throw new Error(`Impossible de télécharger nhl-data.json (HTTP ${rawResp.status})`);
+  }
+
+  const freshData = await rawResp.json();
+  SERVICE_STATUS.source = `nhl-data.json (GitHub Raw • ${latestSha.slice(0, 7)})`;
+
+  applyNHLAPIData(
+    freshData.roster,
+    freshData.stats,
+    freshData.career,
+    freshData.lines,
+    freshData.meta
+  );
+
+  // Sauvegarde dans le cache local pour conserver les données fraîches si la page est rechargée
+  // avant la fin du déploiement GitHub Pages
+  try {
+    localStorage.setItem(
+      NHL_CACHE_KEY,
+      JSON.stringify({
+        timestamp: Date.now(),
+        roster: freshData.roster,
+        stats: freshData.stats,
+        career: freshData.career,
+        lines: freshData.lines,
+        meta: freshData.meta
+      })
+    );
+  } catch (e) {}
+
+  const apiSyncStatusEl = document.getElementById("api-sync-status");
+  if (apiSyncStatusEl) {
+    apiSyncStatusEl.textContent = "Données actualisées en direct depuis GitHub";
+  }
+
+  if (typeof renderStudyDirectory === "function" && typeof currentView !== "undefined" && currentView === "study") {
+    renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
+  }
+
+  return { sha: latestSha, updatedAt: freshData.meta?.updatedAt || null };
+}
+
+async function triggerGitHubWorkflowUpdate(onProgress = () => {}) {
+  const token = getStoredGitHubToken();
+  if (!token) {
+    throw new Error("Enregistre d'abord ton jeton GitHub (Fine-grained PAT) ci-dessus.");
+  }
+
+  const baseRunsUrl =
+    `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}` +
+    `/actions/workflows/${GITHUB_WORKFLOW_FILE}/runs?event=workflow_dispatch&per_page=5`;
+
+  // 1. Repère le dernier run manuel existant pour éviter tout souci de décalage d'horloge
+  let previousRunId = 0;
+  try {
+    const prevResp = await fetch(baseRunsUrl, {
+      headers: buildGitHubHeaders(token),
+      cache: "no-store"
+    });
+    if (prevResp.ok) {
+      const prevJson = await prevResp.json();
+      previousRunId = prevJson.workflow_runs?.[0]?.id || 0;
+    }
+  } catch (e) {}
+
+  // 2. Déclenche le workflow via POST workflow_dispatch
+  onProgress("Envoi de la requête POST à GitHub Actions...");
+  const dispatchUrl =
+    `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}` +
+    `/actions/workflows/${GITHUB_WORKFLOW_FILE}/dispatches`;
+
+  const dispatchResp = await fetch(dispatchUrl, {
+    method: "POST",
+    headers: {
+      ...buildGitHubHeaders(token),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ref: GITHUB_BRANCH })
+  });
+
+  if (dispatchResp.status === 401 || dispatchResp.status === 403) {
+    throw new Error("Jeton refusé (HTTP " + dispatchResp.status + "). Vérifie la permission Actions : Read and write.");
+  }
+  if (!dispatchResp.ok) {
+    throw new Error(`Échec du déclenchement (HTTP ${dispatchResp.status})`);
+  }
+
+  onProgress("Action déclenchée (HTTP 204). Attente du démarrage du runner...");
+
+  // 3. Suivi en direct du run (toutes les 4 secondes, max ~2 min)
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  let trackedRun = null;
+
+  for (let attempt = 1; attempt <= 30; attempt++) {
+    await sleep(4000);
+
+    const pollResp = await fetch(baseRunsUrl, {
+      headers: buildGitHubHeaders(token),
+      cache: "no-store"
+    });
+    if (!pollResp.ok) continue;
+
+    const pollData = await pollResp.json();
+    const runs = pollData.workflow_runs || [];
+    const found = trackedRun
+      ? runs.find(r => r.id === trackedRun.id)
+      : runs.find(r => r.id > previousRunId);
+
+    if (!found) {
+      onProgress(`En attente de création du run GitHub (${attempt * 4} s)...`);
+      continue;
+    }
+
+    trackedRun = found;
+
+    if (found.status === "queued" || found.status === "waiting" || found.status === "requested") {
+      onProgress(`Run #${found.run_number} en file d'attente...`);
+    } else if (found.status === "in_progress") {
+      onProgress(`Run #${found.run_number} en cours (LNH + Daily Faceoff)...`);
+    } else if (found.status === "completed") {
+      if (found.conclusion !== "success") {
+        throw new Error(`Run #${found.run_number} terminé avec le statut « ${found.conclusion} ».`);
+      }
+
+      // 4. Mise à jour rapide immédiate sans attendre GitHub Pages
+      onProgress(`Run #${found.run_number} réussi ! Téléchargement rapide de nhl-data.json...`);
+      const loaded = await loadLatestDataFromGitHubRaw(token);
+      return { runNumber: found.run_number, ...loaded };
+    }
+  }
+
+  throw new Error("Délai dépassé (2 min). Vérifie l'onglet Actions sur GitHub.");
+}
