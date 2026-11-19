@@ -1,9 +1,9 @@
 name: Mise a jour quotidienne des stats LNH
 
 on:
-  schedule:
-    # 9h48 UTC = 04h48 HNE (hiver) / 05h48 HAE (été) à Montréal
-    - cron: "48 9 * * *"
+  # schedule:
+  #   # 9h48 UTC = 04h48 HNE (hiver) / 05h48 HAE (été) à Montréal
+  #   - cron: "48 9 * * *"
   workflow_dispatch:
 
 permissions:
