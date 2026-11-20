@@ -481,7 +481,14 @@ function renderBoardHeader(columns) {
   });
 }
 
+let resultCardTimer = null;
+
 function renderActiveGameSession() {
+  if (resultCardTimer) {
+    clearTimeout(resultCardTimer);
+    resultCardTimer = null;
+  }
+
   const session = sessions[activeGameMode];
   const isAnyDaily = isDailyMode(activeGameMode);
   const isCustom = activeGameMode === "custom";
@@ -737,8 +744,14 @@ function showEndGameCard(session, waitAnimation) {
   document.getElementById("reveal-name").textContent = secretPlayer.name;
   document.getElementById("reveal-role").textContent = secretPlayer.note;
 
+  const outStatus = getPlayerOutStatus(secretPlayer);
+  const outStatusBoxHTML = outStatus
+    ? `<div class="stat-box ${outStatus === "Blessé" ? "status-injured-box" : "status-scratched-box"}"><div class="stat-label">Statut</div><div class="stat-val">${outStatus}</div></div>`
+    : "";
+
   document.getElementById("reveal-stats").innerHTML = `
   <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${secretPlayer.pos} (${secretPlayer.unit})</div></div>
+  ${outStatusBoxHTML}
   <div class="stat-box"><div class="stat-label">Unités spéc.</div><div class="stat-val">${formatSpecialTeams(secretPlayer)}</div></div>
   <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${secretPlayer.age} ans</div></div>
   <div class="stat-box"><div class="stat-label">Taille / Lancer</div><div class="stat-val">${secretPlayer.height} • ${secretPlayer.shoots}</div></div>
@@ -756,10 +769,22 @@ function showEndGameCard(session, waitAnimation) {
   }
   revealSeasonStatsEl.innerHTML = buildSeasonStatsHTML(secretPlayer, true, "season");
 
+  if (resultCardTimer) {
+    clearTimeout(resultCardTimer);
+  }
+
   const delay = waitAnimation ? 650 : 60;
-  setTimeout(() => {
+  resultCardTimer = setTimeout(() => {
+    resultCardTimer = null;
     resultCard.classList.remove("hidden");
     resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    const focusTarget = !isDailyMode(activeGameMode)
+      ? playAgainBtn
+      : dailyBackToMenuBtn;
+    if (focusTarget && !focusTarget.classList.contains("hidden")) {
+      focusTarget.focus({ preventScroll: true });
+    }
   }, delay);
 }
 
@@ -884,9 +909,12 @@ inputEl.addEventListener("input", updateAutocomplete);
 studyModeCheckbox.addEventListener("change", updateAutocomplete);
 
 inputEl.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
+  if (e.key === "Enter" && !e.repeat) {
     const firstItem = autocompleteEl.querySelector(".autocomplete-item:not(.disabled)");
-    if (firstItem) firstItem.click();
+    if (firstItem) {
+      e.preventDefault();
+      firstItem.click();
+    }
   }
 });
 

@@ -153,12 +153,14 @@ function renderStudyDirectory(filterText = "") {
         if (p.unit !== unitName) return false;
         if (!query) return true;
         const specStr = formatSpecialTeams(p);
+        const outStatusStr = getPlayerOutStatus(p) || "";
         return (
           normalizeStr(p.name).includes(query) ||
           String(p.number).includes(query) ||
           normalizeStr(p.pos).includes(query) ||
           normalizeStr(p.unit).includes(query) ||
-          normalizeStr(specStr).includes(query)
+          normalizeStr(specStr).includes(query) ||
+          normalizeStr(outStatusStr).includes(query)
         );
       })
     );
@@ -178,6 +180,10 @@ function renderStudyDirectory(filterText = "") {
       const mugUrl = getPlayerPhotoUrl(player);
       const fallbackUrl = getPlayerFallbackPhotoUrl(player);
       const specText = formatSpecialTeams(player);
+      const outStatus = getPlayerOutStatus(player);
+      const outBadgeHTML = outStatus
+        ? `<div class="study-status-row"><span class="out-status-badge ${outStatus === "Blessé" ? "injured" : "scratched"}">${outStatus}</span></div>`
+        : "";
 
       card.innerHTML = `
         <img class="study-avatar" src="${mugUrl}" alt="${player.name}" onerror="this.onerror=null;this.src='${fallbackUrl}';" />
@@ -186,6 +192,7 @@ function renderStudyDirectory(filterText = "") {
             <span class="roster-num">#${player.number}</span>
             <h4>${player.name}</h4>
           </div>
+          ${outBadgeHTML}
           <div class="study-specs">
             ${player.pos} • ${player.age} ans • Lancer ${player.shoots} • Unités spéc. : ${specText}
           </div>
@@ -212,6 +219,13 @@ function openStudyProfileModal(player) {
   const fallbackUrl = getPlayerFallbackPhotoUrl(player);
   const specText = formatSpecialTeams(player);
 
+  const outStatus = getPlayerOutStatus(player);
+  const unitBadgeClass = outStatus
+    ? (outStatus === "Blessé" ? "status-injured" : "status-scratched")
+    : "";
+  const unitBadgeText = outStatus || player.unit;
+  const unitDetailText = outStatus ? `${player.unit} • ${outStatus}` : player.unit;
+
   profileModalTitle.textContent = `Profil de ${player.name} (#${player.number})`;
 
   profileModalBody.innerHTML = `
@@ -223,7 +237,7 @@ function openStudyProfileModal(player) {
         <div class="profile-hero-title">
           <span class="roster-num">#${player.number}</span>
           <h3>${player.name}</h3>
-          <span class="profile-unit-badge">${player.unit}</span>
+          <span class="profile-unit-badge ${unitBadgeClass}">${unitBadgeText}</span>
         </div>
         <p class="profile-bio-note">${player.note}</p>
       </div>
@@ -233,7 +247,7 @@ function openStudyProfileModal(player) {
       <div class="profile-section-title">Informations de base</div>
       <div class="stats-grid">
         <div class="stat-box"><div class="stat-label">Position</div><div class="stat-val">${player.pos} (${player.posGroup})</div></div>
-        <div class="stat-box"><div class="stat-label">Unité (${player.unitGroup})</div><div class="stat-val">${player.unit}</div></div>
+        <div class="stat-box"><div class="stat-label">Unité (${player.unitGroup})</div><div class="stat-val">${unitDetailText}</div></div>
         <div class="stat-box highlight-stat"><div class="stat-label">Unités spéciales</div><div class="stat-val">${specText}</div></div>
         <div class="stat-box"><div class="stat-label">Âge</div><div class="stat-val">${player.age} ans</div></div>
         <div class="stat-box"><div class="stat-label">Taille / Poids</div><div class="stat-val">${player.height} • ${player.weight} lb</div></div>
@@ -319,7 +333,9 @@ function openServiceStatusModal() {
     ? new Date(SERVICE_STATUS.lastUpdated).toLocaleString("fr-CA")
     : "Non disponible (données locales)";
 
-  const injuredPlayers = PLAYERS.filter(p => p.unit === INJURED_UNIT).map(p => p.name);
+  const injuredPlayers = PLAYERS
+    .filter(p => p.unit === INJURED_UNIT)
+    .map(p => `${p.name} (${getPlayerOutStatus(p)})`);
   const storedToken = typeof getStoredGitHubToken === "function" ? getStoredGitHubToken() : "";
   const hasToken = Boolean(storedToken);
   const maskedHint = hasToken ? `Jeton enregistré (••••${storedToken.slice(-4)})` : "Colle ton Fine-grained PAT GitHub";

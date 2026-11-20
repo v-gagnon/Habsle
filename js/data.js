@@ -295,6 +295,11 @@ function formatSpecialTeams(player) {
   return list.join(" • ");
 }
 
+function getPlayerOutStatus(player) {
+  if (!player || player.unit !== INJURED_UNIT) return null;
+  return player.outStatus || "Laissé de côté";
+}
+
 function getSpecialTeamsList(player) {
   return Array.isArray(player.specialTeams) && player.specialTeams.length > 0
     ? player.specialTeams
@@ -707,14 +712,20 @@ function buildDynamicPlayerFromDailyFaceoff(dfKey, dfInfo, allRosterEntries, all
   const roleLabel =
     posGroup === "GAR" ? "Gardien" : posGroup === "DEF" ? "Défenseur" : "Attaquant";
 
+  const resolvedUnit = dfInfo.unit && dfInfo.unit !== INJURED_UNIT ? dfInfo.unit : INJURED_UNIT;
+
   return {
     id: rosterEntry?.id || statsEntry?.playerId || dfInfo.id || (1000000 + indexSeed),
     name: fullName,
     number: rosterEntry?.sweaterNumber ?? dfInfo.number ?? "—",
     pos,
     posGroup,
-    unit: dfInfo.unit && dfInfo.unit !== INJURED_UNIT ? dfInfo.unit : INJURED_UNIT,
+    unit: resolvedUnit,
     unitGroup: posGroup,
+    outStatus:
+      resolvedUnit === INJURED_UNIT
+        ? (dfInfo.outStatus || (dfInfo.injured ? "Blessé" : "Laissé de côté"))
+        : null,
     specialTeams: Array.isArray(dfInfo.specialTeams) && dfInfo.specialTeams.length > 0
       ? dfInfo.specialTeams
       : ["Aucune"],
@@ -728,7 +739,7 @@ function buildDynamicPlayerFromDailyFaceoff(dfKey, dfInfo, allRosterEntries, all
     hometown: formatHometownFromRoster(rosterEntry) !== "—"
       ? formatHometownFromRoster(rosterEntry)
       : (dfInfo.hometown || "—"),
-    note: `${roleLabel} de l'alignement des Canadiens (Daily Faceoff)`,
+    note: `${roleLabel} de réserve des Canadiens`,
     headshotUrl: rosterEntry?.headshot || statsEntry?.headshot || dfInfo.headshotUrl || null,
     stats: createDefaultStatsForGroup(posGroup),
     careerStats: createDefaultStatsForGroup(posGroup),
@@ -949,8 +960,11 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
 
           if (info.unit && info.unit !== INJURED_UNIT) {
             player.unit = info.unit;
+            player.outStatus = null;
           } else {
             player.unit = INJURED_UNIT;
+            player.outStatus =
+              info.outStatus || (info.injured ? "Blessé" : "Laissé de côté");
           }
 
           if (Array.isArray(info.specialTeams) && info.specialTeams.length > 0) {
@@ -960,6 +974,7 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
           }
         } else {
           player.unit = INJURED_UNIT;
+          player.outStatus = "Laissé de côté";
           player.specialTeams = ["Aucune"];
         }
       });

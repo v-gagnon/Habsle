@@ -65,7 +65,8 @@ SPECIAL_TEAMS_MAP = {
     "pk2": "IN 2",
 }
 
-INJURED_GROUPS = {"ir", "ltir", "out", "scratch", "scratches"}
+INJURY_GROUPS = {"ir", "ltir", "out", "injured", "inj"}
+SCRATCH_GROUPS = {"scratch", "scratches", "extra", "extras", "healthy_scratch"}
 
 
 def normalize_name(name: str) -> str:
@@ -227,6 +228,8 @@ def fetch_daily_faceoff_lines():
                 "unit": None,
                 "pos": None,
                 "injured": False,
+                "scratched": False,
+                "outStatus": None,
                 "specialTeams": [],
             },
         )
@@ -242,7 +245,13 @@ def fetch_daily_faceoff_lines():
             st_label = SPECIAL_TEAMS_MAP[group_id]
             if st_label not in info["specialTeams"]:
                 info["specialTeams"].append(st_label)
-        elif group_id in INJURED_GROUPS or entry.get("injuryStatus"):
+        elif group_id in INJURY_GROUPS:
+            info["injured"] = True
+        elif group_id in SCRATCH_GROUPS:
+            info["scratched"] = True
+
+        injury_status = (entry.get("injuryStatus") or "").strip().lower()
+        if injury_status and injury_status not in {"healthy", "active", "none"}:
             info["injured"] = True
 
         jersey_num = entry.get("jerseyNumber") or entry.get("number")
@@ -252,15 +261,19 @@ def fetch_daily_faceoff_lines():
             except (ValueError, TypeError):
                 pass
 
-    # Tri SN avant IN et ajout de "Aucune" si vide
+    # Tri SN avant IN et détermination du statut hors alignement
     order = {"SN 1": 1, "SN 2": 2, "IN 1": 3, "IN 2": 4}
     for info in lines.values():
         if info["specialTeams"]:
             info["specialTeams"].sort(key=lambda x: order.get(x, 99))
         else:
             info["specialTeams"] = ["Aucune"]
-        if info["injured"] and not info["unit"]:
+
+        if not info["unit"] or info["unit"] == "Hors alignement":
             info["unit"] = "Hors alignement"
+            info["outStatus"] = "Blessé" if info["injured"] else "Laissé de côté"
+        else:
+            info["outStatus"] = None
 
     return lines
 
@@ -418,11 +431,12 @@ def main():
         lines_data = fetch_daily_faceoff_lines()
         enrich_missing_df_players(lines_data, roster_data, career_data)
         active_count = sum(1 for v in lines_data.values() if v.get("unit") and v.get("unit") != "Hors alignement")
-        inj_count = sum(1 for v in lines_data.values() if not v.get("unit") or v.get("unit") == "Hors alignement")
+        injured_count = sum(1 for v in lines_data.values() if v.get("unit") == "Hors alignement" and v.get("outStatus") == "Blessé")
+        scratched_count = sum(1 for v in lines_data.values() if v.get("unit") == "Hors alignement" and v.get("outStatus") != "Blessé")
         services_status["dailyFaceoff"] = {
             "ok": len(lines_data) > 0,
             "count": len(lines_data),
-            "detail": f"Opérationnel ({active_count} alignés, {inj_count} blessés/IR)",
+            "detail": f"Opérationnel ({active_count} alignés, {injured_count} blessés, {scratched_count} laissés de côté)",
         }
     except Exception as e:
         print(f"[Daily Faceoff] Erreur: {e}", file=sys.stderr)

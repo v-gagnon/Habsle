@@ -138,6 +138,10 @@
   line-height: 1.35;
 }
 
+.study-status-row {
+  margin-bottom: 0.35rem;
+}
+
 /* Fenêtres modales */
 .modal-overlay {
   position: fixed;
@@ -347,6 +351,8 @@
   border-radius: 6px;
   min-width: 28px;
   text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .roster-name {
@@ -407,6 +413,29 @@
   background: rgba(175, 30, 45, 0.25);
   color: #ff9aa5;
   border: 1px solid rgba(175, 30, 45, 0.55);
+}
+
+.out-status-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.14rem 0.45rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.out-status-badge.injured,
+.profile-unit-badge.status-injured {
+  background: rgba(217, 119, 6, 0.25);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.55);
+}
+
+.out-status-badge.scratched,
+.profile-unit-badge.status-scratched {
+  background: rgba(148, 163, 184, 0.18);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
 /* Panneau de déclenchement manuel GitHub Actions (#admin) */

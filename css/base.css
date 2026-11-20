@@ -204,6 +204,16 @@ body {
   transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
+.primary-btn:focus-visible,
+.secondary-btn:focus-visible,
+.danger-btn:focus-visible,
+.custom-btn:focus-visible,
+.image-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(175, 30, 45, 0.45);
+}
+
 .image-btn {
   background: rgba(124, 58, 237, 0.25);
   color: #ddd6fe;

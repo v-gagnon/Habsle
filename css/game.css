@@ -713,6 +713,16 @@
   border: 1px solid rgba(175, 30, 45, 0.35);
 }
 
+.stat-box.status-injured-box {
+  background: rgba(217, 119, 6, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+.stat-box.status-scratched-box {
+  background: rgba(148, 163, 184, 0.14);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
 .stat-val {
   font-size: 0.95rem;
   font-weight: 700;
