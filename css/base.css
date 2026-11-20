@@ -84,14 +84,14 @@ body {
 }
 
 .nav-inner {
-  max-width: 960px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 0.55rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .nav-tab {

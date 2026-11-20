@@ -12,6 +12,14 @@
 .mode-banner-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mode-banner-title-group {
+  display: flex;
+  align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
 }
@@ -758,4 +766,146 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+/* HUD Score / Chrono / Record (Survie & Contre-la-montre) */
+.challenge-hud {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hud-pill {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.34rem 0.75rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-pill strong {
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.hud-pill.hud-timer {
+  border-color: rgba(59, 76, 202, 0.55);
+  background: rgba(59, 76, 202, 0.16);
+}
+
+.hud-pill.hud-record {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(217, 119, 6, 0.14);
+}
+
+.hud-pill.hud-record strong {
+  color: #fde68a;
+}
+
+/* Bandeau récapitulatif en fin de partie (Survie / Contre-la-montre) */
+.result-card.challenge-final-card {
+  margin-top: 1.25rem;
+}
+
+.challenge-end-summary {
+  background: rgba(15, 20, 36, 0.45);
+  padding: 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.4rem;
+}
+
+.challenge-summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.challenge-summary-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem 1.35rem;
+  min-width: 145px;
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-summary-box.record-box {
+  background: rgba(217, 119, 6, 0.14);
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.challenge-summary-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.challenge-summary-val {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+.challenge-summary-box.record-box .challenge-summary-val {
+  color: #fde68a;
+}
+
+.new-record-badge {
+  display: inline-block;
+  background: rgba(31, 139, 76, 0.25);
+  color: #86efac;
+  border: 1px solid rgba(31, 139, 76, 0.65);
+  padding: 0.38rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.challenge-end-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Modale de confirmation Survie */
+.confirm-modal-window {
+  max-width: 440px;
+}
+
+.confirm-modal-body {
+  padding: 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.confirm-modal-body p {
+  color: #cad3eb;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }

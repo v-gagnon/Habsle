@@ -222,6 +222,15 @@ const DAILY_IMAGE_STORAGE_KEY = "habsle_daily_image_state_v1";
 const CUSTOM_PREFS_STORAGE_KEY = "habsle_custom_prefs_v1";
 const NHL_CACHE_KEY = "habsle_nhl_api_cache_v2";
 
+const RECORDS_STORAGE_KEY = "habsle_records_v1";
+
+const SPEEDRUN_TARGETS = {
+  classic: 5,
+  remix: 3,
+  expert: 3,
+  image: 10
+};
+
 const INJURED_UNIT = "Hors alignement";
 const UNITS_ORDER = [
   "Trio 1",

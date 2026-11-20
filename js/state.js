@@ -38,6 +38,130 @@ function generateExpertColumns(rng = Math.random) {
   return shuffleArray([...keptBase, ...pickedStats], rng);
 }
 
+function pickRandomPlayablePlayer(excludeId = null) {
+  const pool = getPlayablePlayers();
+  if (pool.length <= 1 || excludeId === null) {
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  const filtered = pool.filter(p => p.id !== excludeId);
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+// --- PALIERS DU MODE SURVIE ---
+function getSurvivalMaxAttempts(variant, roundNumber) {
+  const r = Math.max(1, roundNumber);
+
+  if (variant === "image") {
+    if (r <= 4) return 6;
+    if (r <= 8) return 5;
+    if (r <= 12) return 4;
+    if (r <= 25) return 3;
+    if (r <= 50) return 2;
+    return 1;
+  }
+
+  if (variant === "remix") {
+    if (r <= 3) return 8;
+    if (r <= 6) return 7;
+    if (r <= 9) return 6;
+    if (r <= 15) return 5;
+    if (r <= 20) return 4;
+    return 3;
+  }
+
+  if (variant === "expert") {
+    if (r <= 3) return 8;
+    if (r <= 6) return 7;
+    if (r <= 9) return 6;
+    if (r <= 20) return 5;
+    return 4;
+  }
+
+  // Standard (classic)
+  if (r <= 3) return 8;
+  if (r <= 6) return 7;
+  if (r <= 9) return 6;
+  if (r <= 12) return 5;
+  if (r <= 15) return 4;
+  if (r <= 20) return 3;
+  return 2;
+}
+
+function formatSpeedrunTime(ms) {
+  const totalTenths = Math.floor(Math.max(0, ms) / 100);
+  const tenths = totalTenths % 10;
+  const totalSecs = Math.floor(totalTenths / 10);
+  const secs = totalSecs % 60;
+  const mins = Math.floor(totalSecs / 60);
+  return `${mins}:${String(secs).padStart(2, "0")}.${tenths}`;
+}
+
+// --- RECORDS (LOCALSTORAGE) ---
+function createEmptyRecords() {
+  return {
+    survival: { classic: null, remix: null, expert: null, image: null },
+    speedrun: { classic: null, remix: null, expert: null, image: null }
+  };
+}
+
+function loadRecords() {
+  const base = createEmptyRecords();
+  try {
+    const raw = localStorage.getItem(RECORDS_STORAGE_KEY);
+    if (!raw) return base;
+    const parsed = JSON.parse(raw);
+    ["survival", "speedrun"].forEach(mode => {
+      if (parsed && parsed[mode] && typeof parsed[mode] === "object") {
+        ["classic", "remix", "expert", "image"].forEach(v => {
+          const val = parsed[mode][v];
+          if (typeof val === "number" && Number.isFinite(val)) {
+            base[mode][v] = val;
+          }
+        });
+      }
+    });
+  } catch (e) {}
+  return base;
+}
+
+let modeRecords = loadRecords();
+
+function saveRecords() {
+  try {
+    localStorage.setItem(RECORDS_STORAGE_KEY, JSON.stringify(modeRecords));
+  } catch (e) {}
+}
+
+function getRecord(mode, variant) {
+  return modeRecords[mode]?.[variant] ?? null;
+}
+
+function updateRecordIfBetter(mode, variant, value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return false;
+  const currentBest = getRecord(mode, variant);
+
+  if (mode === "survival") {
+    if (value <= 0) return false;
+    if (currentBest === null || value > currentBest) {
+      modeRecords.survival[variant] = value;
+      saveRecords();
+      return true;
+    }
+    return false;
+  }
+
+  if (mode === "speedrun") {
+    if (currentBest === null || value < currentBest) {
+      modeRecords.speedrun[variant] = value;
+      saveRecords();
+      return true;
+    }
+    return false;
+  }
+
+  return false;
+}
+
 // Préférences de la Partie Personnalisée
 let customSelectedColumns = [...CLASSIC_COLUMNS];
 let customShowArrows = true;
@@ -72,8 +196,8 @@ loadCustomPrefs();
 let practiceImageRounds = 6;
 let pendingImageRounds = 6;
 
-let currentView = "menu"; // "menu" | "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom" | "study"
-let activeGameMode = "daily"; // "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom"
+let currentView = "menu"; // "menu" | "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom" | "study" | "survival" | "speedrun"
+let activeGameMode = "daily"; // "daily" | "dailyRemix" | "dailyExpert" | "dailyImage" | "practice" | "custom" | "survival" | "speedrun"
 
 const sessions = {
   daily: {
@@ -129,6 +253,39 @@ const sessions = {
     variant: "custom",
     hideArrows: !customShowArrows,
     columns: [...customSelectedColumns]
+  },
+  survival: {
+    secretPlayer: null,
+    guesses: [],
+    gameOver: false,
+    endReason: null,
+    variant: "classic", // "classic" | "remix" | "expert" | "image"
+    hideArrows: false,
+    columns: [...CLASSIC_COLUMNS],
+    roundNumber: 1,
+    score: 0,
+    maxAttempts: MAX_ATTEMPTS,
+    runOver: false,
+    endedManually: false,
+    isNewRecord: false,
+    previousRecord: null
+  },
+  speedrun: {
+    secretPlayer: null,
+    guesses: [],
+    gameOver: false,
+    endReason: null,
+    variant: "classic", // "classic" | "remix" | "expert" | "image"
+    hideArrows: false,
+    columns: [...CLASSIC_COLUMNS],
+    roundNumber: 1,
+    score: 0,
+    targetScore: 5,
+    startTime: null,
+    elapsedMs: 0,
+    runOver: false,
+    isNewRecord: false,
+    previousRecord: null
   }
 };
 
@@ -139,6 +296,10 @@ function isDailyMode(modeKey) {
     modeKey === "dailyExpert" ||
     modeKey === "dailyImage"
   );
+}
+
+function isChallengeMode(modeKey) {
+  return modeKey === "survival" || modeKey === "speedrun";
 }
 
 function isImageSession(session) {

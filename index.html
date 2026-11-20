@@ -69,8 +69,53 @@
         </div>
       </div>
 
-      <button class="nav-tab" data-target="custom">Personnalisé</button>
       <button class="nav-tab" data-target="study">Étude</button>
+
+      <!-- Groupe Survie -->
+      <div class="nav-dropdown" id="nav-dropdown-survival">
+        <button type="button" class="nav-tab nav-dropdown-trigger" id="nav-survival-trigger" aria-expanded="false">
+          <span id="nav-survival-label">Survie</span>
+          <span class="nav-caret">▾</span>
+        </button>
+        <div class="nav-dropdown-menu hidden" id="nav-survival-menu">
+          <button type="button" class="nav-dropdown-item" data-survival-variant="classic">
+            <span class="dropdown-dot classic-dot"></span> Standard
+          </button>
+          <button type="button" class="nav-dropdown-item" data-survival-variant="remix">
+            <span class="dropdown-dot remix-dot"></span> Mélangé
+          </button>
+          <button type="button" class="nav-dropdown-item" data-survival-variant="expert">
+            <span class="dropdown-dot expert-dot"></span> Expert
+          </button>
+          <button type="button" class="nav-dropdown-item" data-survival-variant="image">
+            <span class="dropdown-dot image-dot"></span> Visuel
+          </button>
+        </div>
+      </div>
+
+      <!-- Groupe Contre-la-montre -->
+      <div class="nav-dropdown" id="nav-dropdown-speedrun">
+        <button type="button" class="nav-tab nav-dropdown-trigger" id="nav-speedrun-trigger" aria-expanded="false">
+          <span id="nav-speedrun-label">Contre-la-montre</span>
+          <span class="nav-caret">▾</span>
+        </button>
+        <div class="nav-dropdown-menu hidden" id="nav-speedrun-menu">
+          <button type="button" class="nav-dropdown-item" data-speedrun-variant="classic">
+            <span class="dropdown-dot classic-dot"></span> Standard
+          </button>
+          <button type="button" class="nav-dropdown-item" data-speedrun-variant="remix">
+            <span class="dropdown-dot remix-dot"></span> Mélangé
+          </button>
+          <button type="button" class="nav-dropdown-item" data-speedrun-variant="expert">
+            <span class="dropdown-dot expert-dot"></span> Expert
+          </button>
+          <button type="button" class="nav-dropdown-item" data-speedrun-variant="image">
+            <span class="dropdown-dot image-dot"></span> Visuel
+          </button>
+        </div>
+      </div>
+
+      <button class="nav-tab" data-target="custom">Personnalisé</button>
     </div>
   </nav>
 
@@ -126,20 +171,7 @@
         </div>
       </div>
 
-      <!-- Carte 3 : Partie Personnalisée -->
-      <div class="menu-card menu-card-static">
-        <div class="menu-card-top">
-          <h3>Partie Personnalisée</h3>
-          <p>Sélectionne exactement les indices que tu veux voir apparaître.</p>
-        </div>
-        <div class="menu-card-actions">
-          <button id="menu-start-custom-btn" class="menu-action-btn custom-action">
-            Configurer une partie &rarr;
-          </button>
-        </div>
-      </div>
-
-      <!-- Carte 4 : Mode Étude -->
+      <!-- Carte 3 : Mode Étude -->
       <div class="menu-card" id="menu-card-study" role="button" tabindex="0">
         <div class="menu-card-top">
           <h3>Étude</h3>
@@ -151,6 +183,63 @@
           </button>
         </div>
       </div>
+
+      <!-- Carte 4 : Survie -->
+      <div class="menu-card menu-card-static">
+        <div class="menu-card-top">
+          <h3>Survie</h3>
+          <p>Enchaîne les bonnes réponses sans erreur alors que les essais diminuent.</p>
+        </div>
+        <div class="menu-card-actions">
+          <button id="menu-start-survival-classic-btn" class="menu-action-btn primary-action">
+            Survie standard &rarr;
+          </button>
+          <button id="menu-start-survival-remix-btn" class="menu-action-btn remix-action">
+            Survie mélangée &rarr;
+          </button>
+          <button id="menu-start-survival-expert-btn" class="menu-action-btn expert-action">
+            Survie experte &rarr;
+          </button>
+          <button id="menu-start-survival-image-btn" class="menu-action-btn image-action">
+            Survie visuelle &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Carte 5 : Contre-la-montre -->
+      <div class="menu-card menu-card-static">
+        <div class="menu-card-top">
+          <h3>Contre-la-montre</h3>
+          <p>Atteins l'objectif de bonnes réponses le plus rapidement possible.</p>
+        </div>
+        <div class="menu-card-actions">
+          <button id="menu-start-speedrun-classic-btn" class="menu-action-btn primary-action">
+            Standard &rarr;
+          </button>
+          <button id="menu-start-speedrun-remix-btn" class="menu-action-btn remix-action">
+            Mélangé &rarr;
+          </button>
+          <button id="menu-start-speedrun-expert-btn" class="menu-action-btn expert-action">
+            Expert &rarr;
+          </button>
+          <button id="menu-start-speedrun-image-btn" class="menu-action-btn image-action">
+            Visuel &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Carte 6 : Partie Personnalisée -->
+      <div class="menu-card menu-card-static">
+        <div class="menu-card-top">
+          <h3>Partie Personnalisée</h3>
+          <p>Sélectionne exactement les indices que tu veux voir apparaître.</p>
+        </div>
+        <div class="menu-card-actions">
+          <button id="menu-start-custom-btn" class="menu-action-btn custom-action">
+            Configurer une partie &rarr;
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -158,8 +247,15 @@
   <main id="game-view" class="game-container hidden">
     <div class="mode-banner">
       <div class="mode-banner-header">
-        <h2 id="current-mode-title">Défi Quotidien</h2>
-        <span id="mode-active-pill" class="mode-pill hidden"></span>
+        <div class="mode-banner-title-group">
+          <h2 id="current-mode-title">Défi Quotidien</h2>
+          <span id="mode-active-pill" class="mode-pill hidden"></span>
+        </div>
+        <div id="challenge-hud" class="challenge-hud hidden">
+          <span id="hud-score-pill" class="hud-pill hud-score">Score : <strong id="hud-score-val">0</strong></span>
+          <span id="hud-timer-pill" class="hud-pill hud-timer hidden">Temps : <strong id="hud-timer-val">0:00.0</strong></span>
+          <span id="hud-record-pill" class="hud-pill hud-record">Record : <strong id="hud-record-val">—</strong></span>
+        </div>
       </div>
     </div>
 
@@ -216,7 +312,7 @@
     </section>
 
     <!-- Barre de contrôle -->
-    <div class="top-controls">
+    <div id="top-controls" class="top-controls">
       <div class="attempts-counter">
         Essais : <span id="attempt-count">0 / 8</span>
       </div>
@@ -272,10 +368,18 @@
       <div id="guesses-container" class="guesses-body"></div>
     </div>
 
-    <!-- Carte finale -->
+   <!-- Carte finale -->
     <section id="result-card" class="result-card hidden">
       <div class="result-banner" id="result-banner"></div>
-      <div class="result-content">
+      <div id="challenge-end-summary" class="challenge-end-summary hidden">
+        <div id="challenge-new-record-slot"></div>
+        <div id="challenge-summary-stats" class="challenge-summary-stats"></div>
+        <div class="challenge-end-actions">
+          <button id="challenge-play-again-btn" class="primary-btn">Nouvelle partie</button>
+          <button id="challenge-back-to-menu-btn" class="secondary-btn">Menu principal</button>
+        </div>
+      </div>
+      <div id="result-content" class="result-content">
         <div class="photo-wrapper">
           <img id="player-photo" src="" alt="Photo du joueur" />
           <span id="player-jersey-badge" class="jersey-badge"></span>
@@ -296,6 +400,8 @@
 
           <div class="result-actions">
             <div id="practice-end-actions" class="practice-end-actions">
+              <button id="next-round-btn" class="primary-btn hidden">Prochaine ronde</button>
+              <button id="end-survival-btn" class="danger-btn hidden">Terminer</button>
               <button id="play-again-btn" class="primary-btn">Nouvelle partie</button>
               <button id="end-customize-clues-btn" class="custom-btn hidden">Modifier les indices</button>
               <button id="end-customize-rounds-btn" class="image-btn hidden">Modifier les rondes</button>
@@ -360,6 +466,23 @@
         <button id="close-status-modal-btn" class="close-btn" aria-label="Fermer">&times;</button>
       </div>
       <div class="profile-modal-body" id="status-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Fenêtre modale 4 : Confirmation de fin de partie Survie -->
+  <div id="confirm-end-survival-modal" class="modal-overlay hidden">
+    <div class="modal-window confirm-modal-window">
+      <div class="modal-header">
+        <h2>Terminer la partie ?</h2>
+        <button id="close-confirm-survival-btn" class="close-btn" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="confirm-modal-body">
+        <p id="confirm-survival-message">Veux-tu vraiment terminer cette partie de survie ? Ton score actuel sera enregistré comme résultat final.</p>
+        <div class="confirm-modal-actions">
+          <button type="button" id="cancel-end-survival-btn" class="secondary-btn">Continuer</button>
+          <button type="button" id="confirm-end-survival-btn" class="danger-btn">Terminer la partie</button>
+        </div>
+      </div>
     </div>
   </div>
 
