@@ -386,11 +386,7 @@ const CLUE_DEFINITIONS = {
     interval: "(Groupe)",
     isStat: false,
     evaluate(player, secret) {
-      // Un joueur "Hors alignement" garde son unitGroup LNH (ATT, DEF ou GAR).
-      // Ainsi, un ATT blessé comparé à un joueur du Trio 1 (ATT) donne "close" (jaune).
-      const sameExactUnit =
-        player.unit === secret.unit && player.unitGroup === secret.unitGroup;
-      const status = sameExactUnit
+      const status = player.unit === secret.unit
         ? "exact"
         : player.unitGroup === secret.unitGroup
         ? "close"

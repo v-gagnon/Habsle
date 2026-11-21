@@ -52,38 +52,39 @@ function getSurvivalMaxAttempts(variant, roundNumber) {
   const r = Math.max(1, roundNumber);
 
   if (variant === "image") {
-    if (r <= 4) return 6;
-    if (r <= 8) return 5;
-    if (r <= 12) return 4;
-    if (r <= 25) return 3;
-    if (r <= 50) return 2;
-    return 1;
+    if (r <= 2) return 6;
+    if (r <= 5) return 5;
+    if (r <= 15) return 4;
+    if (r <= 30) return 3;
+    return 2;
   }
 
   if (variant === "remix") {
-    if (r <= 3) return 8;
-    if (r <= 6) return 7;
-    if (r <= 9) return 6;
-    if (r <= 15) return 5;
+    if (r <= 1) return 8;
+    if (r <= 3) return 7;
+    if (r <= 5) return 6;
+    if (r <= 10) return 5;
     if (r <= 20) return 4;
-    return 3;
+    if (r <= 40) return 3;
+    return 2;
   }
 
   if (variant === "expert") {
-    if (r <= 3) return 8;
-    if (r <= 6) return 7;
-    if (r <= 9) return 6;
-    if (r <= 20) return 5;
-    return 4;
+    if (r <= 2) return 8;
+    if (r <= 5) return 7;
+    if (r <= 10) return 6;
+    if (r <= 25) return 5;
+    if (r <= 40) return 4;
+    return 3;
   }
 
   // Standard (classic)
-  if (r <= 3) return 8;
-  if (r <= 6) return 7;
-  if (r <= 9) return 6;
-  if (r <= 12) return 5;
-  if (r <= 15) return 4;
-  if (r <= 20) return 3;
+  if (r <= 1) return 8;
+  if (r <= 3) return 7;
+  if (r <= 5) return 6;
+  if (r <= 8) return 5;
+  if (r <= 12) return 4;
+  if (r <= 25) return 3;
   return 2;
 }
 
