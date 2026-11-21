@@ -54,7 +54,7 @@ function getSurvivalMaxAttempts(variant, roundNumber) {
   if (variant === "image") {
     if (r <= 2) return 6;
     if (r <= 5) return 5;
-    if (r <= 15) return 4;
+    if (r <= 12) return 4;
     if (r <= 30) return 3;
     return 2;
   }

@@ -99,7 +99,7 @@ const cancelEndSurvivalBtn = document.getElementById("cancel-end-survival-btn");
 const confirmEndSurvivalBtn = document.getElementById("confirm-end-survival-btn");
 
 // --- CALCUL DU FLOU POUR LE MODE IMAGE ---
-const INITIAL_BLUR_PX = 20;
+const INITIAL_BLUR_PX = 17.5;
 const IMAGE_MAX_ATTEMPTS = 6;
 
 function getMaxAttempts(session) {
