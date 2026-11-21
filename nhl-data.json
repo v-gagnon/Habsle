@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-20T16:09:55Z",
+    "updatedAt": "2026-11-21T11:23:18Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -2048,7 +2048,7 @@
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2"
+        "Aucune"
       ],
       "number": 65,
       "id": 8482132
@@ -2127,7 +2127,7 @@
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "Aucune"
+        "SN 2"
       ],
       "number": 42,
       "id": 8483686
