@@ -72,7 +72,7 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
 
   const edgeSpeedsHTML = scope === "season"
     ? `
-      <div class="stat-box"><div class="stat-label">Vitesse patinage</div><div class="stat-val">${st.skatingSpeed ?? "—"}</div></div>
+      <div class="stat-box"><div class="stat-label">Vitesse de patinage</div><div class="stat-val">${st.skatingSpeed ?? "—"}</div></div>
       <div class="stat-box"><div class="stat-label">Vitesse de tir</div><div class="stat-val">${st.shotSpeed ?? "—"}</div></div>
     `
     : "";
@@ -82,7 +82,7 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
     <div class="stat-box highlight-stat"><div class="stat-label">Buts</div><div class="stat-val">${st.g ?? 0}</div></div>
     <div class="stat-box highlight-stat"><div class="stat-label">Passes</div><div class="stat-val">${st.a ?? 0}</div></div>
     <div class="stat-box highlight-stat"><div class="stat-label">Points</div><div class="stat-val">${st.pts ?? 0}</div></div>
-    <div class="stat-box"><div class="stat-label">Différentiel (+/-)</div><div class="stat-val">${diffFormatted}</div></div>
+    <div class="stat-box"><div class="stat-label">Différen&shy;tiel (+/-)</div><div class="stat-val">${diffFormatted}</div></div>
     <div class="stat-box"><div class="stat-label">Punitions (PUN)</div><div class="stat-val">${st.pim ?? 0} min</div></div>
     <div class="stat-box"><div class="stat-label">Buts en AN</div><div class="stat-val">${st.ppg ?? 0}</div></div>
     <div class="stat-box"><div class="stat-label">Tirs au but</div><div class="stat-val">${st.shots ?? 0}</div></div>
@@ -91,7 +91,7 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
     <div class="stat-box"><div class="stat-label">% Mises au jeu</div><div class="stat-val">${st.fowPct ?? "—"}</div></div>
     <div class="stat-box"><div class="stat-label">Mises en échec</div><div class="stat-val">${st.hits ?? "—"}</div></div>
     <div class="stat-box"><div class="stat-label">Tirs bloqués</div><div class="stat-val">${st.blocks ?? "—"}</div></div>
-    <div class="stat-box"><div class="stat-label">Revirements</div><div class="stat-val">${st.takeaways ?? "—"}</div></div>
+    <div class="stat-box"><div class="stat-label">Revire&shy;ments</div><div class="stat-val">${st.takeaways ?? "—"}</div></div>
     ${edgeSpeedsHTML}
   `;
 }
