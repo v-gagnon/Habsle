@@ -220,8 +220,7 @@ const DAILY_REMIX_STORAGE_KEY = "habsle_daily_remix_state_v2";
 const DAILY_EXPERT_STORAGE_KEY = "habsle_daily_expert_state_v1";
 const DAILY_IMAGE_STORAGE_KEY = "habsle_daily_image_state_v1";
 const CUSTOM_PREFS_STORAGE_KEY = "habsle_custom_prefs_v1";
-const NHL_CACHE_KEY = "habsle_nhl_api_cache_v2";
-
+const NHL_CACHE_KEY = "habsle_nhl_api_cache_v3";
 const RECORDS_STORAGE_KEY = "habsle_records_v1";
 
 const SPEEDRUN_TARGETS = {
@@ -260,6 +259,8 @@ const CLASSIC_COLUMNS = ["number", "pos", "unit", "shoots", "age"];
 const STAT_POOL_COLUMNS = [
   "specialTeams",
   "country",
+  "height",
+  "weight",
   "gp",
   "g",
   "a",
@@ -268,10 +269,47 @@ const STAT_POOL_COLUMNS = [
   "pim",
   "shots",
   "toi",
-  "height",
-  "weight"
+  "hits",
+  "blocks",
+  "takeaways"
 ];
-const ALL_AVAILABLE_COLUMNS = [...CLASSIC_COLUMNS, ...STAT_POOL_COLUMNS];
+
+// Ordre constant d'affichage des colonnes d'indices :
+// i. Standard (avec Unités spéciales juste après Unité)
+// ii. Autres infos permanentes (origine, taille, poids)
+// iii. Autres statistiques (ordre du mode Étude)
+const COLUMN_DISPLAY_ORDER = [
+  "number",
+  "pos",
+  "unit",
+  "specialTeams",
+  "shoots",
+  "age",
+  "country",
+  "height",
+  "weight",
+  "gp",
+  "g",
+  "a",
+  "pts",
+  "plusMinus",
+  "pim",
+  "shots",
+  "toi",
+  "hits",
+  "blocks",
+  "takeaways"
+];
+
+const ALL_AVAILABLE_COLUMNS = [...COLUMN_DISPLAY_ORDER];
+
+function sortColumnsInCanonicalOrder(columns) {
+  return [...columns].sort((a, b) => {
+    const idxA = COLUMN_DISPLAY_ORDER.indexOf(a);
+    const idxB = COLUMN_DISPLAY_ORDER.indexOf(b);
+    return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+  });
+}
 
 // Identifiants des 25 joueurs de base éligibles aux défis et parties
 const CORE_PLAYER_IDS = new Set(PLAYERS.map(p => p.id));
@@ -294,6 +332,8 @@ const SERVICE_STATUS = {
   nhlRoster: { ok: false, detail: "En attente de synchronisation" },
   nhlStats: { ok: false, detail: "En attente de synchronisation" },
   nhlCareer: { ok: false, detail: "En attente de synchronisation" },
+  nhlRealtime: { ok: false, detail: "En attente de synchronisation" },
+  nhlEdge: { ok: false, detail: "En attente de synchronisation" },
   dailyFaceoff: { ok: false, detail: "En attente de synchronisation" }
 };
 
@@ -600,6 +640,69 @@ const CLUE_DEFINITIONS = {
         "▼ Plus léger"
       );
     }
+  },
+  hits: {
+    label: "Mises en éch.",
+    fullName: "Mises en échec",
+    interval: "(±5)",
+    isStat: true,
+    evaluate(player, secret) {
+      const gIsGoalie = player.posGroup === "GAR";
+      const sIsGoalie = secret.posGroup === "GAR";
+      if (gIsGoalie || sIsGoalie) {
+        const gVal = gIsGoalie ? null : (typeof player.stats?.hits === "number" ? player.stats.hits : null);
+        return {
+          text: gVal === null ? "—" : `${gVal}`,
+          status: gIsGoalie && sIsGoalie ? "exact" : "wrong",
+          sub: ""
+        };
+      }
+      const gVal = typeof player.stats?.hits === "number" ? player.stats.hits : null;
+      const sVal = typeof secret.stats?.hits === "number" ? secret.stats.hits : null;
+      return compareNumericClue(gVal, sVal, 5, gVal === null ? "—" : `${gVal}`);
+    }
+  },
+  blocks: {
+    label: "Tirs bloqués",
+    fullName: "Tirs bloqués",
+    interval: "(±4)",
+    isStat: true,
+    evaluate(player, secret) {
+      const gIsGoalie = player.posGroup === "GAR";
+      const sIsGoalie = secret.posGroup === "GAR";
+      if (gIsGoalie || sIsGoalie) {
+        const gVal = gIsGoalie ? null : (typeof player.stats?.blocks === "number" ? player.stats.blocks : null);
+        return {
+          text: gVal === null ? "—" : `${gVal}`,
+          status: gIsGoalie && sIsGoalie ? "exact" : "wrong",
+          sub: ""
+        };
+      }
+      const gVal = typeof player.stats?.blocks === "number" ? player.stats.blocks : null;
+      const sVal = typeof secret.stats?.blocks === "number" ? secret.stats.blocks : null;
+      return compareNumericClue(gVal, sVal, 4, gVal === null ? "—" : `${gVal}`);
+    }
+  },
+  takeaways: {
+    label: "Revirements",
+    fullName: "Revirements",
+    interval: "(±2)",
+    isStat: true,
+    evaluate(player, secret) {
+      const gIsGoalie = player.posGroup === "GAR";
+      const sIsGoalie = secret.posGroup === "GAR";
+      if (gIsGoalie || sIsGoalie) {
+        const gVal = gIsGoalie ? null : (typeof player.stats?.takeaways === "number" ? player.stats.takeaways : null);
+        return {
+          text: gVal === null ? "—" : `${gVal}`,
+          status: gIsGoalie && sIsGoalie ? "exact" : "wrong",
+          sub: ""
+        };
+      }
+      const gVal = typeof player.stats?.takeaways === "number" ? player.stats.takeaways : null;
+      const sVal = typeof secret.stats?.takeaways === "number" ? secret.stats.takeaways : null;
+      return compareNumericClue(gVal, sVal, 2, gVal === null ? "—" : `${gVal}`);
+    }
   }
 };
 
@@ -609,6 +712,12 @@ function formatSecondsToMMSS(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = String(Math.round(seconds % 60)).padStart(2, "0");
   return `${mins}:${secs}`;
+}
+
+function formatSpeedKmh(val) {
+  return typeof val === "number" && Number.isFinite(val) && val > 0
+    ? `${val.toFixed(1)} km/h`
+    : "—";
 }
 
 function calculateAgeFromBirthDate(birthDateStr) {
@@ -685,7 +794,12 @@ function createDefaultStatsForGroup(posGroup) {
   if (posGroup === "GAR") {
     return { gp: 0, gs: 0, w: 0, l: 0, otl: 0, gaa: "—", svPct: "—", so: 0, saves: 0, shotsAgainst: 0 };
   }
-  return { gp: 0, g: 0, a: 0, pts: 0, plusMinus: 0, pim: 0, ppg: 0, gwg: 0, shots: 0, shPct: "0.0%", toi: "—", fowPct: "—" };
+  return {
+    gp: 0, g: 0, a: 0, pts: 0, plusMinus: 0, pim: 0, ppg: 0, shots: 0,
+    shPct: "0.0%", toi: "—", fowPct: "—",
+    hits: null, blocks: null, takeaways: null,
+    skatingSpeed: "—", shotSpeed: "—"
+  };
 }
 
 function buildDynamicPlayerFromDailyFaceoff(dfKey, dfInfo, allRosterEntries, allStatsEntries, indexSeed) {
@@ -777,13 +891,15 @@ function applyCareerRegularSeasonObj(player, reg) {
       plusMinus: reg.plusMinus ?? 0,
       pim: reg.pim ?? 0,
       ppg: reg.powerPlayGoals ?? 0,
-      gwg: reg.gameWinningGoals ?? 0,
       shots: reg.shots ?? 0,
       shPct: typeof reg.shootingPctg === "number" ? `${(reg.shootingPctg * 100).toFixed(1)}%` : "0.0%",
       toi: reg.avgToi || "—",
       fowPct: typeof reg.faceoffWinningPctg === "number" && reg.faceoffWinningPctg > 0
         ? `${(reg.faceoffWinningPctg * 100).toFixed(1)}%`
-        : "—"
+        : "—",
+      hits: player.careerStats?.hits ?? null,
+      blocks: player.careerStats?.blocks ?? null,
+      takeaways: player.careerStats?.takeaways ?? null
     };
   }
   player._careerSynced = true;
@@ -797,7 +913,15 @@ const NHL_POS_CODE_MAP = {
   G: { pos: "G", group: "GAR" }
 };
 
-function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = null, metaData = null) {
+function applyNHLAPIData(
+  rosterData,
+  statsData,
+  careerData = null,
+  linesData = null,
+  metaData = null,
+  realtimeData = null,
+  edgeData = null
+) {
   const allRosterEntries = rosterData
     ? [
         ...(rosterData.forwards || []),
@@ -898,13 +1022,17 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
           plusMinus: s.plusMinus ?? 0,
           pim: s.penaltyMinutes ?? 0,
           ppg: s.powerPlayGoals ?? 0,
-          gwg: s.gameWinningGoals ?? 0,
           shots: s.shots ?? 0,
           shPct: typeof s.shootingPctg === "number" ? `${(s.shootingPctg * 100).toFixed(1)}%` : "0.0%",
           toi: formatSecondsToMMSS(s.avgTimeOnIcePerGame),
           fowPct: typeof s.faceoffWinPctg === "number" && s.faceoffWinPctg > 0
             ? `${(s.faceoffWinPctg * 100).toFixed(1)}%`
-            : "—"
+            : "—",
+          hits: null,
+          blocks: null,
+          takeaways: null,
+          skatingSpeed: "—",
+          shotSpeed: "—"
         };
       });
     }
@@ -940,6 +1068,53 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
       if (reg) {
         applyCareerRegularSeasonObj(player, reg);
       }
+    });
+  }
+
+  // 3b. Statistiques temps réel (mises en échec, tirs bloqués, revirements)
+  const rtSeasonMap = realtimeData?.season && typeof realtimeData.season === "object" ? realtimeData.season : null;
+  const rtCareerMap = realtimeData?.career && typeof realtimeData.career === "object" ? realtimeData.career : null;
+  const rtSeasonCount = rtSeasonMap ? Object.keys(rtSeasonMap).length : 0;
+
+  if (rtSeasonMap || rtCareerMap) {
+    PLAYERS.forEach(player => {
+      if (player.posGroup === "GAR") return;
+      const key = String(player.id);
+
+      if (rtSeasonMap) {
+        const rt = rtSeasonMap[key] || rtSeasonMap[player.id];
+        if (rt) {
+          player.stats.hits = rt.hits ?? 0;
+          player.stats.blocks = rt.blockedShots ?? 0;
+          player.stats.takeaways = rt.takeaways ?? 0;
+        } else if (rtSeasonCount > 0 && (player.stats?.gp ?? 0) === 0) {
+          player.stats.hits = 0;
+          player.stats.blocks = 0;
+          player.stats.takeaways = 0;
+        }
+      }
+
+      if (rtCareerMap) {
+        const rtc = rtCareerMap[key] || rtCareerMap[player.id];
+        if (rtc) {
+          player.careerStats.hits = rtc.hits ?? 0;
+          player.careerStats.blocks = rtc.blockedShots ?? 0;
+          player.careerStats.takeaways = rtc.takeaways ?? 0;
+        }
+      }
+    });
+  }
+
+  // 3c. Vitesses NHL EDGE (patinage et tir)
+  let edgeCount = 0;
+  if (edgeData && typeof edgeData === "object") {
+    edgeCount = Object.keys(edgeData).length;
+    PLAYERS.forEach(player => {
+      if (player.posGroup === "GAR") return;
+      const edge = edgeData[String(player.id)] || edgeData[player.id];
+      if (!edge) return;
+      player.stats.skatingSpeed = formatSpeedKmh(edge.skatingSpeedKmh);
+      player.stats.shotSpeed = formatSpeedKmh(edge.shotSpeedKmh);
     });
   }
 
@@ -997,6 +1172,8 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
     if (sv.nhlStats) SERVICE_STATUS.nhlStats = sv.nhlStats;
     if (sv.nhlCareer) SERVICE_STATUS.nhlCareer = sv.nhlCareer;
     if (sv.dailyFaceoff) SERVICE_STATUS.dailyFaceoff = sv.dailyFaceoff;
+    if (sv.nhlRealtime) SERVICE_STATUS.nhlRealtime = sv.nhlRealtime;
+    if (sv.nhlEdge) SERVICE_STATUS.nhlEdge = sv.nhlEdge;
   } else {
     SERVICE_STATUS.nhlRoster = {
       ok: rosterCount > 0,
@@ -1013,6 +1190,14 @@ function applyNHLAPIData(rosterData, statsData, careerData = null, linesData = n
     SERVICE_STATUS.dailyFaceoff = {
       ok: dfCount > 0,
       detail: dfCount > 0 ? `Opérationnel (${dfCount} joueurs extraits)` : "Non disponible (trios par défaut actifs)"
+    };
+    SERVICE_STATUS.nhlRealtime = {
+      ok: rtSeasonCount > 0,
+      detail: rtSeasonCount > 0 ? `Opérationnel (${rtSeasonCount} fiches temps réel)` : "Non disponible"
+    };
+    SERVICE_STATUS.nhlEdge = {
+      ok: edgeCount > 0,
+      detail: edgeCount > 0 ? `Opérationnel (${edgeCount} fiches EDGE)` : "Non disponible"
     };
   }
 }
@@ -1047,47 +1232,50 @@ async function fetchPlayerCareerFromAPI(player) {
 }
 
 async function syncWithNHLAPI(forceRefresh = false) {
-  const apiSyncStatusEl = document.getElementById("api-sync-status");
-
+  let cached = null;
   if (!forceRefresh) {
     try {
-      const cached = JSON.parse(localStorage.getItem(NHL_CACHE_KEY) || "null");
-      if (cached && Date.now() - cached.timestamp < 6 * 3600 * 1000) {
-        SERVICE_STATUS.source = "Cache navigateur (localStorage)";
-        applyNHLAPIData(cached.roster, cached.stats, cached.career, cached.lines, cached.meta);
-        if (apiSyncStatusEl) {
-          apiSyncStatusEl.textContent = "Synchronisé avec l'API LNH (cache du jour)";
-        }
-        return;
+      const parsed = JSON.parse(localStorage.getItem(NHL_CACHE_KEY) || "null");
+      if (parsed && Date.now() - parsed.timestamp < 6 * 3600 * 1000) {
+        cached = parsed;
       }
     } catch (e) {}
   }
 
-  if (apiSyncStatusEl) {
-    apiSyncStatusEl.textContent = "Synchronisation avec l'API LNH en cours...";
-  }
-
+  let localData = null;
   try {
     const localResp = await fetch("./nhl-data.json", { cache: "no-store" });
     if (localResp.ok) {
-      const localData = await localResp.json();
-      SERVICE_STATUS.source = "nhl-data.json (GitHub Actions)";
-      applyNHLAPIData(
-        localData.roster,
-        localData.stats,
-        localData.career,
-        localData.lines,
-        localData.meta
-      );
-      if (apiSyncStatusEl) {
-        apiSyncStatusEl.textContent = "Données synchronisées (LNH + Daily Faceoff)";
-      }
-      if (typeof renderStudyDirectory === "function" && currentView === "study") {
-        renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
-      }
-      return;
+      localData = await localResp.json();
     }
   } catch (e) {}
+
+  const cachedTime = cached?.meta?.updatedAt ? (Date.parse(cached.meta.updatedAt) || 0) : 0;
+  const localTime = localData?.meta?.updatedAt ? (Date.parse(localData.meta.updatedAt) || 0) : 0;
+
+  if (cached && (!localData || cachedTime > localTime)) {
+    SERVICE_STATUS.source = "Cache navigateur (localStorage)";
+    applyNHLAPIData(
+      cached.roster, cached.stats, cached.career, cached.lines,
+      cached.meta, cached.realtime, cached.edge
+    );
+    if (typeof renderStudyDirectory === "function" && currentView === "study") {
+      renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
+    }
+    return;
+  }
+
+  if (localData) {
+    SERVICE_STATUS.source = "nhl-data.json (GitHub Actions)";
+    applyNHLAPIData(
+      localData.roster, localData.stats, localData.career, localData.lines,
+      localData.meta, localData.realtime, localData.edge
+    );
+    if (typeof renderStudyDirectory === "function" && currentView === "study") {
+      renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
+    }
+    return;
+  }
 
   const [rosterData, statsData] = await Promise.all([
     fetchViaCORSFallback("https://api-web.nhle.com/v1/roster/MTL/current"),
@@ -1104,15 +1292,11 @@ async function syncWithNHLAPI(forceRefresh = false) {
       );
     } catch (e) {}
 
-    if (apiSyncStatusEl) {
-      apiSyncStatusEl.textContent = "Synchronisé en direct avec api-web.nhle.com";
-    }
     if (typeof renderStudyDirectory === "function" && currentView === "study") {
       renderStudyDirectory(document.getElementById("study-search-input")?.value || "");
     }
-  } else if (apiSyncStatusEl) {
+  } else {
     SERVICE_STATUS.source = "Données locales de secours (data.js)";
-    apiSyncStatusEl.textContent = "Données LNH 2026-2027 intégrées actives";
   }
 }
 
@@ -1152,42 +1336,47 @@ function buildGitHubHeaders(token = "") {
 }
 
 async function loadLatestDataFromGitHubRaw(token = getStoredGitHubToken()) {
-  const commitsUrl =
-    `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}` +
-    `/commits?sha=${GITHUB_BRANCH}&path=nhl-data.json&per_page=1`;
+  let latestSha = GITHUB_BRANCH;
 
-  const commitsResp = await fetch(commitsUrl, {
-    headers: buildGitHubHeaders(token),
-    cache: "no-store"
-  });
+  try {
+    const commitsUrl =
+      `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}` +
+      `/commits?sha=${GITHUB_BRANCH}&path=nhl-data.json&per_page=1`;
 
-  if (!commitsResp.ok) {
-    throw new Error(`Impossible de lire le dernier commit (HTTP ${commitsResp.status})`);
-  }
+    const commitsResp = await fetch(commitsUrl, {
+      headers: buildGitHubHeaders(token),
+      cache: "no-store"
+    });
 
-  const commits = await commitsResp.json();
-  const latestSha = Array.isArray(commits) && commits[0]?.sha ? commits[0].sha : GITHUB_BRANCH;
+    if (commitsResp.ok) {
+      const commits = await commitsResp.json();
+      if (Array.isArray(commits) && commits[0]?.sha) {
+        latestSha = commits[0].sha;
+      }
+    }
+  } catch (e) {}
 
-  // Aucun en-tête personnalisé sur raw.githubusercontent.com pour éviter un blocage CORS preflight
-  const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${latestSha}/nhl-data.json`;
+  const cacheBuster = latestSha === GITHUB_BRANCH ? `?t=${Date.now()}` : "";
+  const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${latestSha}/nhl-data.json${cacheBuster}`;
   const rawResp = await fetch(rawUrl, { cache: "no-store" });
   if (!rawResp.ok) {
     throw new Error(`Impossible de télécharger nhl-data.json (HTTP ${rawResp.status})`);
   }
 
   const freshData = await rawResp.json();
-  SERVICE_STATUS.source = `nhl-data.json (GitHub Raw • ${latestSha.slice(0, 7)})`;
+  const shaLabel = latestSha === GITHUB_BRANCH ? "main" : latestSha.slice(0, 7);
+  SERVICE_STATUS.source = `nhl-data.json (GitHub Raw • ${shaLabel})`;
 
   applyNHLAPIData(
     freshData.roster,
     freshData.stats,
     freshData.career,
     freshData.lines,
-    freshData.meta
+    freshData.meta,
+    freshData.realtime,
+    freshData.edge
   );
 
-  // Sauvegarde dans le cache local pour conserver les données fraîches si la page est rechargée
-  // avant la fin du déploiement GitHub Pages
   try {
     localStorage.setItem(
       NHL_CACHE_KEY,
@@ -1197,15 +1386,12 @@ async function loadLatestDataFromGitHubRaw(token = getStoredGitHubToken()) {
         stats: freshData.stats,
         career: freshData.career,
         lines: freshData.lines,
-        meta: freshData.meta
+        meta: freshData.meta,
+        realtime: freshData.realtime,
+        edge: freshData.edge
       })
     );
-  } catch (e) {}
-
-  const apiSyncStatusEl = document.getElementById("api-sync-status");
-  if (apiSyncStatusEl) {
-    apiSyncStatusEl.textContent = "Données actualisées en direct depuis GitHub";
-  }
+  } catch (e) {}  
 
   if (typeof renderStudyDirectory === "function" && typeof currentView !== "undefined" && currentView === "study") {
     renderStudyDirectory(document.getElementById("study-search-input")?.value || "");

@@ -17,39 +17,6 @@
   border: 1px solid var(--border-subtle);
 }
 
-.api-sync-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.55rem;
-}
-
-.api-status-pill {
-  font-size: 0.75rem;
-  background: rgba(31, 139, 76, 0.2);
-  color: #7ee2a8;
-  border: 1px solid rgba(31, 139, 76, 0.45);
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-}
-
-.mini-sync-btn {
-  background: #283457;
-  color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
-  padding: 0.22rem 0.65rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.mini-sync-btn:hover {
-  background: #364675;
-}
-
 .study-search {
   min-width: 260px;
   flex: 1;
@@ -65,6 +32,21 @@
 
 .study-search:focus {
   border-color: var(--rouge-ch);
+}
+
+.study-header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.study-refresh-btn {
+  padding: 0.7rem 1rem;
+  white-space: nowrap;
 }
 
 .study-sections {

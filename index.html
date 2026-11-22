@@ -88,7 +88,7 @@
             <span class="dropdown-dot expert-dot"></span> Expert
           </button>
           <button type="button" class="nav-dropdown-item" data-survival-variant="image">
-            <span class="dropdown-dot image-dot"></span> Visuel
+            <span class="dropdown-dot image-dot"></span> Portrait
           </button>
         </div>
       </div>
@@ -110,7 +110,7 @@
             <span class="dropdown-dot expert-dot"></span> Expert
           </button>
           <button type="button" class="nav-dropdown-item" data-speedrun-variant="image">
-            <span class="dropdown-dot image-dot"></span> Visuel
+            <span class="dropdown-dot image-dot"></span> Portrait
           </button>
         </div>
       </div>
@@ -172,10 +172,10 @@
       </div>
 
       <!-- Carte 3 : Mode Étude -->
-      <div class="menu-card" id="menu-card-study" role="button" tabindex="0">
+      <div class="menu-card menu-card-static" id="menu-card-study">
         <div class="menu-card-top">
           <h3>Étude</h3>
-          <p>Consulte les fiches, photos, numéros, âges, trios et statistiques des 25 joueurs.</p>
+          <p>Consulte les fiches, photos, numéros, âges, trios et statistiques de l'alignement complet.</p>
         </div>
         <div class="menu-card-actions">
           <button id="menu-start-study-btn" class="menu-action-btn primary-action">
@@ -425,13 +425,23 @@
       <div>
         <h2>Mode Étude — Alignement des Canadiens</h2>
       </div>
-      <input
-        type="text"
-        id="study-search-input"
-        class="study-search"
-        placeholder="Filtrer par nom, numéro ou position..."
-        autocomplete="off"
-      />
+      <div class="study-header-controls">
+        <input
+          type="text"
+          id="study-search-input"
+          class="study-search"
+          placeholder="Filtrer par nom, numéro ou position..."
+          autocomplete="off"
+        />
+        <button
+          type="button"
+          id="study-refresh-btn"
+          class="secondary-btn study-refresh-btn"
+          title="Recharger les dernières données depuis GitHub"
+        >
+          Actualiser
+        </button>
+      </div>
     </div>
     <div id="study-directory-content" class="study-sections"></div>
   </section>

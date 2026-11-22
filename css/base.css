@@ -236,6 +236,11 @@ body {
   transform: translateY(-1px);
 }
 
+.secondary-btn:hover:not(:disabled) {
+  background: #374570;
+  transform: translateY(-1px);
+}
+
 .custom-btn {
   background: rgba(13, 148, 136, 0.25);
   color: #99f6e4;
@@ -260,6 +265,7 @@ body {
   transform: translateY(-1px);
 }
 
+.secondary-btn:disabled,
 .danger-btn:disabled,
 .primary-btn:disabled {
   opacity: 0.4;

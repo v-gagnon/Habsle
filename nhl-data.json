@@ -1,11 +1,11 @@
 {
   "meta": {
-    "updatedAt": "2026-11-22T15:28:15Z",
+    "updatedAt": "2026-11-22T18:25:16Z",
     "services": {
       "nhlRoster": {
         "ok": true,
-        "count": 27,
-        "detail": "Opérationnel (27 joueurs reçus)"
+        "count": 25,
+        "detail": "Opérationnel (25 joueurs reçus)"
       },
       "nhlStats": {
         "ok": true,
@@ -21,6 +21,16 @@
         "ok": true,
         "count": 25,
         "detail": "Opérationnel (20 alignés, 5 blessés, 0 laissés de côté)"
+      },
+      "nhlRealtime": {
+        "ok": true,
+        "count": 25,
+        "detail": "Opérationnel (25 saison, 25 carrière)"
+      },
+      "nhlEdge": {
+        "ok": true,
+        "count": 25,
+        "detail": "Opérationnel (25/25 fiches EDGE)"
       }
     }
   },
@@ -74,31 +84,6 @@
         "birthCountry": "CAN",
         "birthStateProvince": {
           "default": "ON"
-        }
-      },
-      {
-        "id": 8482132,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8482132.png",
-        "firstName": {
-          "default": "Brett"
-        },
-        "lastName": {
-          "default": "Berard"
-        },
-        "sweaterNumber": 37,
-        "positionCode": "L",
-        "shootsCatches": "L",
-        "heightInInches": 69,
-        "weightInPounds": 175,
-        "heightInCentimeters": 175,
-        "weightInKilograms": 79,
-        "birthDate": "2002-09-09",
-        "birthCity": {
-          "default": "Providence"
-        },
-        "birthCountry": "USA",
-        "birthStateProvince": {
-          "default": "RI"
         }
       },
       {
@@ -419,6 +404,29 @@
         "birthStateProvince": {
           "default": "ON"
         }
+      },
+      {
+        "id": 8482132,
+        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8482132.png",
+        "firstName": {
+          "default": "Brett"
+        },
+        "lastName": {
+          "default": "Berard"
+        },
+        "sweaterNumber": 37,
+        "positionCode": "L",
+        "shootsCatches": "L",
+        "heightInInches": 69,
+        "weightInPounds": 175,
+        "birthDate": "2002-09-09",
+        "birthCity": {
+          "default": "Providence"
+        },
+        "birthCountry": "USA",
+        "birthStateProvince": {
+          "default": "Rhode Island"
+        }
       }
     ],
     "defensemen": [
@@ -571,28 +579,6 @@
         }
       },
       {
-        "id": 8484220,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8484220.png",
-        "firstName": {
-          "default": "David"
-        },
-        "lastName": {
-          "default": "Reinbacher"
-        },
-        "sweaterNumber": 64,
-        "positionCode": "D",
-        "shootsCatches": "R",
-        "heightInInches": 75,
-        "weightInPounds": 207,
-        "heightInCentimeters": 191,
-        "weightInKilograms": 94,
-        "birthDate": "2004-10-25",
-        "birthCity": {
-          "default": "Hohenems"
-        },
-        "birthCountry": "AUT"
-      },
-      {
         "id": 8482964,
         "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8482964.png",
         "firstName": {
@@ -616,6 +602,27 @@
         "birthStateProvince": {
           "default": "ON"
         }
+      },
+      {
+        "id": 8484220,
+        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8484220.png",
+        "firstName": {
+          "default": "David"
+        },
+        "lastName": {
+          "default": "Reinbacher"
+        },
+        "sweaterNumber": 64,
+        "positionCode": "D",
+        "shootsCatches": "R",
+        "heightInInches": 75,
+        "weightInPounds": 207,
+        "birthDate": "2004-10-25",
+        "birthCity": {
+          "default": "Hohenems"
+        },
+        "birthCountry": "AUT",
+        "birthStateProvince": null
       }
     ],
     "goalies": [
@@ -1894,6 +1901,414 @@
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
       "shots": 136
+    }
+  },
+  "realtime": {
+    "season": {
+      "8476479": {
+        "hits": 16,
+        "blockedShots": 13,
+        "takeaways": 3,
+        "giveaways": 17
+      },
+      "8480074": {
+        "hits": 27,
+        "blockedShots": 11,
+        "takeaways": 6,
+        "giveaways": 13
+      },
+      "8482775": {
+        "hits": 4,
+        "blockedShots": 6,
+        "takeaways": 2,
+        "giveaways": 8
+      },
+      "8476981": {
+        "hits": 42,
+        "blockedShots": 8,
+        "takeaways": 3,
+        "giveaways": 11
+      },
+      "8483515": {
+        "hits": 21,
+        "blockedShots": 24,
+        "takeaways": 3,
+        "giveaways": 33
+      },
+      "8484984": {
+        "hits": 3,
+        "blockedShots": 0,
+        "takeaways": 0,
+        "giveaways": 1
+      },
+      "8483686": {
+        "hits": 3,
+        "blockedShots": 8,
+        "takeaways": 1,
+        "giveaways": 15
+      },
+      "8478851": {
+        "hits": 23,
+        "blockedShots": 47,
+        "takeaways": 6,
+        "giveaways": 18
+      },
+      "8475184": {
+        "hits": 21,
+        "blockedShots": 8,
+        "takeaways": 2,
+        "giveaways": 9
+      },
+      "8482087": {
+        "hits": 46,
+        "blockedShots": 37,
+        "takeaways": 11,
+        "giveaways": 14
+      },
+      "8481593": {
+        "hits": 58,
+        "blockedShots": 27,
+        "takeaways": 6,
+        "giveaways": 18
+      },
+      "8484403": {
+        "hits": 31,
+        "blockedShots": 5,
+        "takeaways": 0,
+        "giveaways": 5
+      },
+      "8482132": {
+        "hits": 3,
+        "blockedShots": 1,
+        "takeaways": 0,
+        "giveaways": 2
+      },
+      "8481540": {
+        "hits": 21,
+        "blockedShots": 3,
+        "takeaways": 6,
+        "giveaways": 19
+      },
+      "8481523": {
+        "hits": 27,
+        "blockedShots": 11,
+        "takeaways": 4,
+        "giveaways": 14
+      },
+      "8480018": {
+        "hits": 25,
+        "blockedShots": 12,
+        "takeaways": 8,
+        "giveaways": 17
+      },
+      "8482737": {
+        "hits": 35,
+        "blockedShots": 8,
+        "takeaways": 2,
+        "giveaways": 22
+      },
+      "8484220": {
+        "hits": 5,
+        "blockedShots": 1,
+        "takeaways": 0,
+        "giveaways": 2
+      },
+      "8483424": {
+        "hits": 23,
+        "blockedShots": 8,
+        "takeaways": 2,
+        "giveaways": 4
+      },
+      "8478133": {
+        "hits": 16,
+        "blockedShots": 12,
+        "takeaways": 12,
+        "giveaways": 21
+      },
+      "8481618": {
+        "hits": 22,
+        "blockedShots": 17,
+        "takeaways": 2,
+        "giveaways": 15
+      },
+      "8483457": {
+        "hits": 8,
+        "blockedShots": 35,
+        "takeaways": 10,
+        "giveaways": 39
+      },
+      "8476875": {
+        "hits": 5,
+        "blockedShots": 16,
+        "takeaways": 3,
+        "giveaways": 14
+      },
+      "8480865": {
+        "hits": 25,
+        "blockedShots": 31,
+        "takeaways": 9,
+        "giveaways": 31
+      },
+      "8482964": {
+        "hits": 52,
+        "blockedShots": 16,
+        "takeaways": 2,
+        "giveaways": 12
+      }
+    },
+    "career": {
+      "8481618": {
+        "hits": 298,
+        "blockedShots": 160,
+        "takeaways": 88,
+        "giveaways": 129
+      },
+      "8478133": {
+        "hits": 525,
+        "blockedShots": 296,
+        "takeaways": 144,
+        "giveaways": 242
+      },
+      "8476981": {
+        "hits": 1549,
+        "blockedShots": 362,
+        "takeaways": 257,
+        "giveaways": 248
+      },
+      "8482087": {
+        "hits": 436,
+        "blockedShots": 479,
+        "takeaways": 94,
+        "giveaways": 191
+      },
+      "8484220": {
+        "hits": 6,
+        "blockedShots": 3,
+        "takeaways": 0,
+        "giveaways": 4
+      },
+      "8482132": {
+        "hits": 73,
+        "blockedShots": 30,
+        "takeaways": 8,
+        "giveaways": 29
+      },
+      "8483686": {
+        "hits": 10,
+        "blockedShots": 16,
+        "takeaways": 3,
+        "giveaways": 22
+      },
+      "8478851": {
+        "hits": 370,
+        "blockedShots": 731,
+        "takeaways": 123,
+        "giveaways": 214
+      },
+      "8483424": {
+        "hits": 70,
+        "blockedShots": 25,
+        "takeaways": 5,
+        "giveaways": 25
+      },
+      "8476875": {
+        "hits": 606,
+        "blockedShots": 1162,
+        "takeaways": 448,
+        "giveaways": 777
+      },
+      "8482775": {
+        "hits": 37,
+        "blockedShots": 82,
+        "takeaways": 17,
+        "giveaways": 54
+      },
+      "8483457": {
+        "hits": 80,
+        "blockedShots": 295,
+        "takeaways": 112,
+        "giveaways": 245
+      },
+      "8484984": {
+        "hits": 33,
+        "blockedShots": 26,
+        "takeaways": 22,
+        "giveaways": 74
+      },
+      "8480865": {
+        "hits": 431,
+        "blockedShots": 873,
+        "takeaways": 200,
+        "giveaways": 474
+      },
+      "8475184": {
+        "hits": 1683,
+        "blockedShots": 391,
+        "takeaways": 285,
+        "giveaways": 557
+      },
+      "8480018": {
+        "hits": 492,
+        "blockedShots": 381,
+        "takeaways": 262,
+        "giveaways": 439
+      },
+      "8482737": {
+        "hits": 325,
+        "blockedShots": 99,
+        "takeaways": 52,
+        "giveaways": 157
+      },
+      "8484403": {
+        "hits": 40,
+        "blockedShots": 9,
+        "takeaways": 0,
+        "giveaways": 9
+      },
+      "8481540": {
+        "hits": 232,
+        "blockedShots": 96,
+        "takeaways": 138,
+        "giveaways": 226
+      },
+      "8483515": {
+        "hits": 525,
+        "blockedShots": 259,
+        "takeaways": 81,
+        "giveaways": 241
+      },
+      "8480074": {
+        "hits": 253,
+        "blockedShots": 112,
+        "takeaways": 94,
+        "giveaways": 97
+      },
+      "8482964": {
+        "hits": 694,
+        "blockedShots": 217,
+        "takeaways": 38,
+        "giveaways": 172
+      },
+      "8481593": {
+        "hits": 418,
+        "blockedShots": 166,
+        "takeaways": 64,
+        "giveaways": 155
+      },
+      "8481523": {
+        "hits": 325,
+        "blockedShots": 194,
+        "takeaways": 151,
+        "giveaways": 138
+      },
+      "8476479": {
+        "hits": 870,
+        "blockedShots": 553,
+        "takeaways": 313,
+        "giveaways": 451
+      }
+    }
+  },
+  "edge": {
+    "8476479": {
+      "skatingSpeedKmh": 34.9,
+      "shotSpeedKmh": 132.3
+    },
+    "8478851": {
+      "skatingSpeedKmh": 34.0,
+      "shotSpeedKmh": 134.9
+    },
+    "8478133": {
+      "skatingSpeedKmh": 35.8,
+      "shotSpeedKmh": 127.2
+    },
+    "8475184": {
+      "skatingSpeedKmh": 35.4,
+      "shotSpeedKmh": 138.4
+    },
+    "8476875": {
+      "skatingSpeedKmh": 35.9,
+      "shotSpeedKmh": 151.2
+    },
+    "8476981": {
+      "skatingSpeedKmh": 36.8,
+      "shotSpeedKmh": 138.0
+    },
+    "8480018": {
+      "skatingSpeedKmh": 35.5,
+      "shotSpeedKmh": 134.8
+    },
+    "8480074": {
+      "skatingSpeedKmh": 35.2,
+      "shotSpeedKmh": 143.8
+    },
+    "8480865": {
+      "skatingSpeedKmh": 35.3,
+      "shotSpeedKmh": 147.0
+    },
+    "8481540": {
+      "skatingSpeedKmh": 35.1,
+      "shotSpeedKmh": 138.2
+    },
+    "8481523": {
+      "skatingSpeedKmh": 35.4,
+      "shotSpeedKmh": 127.1
+    },
+    "8481593": {
+      "skatingSpeedKmh": 34.3,
+      "shotSpeedKmh": 143.3
+    },
+    "8481618": {
+      "skatingSpeedKmh": 36.5,
+      "shotSpeedKmh": 133.8
+    },
+    "8482132": {
+      "skatingSpeedKmh": 36.2,
+      "shotSpeedKmh": 131.6
+    },
+    "8482087": {
+      "skatingSpeedKmh": 36.5,
+      "shotSpeedKmh": 149.0
+    },
+    "8482737": {
+      "skatingSpeedKmh": 36.0,
+      "shotSpeedKmh": 136.0
+    },
+    "8482775": {
+      "skatingSpeedKmh": 34.2,
+      "shotSpeedKmh": 137.8
+    },
+    "8482964": {
+      "skatingSpeedKmh": 35.7,
+      "shotSpeedKmh": 160.0
+    },
+    "8483457": {
+      "skatingSpeedKmh": 35.8,
+      "shotSpeedKmh": 148.9
+    },
+    "8483424": {
+      "skatingSpeedKmh": 36.6,
+      "shotSpeedKmh": 138.0
+    },
+    "8484220": {
+      "skatingSpeedKmh": 33.9,
+      "shotSpeedKmh": 124.9
+    },
+    "8483686": {
+      "skatingSpeedKmh": 34.8,
+      "shotSpeedKmh": 136.0
+    },
+    "8483515": {
+      "skatingSpeedKmh": 37.2,
+      "shotSpeedKmh": 147.3
+    },
+    "8484403": {
+      "skatingSpeedKmh": 34.6,
+      "shotSpeedKmh": 131.7
+    },
+    "8484984": {
+      "skatingSpeedKmh": 32.9,
+      "shotSpeedKmh": 137.4
     }
   },
   "lines": {

@@ -27,6 +27,9 @@ NHL_SEARCH_URL = "https://search.d3.nhle.com/api/v1/search/player?culture=en-us&
 NHL_ROSTER_URL = "https://api-web.nhle.com/v1/roster/MTL/current"
 NHL_STATS_URL = "https://api-web.nhle.com/v1/club-stats/MTL/now"
 NHL_PLAYER_URL = "https://api-web.nhle.com/v1/player/{pid}/landing"
+NHL_REALTIME_URL = "https://api.nhle.com/stats/rest/en/skater/realtime"
+NHL_EDGE_SKATER_URL = "https://api-web.nhle.com/v1/edge/skater-detail/{pid}/now"
+NHL_EDGE_SKATER_SEASON_URL = "https://api-web.nhle.com/v1/edge/skater-detail/{pid}/{season}/{game_type}"
 DAILY_FACEOFF_URL = "https://www.dailyfaceoff.com/teams/montreal-canadiens/line-combinations"
 
 HEADERS = {
@@ -140,6 +143,131 @@ def fetch_career_for_player(pid: int):
         print(f"[Carrière LNH] Erreur pour {pid}: {e}", file=sys.stderr)
     return str(pid), None
 
+def _extract_realtime_map(rows: list) -> dict:
+    result = {}
+    for row in rows:
+        pid = row.get("playerId")
+        if pid is None:
+            continue
+        result[str(pid)] = {
+            "hits": row.get("hits", 0),
+            "blockedShots": row.get("blockedShots", 0),
+            "takeaways": row.get("takeaways", 0),
+            "giveaways": row.get("giveaways", 0),
+        }
+    return result
+
+
+def fetch_realtime_stats(player_ids: set[int], season_id: str, game_type: int = 2) -> dict:
+    """Récupère hits, blockedShots et takeaways (saison et carrière) via api.nhle.com."""
+    ids_csv = ",".join(str(pid) for pid in sorted(player_ids))
+    season_map = {}
+    career_map = {}
+
+    # 1. Saison en cours : essai par playerId in (...), repli par franchiseId=1 (MTL)
+    season_queries = [
+        f"seasonId={season_id} and gameTypeId={game_type} and playerId in ({ids_csv})",
+        f"seasonId={season_id} and gameTypeId={game_type} and franchiseId=1",
+    ]
+    for q in season_queries:
+        try:
+            url = (
+                f"{NHL_REALTIME_URL}?isAggregate=false&isGame=false&limit=100"
+                f"&cayenneExp={urllib.parse.quote(q)}"
+            )
+            payload = fetch_json(url, timeout=15)
+            rows = payload.get("data", []) if isinstance(payload, dict) else []
+            if rows:
+                season_map = _extract_realtime_map(rows)
+                break
+        except Exception as e:
+            print(f"[Realtime Saison LNH] Essai échoué ({q}): {e}", file=sys.stderr)
+
+    # 2. Carrière (saison régulière agrégée)
+    try:
+        q = f"gameTypeId=2 and playerId in ({ids_csv})"
+        url = (
+            f"{NHL_REALTIME_URL}?isAggregate=true&isGame=false&limit=100"
+            f"&cayenneExp={urllib.parse.quote(q)}"
+        )
+        payload = fetch_json(url, timeout=15)
+        rows = payload.get("data", []) if isinstance(payload, dict) else []
+        career_map = _extract_realtime_map(rows)
+    except Exception as e:
+        print(f"[Realtime Carrière LNH] Erreur lot : {e}", file=sys.stderr)
+
+    # Repli par joueur si la requête groupée carrière n'a rien renvoyé
+    if not career_map and player_ids:
+        def _fetch_one_career_rt(pid: int):
+            q_one = f"gameTypeId=2 and playerId={pid}"
+            url_one = (
+                f"{NHL_REALTIME_URL}?isAggregate=true&isGame=false&limit=1"
+                f"&cayenneExp={urllib.parse.quote(q_one)}"
+            )
+            try:
+                p = fetch_json(url_one, timeout=10)
+                r = p.get("data", []) if isinstance(p, dict) else []
+                if r:
+                    return str(pid), _extract_realtime_map(r).get(str(pid))
+            except Exception:
+                pass
+            return str(pid), None
+
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            for pid_str, entry in pool.map(_fetch_one_career_rt, sorted(player_ids)):
+                if entry:
+                    career_map[pid_str] = entry
+
+    return {"season": season_map, "career": career_map}
+
+
+def _extract_speed_kmh(val):
+    """Extrait une vitesse en km/h depuis un objet NHL EDGE {metric, imperial} ou un nombre."""
+    if isinstance(val, dict):
+        if isinstance(val.get("metric"), (int, float)) and val["metric"] > 0:
+            return round(float(val["metric"]), 1)
+        if isinstance(val.get("imperial"), (int, float)) and val["imperial"] > 0:
+            return round(float(val["imperial"]) * 1.60934, 1)
+    elif isinstance(val, (int, float)) and val > 0:
+        return round(float(val), 1)
+    return None
+
+
+def fetch_edge_for_skater(pid: int, season_id: str, game_type: int = 2):
+    urls = [
+        NHL_EDGE_SKATER_URL.format(pid=pid),
+        NHL_EDGE_SKATER_SEASON_URL.format(pid=pid, season=season_id, game_type=game_type),
+    ]
+    for url in urls:
+        try:
+            data = fetch_json(url, timeout=12)
+            if not isinstance(data, dict):
+                continue
+
+            skating_block = data.get("skatingSpeed") or {}
+            shot_block = data.get("shotSpeed") or {}
+
+            skating_kmh = (
+                _extract_speed_kmh(skating_block.get("speedMax"))
+                or _extract_speed_kmh(skating_block.get("maxSkatingSpeed"))
+                or _extract_speed_kmh(data.get("topSkatingSpeed"))
+                or _extract_speed_kmh(data.get("maxSkatingSpeed"))
+            )
+            shot_kmh = (
+                _extract_speed_kmh(data.get("topShotSpeed"))
+                or _extract_speed_kmh(shot_block.get("hardestShot"))
+                or _extract_speed_kmh(shot_block.get("topShotSpeed"))
+                or _extract_speed_kmh(data.get("hardestShot"))
+            )
+
+            if skating_kmh is not None or shot_kmh is not None:
+                return str(pid), {
+                    "skatingSpeedKmh": skating_kmh,
+                    "shotSpeedKmh": shot_kmh,
+                }
+        except Exception:
+            continue
+    return str(pid), None
 
 def find_df_players_list(node):
     if isinstance(node, dict):
@@ -302,7 +430,6 @@ def enrich_missing_df_players(lines_data: dict, roster_data: dict, career_data: 
 
     for df_key, df_info in lines_data.items():
         if any(names_match(df_key, ek) for ek in existing_keys):
-            # Assure-toi que l'ID est bien propagé dans df_info si le joueur existe déjà dans le roster
             for group in ("forwards", "defensemen", "goalies"):
                 for p in roster_data.get(group, []):
                     full_name = f"{p.get('firstName', {}).get('default', '')} {p.get('lastName', {}).get('default', '')}"
@@ -430,6 +557,10 @@ def main():
     try:
         lines_data = fetch_daily_faceoff_lines()
         enrich_missing_df_players(lines_data, roster_data, career_data)
+        for group in ("forwards", "defensemen", "goalies"):
+            for p in roster_data.get(group, []):
+                if "id" in p:
+                    all_ids.add(int(p["id"]))
         active_count = sum(1 for v in lines_data.values() if v.get("unit") and v.get("unit") != "Hors alignement")
         injured_count = sum(1 for v in lines_data.values() if v.get("unit") == "Hors alignement" and v.get("outStatus") == "Blessé")
         scratched_count = sum(1 for v in lines_data.values() if v.get("unit") == "Hors alignement" and v.get("outStatus") != "Blessé")
@@ -447,6 +578,60 @@ def main():
             "detail": f"Échec d'extraction ({e}) — cache conservé",
         }
 
+    # 5. Statistiques temps réel (mises en échec, tirs bloqués, revirements)
+    season_id = str(stats_data.get("season", "20262027"))
+    game_type = int(stats_data.get("gameType", 2))
+    goalie_ids = {int(p["id"]) for p in roster_data.get("goalies", []) if "id" in p}
+    goalie_ids.update(int(g["playerId"]) for g in stats_data.get("goalies", []) if "playerId" in g)
+    skater_ids = {pid for pid in all_ids if pid not in goalie_ids}
+
+    prev_realtime = prev.get("realtime", {"season": {}, "career": {}})
+    try:
+        realtime_data = fetch_realtime_stats(skater_ids, season_id, game_type)
+        rt_season_count = len(realtime_data.get("season", {}))
+        rt_career_count = len(realtime_data.get("career", {}))
+        if rt_season_count == 0 and prev_realtime.get("season"):
+            realtime_data["season"] = prev_realtime["season"]
+        if rt_career_count == 0 and prev_realtime.get("career"):
+            realtime_data["career"] = prev_realtime["career"]
+        services_status["nhlRealtime"] = {
+            "ok": rt_season_count > 0,
+            "count": rt_season_count,
+            "detail": f"Opérationnel ({rt_season_count} saison, {rt_career_count} carrière)",
+        }
+    except Exception as e:
+        print(f"[Realtime LNH] Erreur: {e}", file=sys.stderr)
+        realtime_data = prev_realtime
+        services_status["nhlRealtime"] = {
+            "ok": False,
+            "count": 0,
+            "detail": f"Échec API ({e}) — cache conservé",
+        }
+
+    # 6. Données NHL EDGE (vitesse de patinage & vitesse de tir)
+    edge_data = dict(prev.get("edge", {}))
+    fetched_edge_count = 0
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        futures = [
+            pool.submit(fetch_edge_for_skater, pid, season_id, game_type)
+            for pid in sorted(skater_ids)
+        ]
+        for fut in as_completed(futures):
+            pid_str, entry = fut.result()
+            if entry is not None:
+                edge_data[pid_str] = entry
+                fetched_edge_count += 1
+
+    services_status["nhlEdge"] = {
+        "ok": fetched_edge_count > 0,
+        "count": fetched_edge_count,
+        "detail": (
+            f"Opérationnel ({fetched_edge_count}/{len(skater_ids)} fiches EDGE)"
+            if fetched_edge_count > 0
+            else "Non disponible — cache conservé"
+        ),
+    }
+
     output = {
         "meta": {
             "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -455,6 +640,8 @@ def main():
         "roster": roster_data,
         "stats": stats_data,
         "career": career_data,
+        "realtime": realtime_data,
+        "edge": edge_data,
         "lines": lines_data,
     }
 

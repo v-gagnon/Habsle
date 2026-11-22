@@ -27,7 +27,7 @@ function generateRemixedColumns(rng = Math.random) {
   const statCount = 5 - normalCount;
   const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
   const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
-  return shuffleArray([...keptBase, ...pickedStats], rng);
+  return sortColumnsInCanonicalOrder([...keptBase, ...pickedStats]);
 }
 
 function generateExpertColumns(rng = Math.random) {
@@ -35,7 +35,7 @@ function generateExpertColumns(rng = Math.random) {
   const statCount = 5 - normalCount;
   const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
   const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
-  return shuffleArray([...keptBase, ...pickedStats], rng);
+  return sortColumnsInCanonicalOrder([...keptBase, ...pickedStats]);
 }
 
 function pickRandomPlayablePlayer(excludeId = null) {
@@ -174,7 +174,7 @@ function loadCustomPrefs() {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed.columns)) {
         const valid = parsed.columns.filter(c => CLUE_DEFINITIONS[c]).slice(0, 6);
-        if (valid.length >= 1) customSelectedColumns = valid;
+        if (valid.length >= 1) customSelectedColumns = sortColumnsInCanonicalOrder(valid);
       }
       if (typeof parsed.showArrows === "boolean") {
         customShowArrows = parsed.showArrows;

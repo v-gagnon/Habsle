@@ -284,13 +284,6 @@ function updateNavbarActiveState() {
     image: "Portrait"
   };
 
-  const challengeVariantNames = {
-    classic: "Standard",
-    remix: "Mélangé",
-    expert: "Expert",
-    image: "Visuel"
-  };
-
   document.querySelectorAll(".nav-tab[data-target]").forEach(tab => {
     tab.classList.toggle("active", tab.dataset.target === currentView);
   });
@@ -329,7 +322,7 @@ function updateNavbarActiveState() {
   navSurvivalTrigger.classList.toggle("active", isSurvivalActive);
   if (isSurvivalActive) {
     const v = sessions.survival.variant || "classic";
-    navSurvivalLabel.textContent = `Survie : ${challengeVariantNames[v] || "Standard"}`;
+    navSurvivalLabel.textContent = `Survie : ${variantNames[v] || "Standard"}`;
   } else {
     navSurvivalLabel.textContent = "Survie";
   }
@@ -345,7 +338,7 @@ function updateNavbarActiveState() {
   navSpeedrunTrigger.classList.toggle("active", isSpeedrunActive);
   if (isSpeedrunActive) {
     const v = sessions.speedrun.variant || "classic";
-    navSpeedrunLabel.textContent = `Contre-la-montre : ${challengeVariantNames[v] || "Standard"}`;
+    navSpeedrunLabel.textContent = `Contre-la-montre : ${variantNames[v] || "Standard"}`;
   } else {
     navSpeedrunLabel.textContent = "Contre-la-montre";
   }
@@ -587,6 +580,7 @@ function renderCustomConfigUI() {
         customSelectedColumns.splice(idx, 1);
       } else if (customSelectedColumns.length < 6) {
         customSelectedColumns.push(colKey);
+        customSelectedColumns = sortColumnsInCanonicalOrder(customSelectedColumns);
       }
       renderCustomConfigUI();
     });
@@ -666,6 +660,7 @@ function startNewCustomGame(hideConfigPanel = true) {
   if (customSelectedColumns.length < 1) {
     customSelectedColumns = [...CLASSIC_COLUMNS];
   }
+  customSelectedColumns = sortColumnsInCanonicalOrder(customSelectedColumns);
   saveCustomPrefs();
 
   const prevId = sessions.custom.secretPlayer?.id ?? null;
@@ -809,7 +804,7 @@ function renderBoardHeader(columns) {
   });
 }
 
-function applyVariantPill(variant, imageLabel = "Visuel") {
+function applyVariantPill(variant) {
   if (variant === "remix") {
     modeActivePill.textContent = "Mélangé";
     modeActivePill.className = "mode-pill remix-pill";
@@ -817,7 +812,7 @@ function applyVariantPill(variant, imageLabel = "Visuel") {
     modeActivePill.textContent = "Expert";
     modeActivePill.className = "mode-pill expert-pill";
   } else if (variant === "image") {
-    modeActivePill.textContent = imageLabel;
+    modeActivePill.textContent = "Portrait";
     modeActivePill.className = "mode-pill image-pill";
   } else {
     modeActivePill.textContent = "Standard";
@@ -871,20 +866,20 @@ function renderActiveGameSession() {
     applyVariantPill("expert");
   } else if (activeGameMode === "dailyImage") {
     modeTitleEl.textContent = "Défi Quotidien";
-    applyVariantPill("image", "Portrait");
+    applyVariantPill("image");
   } else if (activeGameMode === "practice") {
     modeTitleEl.textContent = "Mode Pratique";
-    applyVariantPill(session.variant, "Image");
+    applyVariantPill(session.variant);
   } else if (activeGameMode === "custom") {
     modeTitleEl.textContent = "Partie Personnalisée";
     modeActivePill.textContent = "Personnalisé";
     modeActivePill.className = "mode-pill custom-pill";
   } else if (activeGameMode === "survival") {
     modeTitleEl.textContent = "Mode Survie";
-    applyVariantPill(session.variant, "Visuel");
+    applyVariantPill(session.variant);
   } else if (activeGameMode === "speedrun") {
     modeTitleEl.textContent = "Contre-la-montre";
-    applyVariantPill(session.variant, "Visuel");
+    applyVariantPill(session.variant);
   }
 
   updateChallengeHUD();
@@ -944,13 +939,36 @@ function renderActiveGameSession() {
 }
 
 // --- AUTOCOMPLÉTION ---
+let activeAutocompleteIndex = -1;
+
+function getPlayableAutocompleteItems() {
+  return Array.from(autocompleteEl.querySelectorAll(".autocomplete-item:not(.disabled)"));
+}
+
+function setActiveAutocompleteIndex(index) {
+  const items = getPlayableAutocompleteItems();
+  items.forEach(el => el.classList.remove("active"));
+
+  if (items.length === 0 || index < 0) {
+    activeAutocompleteIndex = -1;
+    return;
+  }
+
+  activeAutocompleteIndex = ((index % items.length) + items.length) % items.length;
+  const activeEl = items[activeAutocompleteIndex];
+  activeEl.classList.add("active");
+  activeEl.scrollIntoView({ block: "nearest" });
+}
+
 function updateAutocomplete() {
   const session = sessions[activeGameMode];
   const query = normalizeStr(inputEl.value.trim());
   autocompleteEl.innerHTML = "";
+  activeAutocompleteIndex = -1;
 
   if (!query || session.gameOver) {
     autocompleteEl.classList.add("hidden");
+    activeAutocompleteIndex = -1;
     return;
   }
 
@@ -967,6 +985,7 @@ function updateAutocomplete() {
   }
 
   const showHints = activeGameMode !== "survival" && studyModeCheckbox.checked;
+  let playableIdx = 0;
 
   matches.forEach(player => {
     const playable = isPlayablePlayer(player);
@@ -977,6 +996,8 @@ function updateAutocomplete() {
       ${showHints ? `<span class="hint-pill">#${player.number} • ${player.pos} • ${player.unit}</span>` : ""}
     `;
     if (playable) {
+      const currentPlayableIdx = playableIdx++;
+      item.addEventListener("mouseenter", () => setActiveAutocompleteIndex(currentPlayableIdx));
       item.addEventListener("click", () => submitGuess(player));
     }
     autocompleteEl.appendChild(item);
@@ -1302,7 +1323,7 @@ document.getElementById("menu-start-practice-image-btn").addEventListener("click
   switchView("practice", "image-configure");
 });
 
-document.getElementById("menu-card-study").addEventListener("click", () => switchView("study"));
+document.getElementById("menu-start-study-btn").addEventListener("click", () => switchView("study"));
 document.getElementById("menu-start-custom-btn").addEventListener("click", () => switchView("custom", "configure"));
 
 document.getElementById("menu-start-survival-classic-btn").addEventListener("click", () => switchView("survival", "classic"));
@@ -1396,10 +1417,12 @@ document.querySelectorAll(".preset-chip").forEach(chip => {
     } else if (preset === "offense") {
       customSelectedColumns = ["g", "a", "pts", "shots", "toi"];
     } else if (preset === "physical") {
-      customSelectedColumns = ["pos", "height", "weight", "pim", "plusMinus"];
+      customSelectedColumns = sortColumnsInCanonicalOrder(["height", "weight", "pim", "hits", "blocks"]);
     } else if (preset === "random") {
       const randomCount = 3 + Math.floor(Math.random() * 4);
-      customSelectedColumns = shuffleArray(ALL_AVAILABLE_COLUMNS).slice(0, randomCount);
+      customSelectedColumns = sortColumnsInCanonicalOrder(
+        shuffleArray(ALL_AVAILABLE_COLUMNS).slice(0, randomCount)
+      );
     } else if (preset === "clear") {
       customSelectedColumns = [];
     }
@@ -1456,16 +1479,44 @@ confirmEndSurvivalBtn.addEventListener("click", () => {
 
 studySearchInput.addEventListener("input", e => renderStudyDirectory(e.target.value));
 
+const studyRefreshBtn = document.getElementById("study-refresh-btn");
+if (studyRefreshBtn) {
+  studyRefreshBtn.addEventListener("click", async () => {
+    if (studyRefreshBtn.disabled) return;
+    studyRefreshBtn.disabled = true;
+    studyRefreshBtn.textContent = "Actualisation...";
+
+    try {
+      await loadLatestDataFromGitHubRaw();
+      studyRefreshBtn.textContent = "Actualisé ✓";
+    } catch (err) {
+      studyRefreshBtn.textContent = "Erreur";
+    } finally {
+      setTimeout(() => {
+        studyRefreshBtn.textContent = "Actualiser";
+        studyRefreshBtn.disabled = false;
+      }, 1800);
+    }
+  });
+}
+
 inputEl.addEventListener("input", updateAutocomplete);
 studyModeCheckbox.addEventListener("change", updateAutocomplete);
 
 inputEl.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.repeat) {
-    const firstItem = autocompleteEl.querySelector(".autocomplete-item:not(.disabled)");
-    if (firstItem) {
-      e.preventDefault();
-      firstItem.click();
-    }
+  const items = getPlayableAutocompleteItems();
+  if (autocompleteEl.classList.contains("hidden") || items.length === 0) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    setActiveAutocompleteIndex(activeAutocompleteIndex === -1 ? 0 : activeAutocompleteIndex + 1);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    setActiveAutocompleteIndex(activeAutocompleteIndex === -1 ? items.length - 1 : activeAutocompleteIndex - 1);
+  } else if (e.key === "Enter" && !e.repeat) {
+    e.preventDefault();
+    const target = items[activeAutocompleteIndex >= 0 ? activeAutocompleteIndex : 0];
+    if (target) target.click();
   }
 });
 
@@ -1492,9 +1543,14 @@ studyProfileModal.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     closeAllNavDropdowns();
+    autocompleteEl.classList.add("hidden");
+    activeAutocompleteIndex = -1;
     rosterModal.classList.add("hidden");
     studyProfileModal.classList.add("hidden");
     confirmEndSurvivalModal.classList.add("hidden");
+    if (statusModal && !statusModal.classList.contains("hidden")) {
+      closeAdminModal();
+    }
   }
 });
 
@@ -1582,6 +1638,9 @@ if (isInitialAdmin) {
 }
 
 syncWithNHLAPI(false).then(() => {
+  if (isDailyMode(currentView) || ["practice", "custom", "survival", "speedrun"].includes(currentView)) {
+    renderActiveGameSession();
+  }
   if (window.location.hash === "#admin" || (statusModal && !statusModal.classList.contains("hidden"))) {
     openServiceStatusModal();
   }

@@ -70,6 +70,13 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
     `;
   }
 
+  const edgeSpeedsHTML = scope === "season"
+    ? `
+      <div class="stat-box"><div class="stat-label">Vitesse patinage</div><div class="stat-val">${st.skatingSpeed ?? "—"}</div></div>
+      <div class="stat-box"><div class="stat-label">Vitesse de tir</div><div class="stat-val">${st.shotSpeed ?? "—"}</div></div>
+    `
+    : "";
+
   return `
     <div class="stat-box"><div class="stat-label">Matchs joués</div><div class="stat-val">${st.gp ?? 0}</div></div>
     <div class="stat-box highlight-stat"><div class="stat-label">Buts</div><div class="stat-val">${st.g ?? 0}</div></div>
@@ -78,11 +85,14 @@ function buildSeasonStatsHTML(player, compact = false, scope = "season") {
     <div class="stat-box"><div class="stat-label">Différentiel (+/-)</div><div class="stat-val">${diffFormatted}</div></div>
     <div class="stat-box"><div class="stat-label">Punitions (PUN)</div><div class="stat-val">${st.pim ?? 0} min</div></div>
     <div class="stat-box"><div class="stat-label">Buts en AN</div><div class="stat-val">${st.ppg ?? 0}</div></div>
-    <div class="stat-box"><div class="stat-label">Buts gagnants</div><div class="stat-val">${st.gwg ?? 0}</div></div>
     <div class="stat-box"><div class="stat-label">Tirs au but</div><div class="stat-val">${st.shots ?? 0}</div></div>
     <div class="stat-box"><div class="stat-label">% de tir</div><div class="stat-val">${st.shPct ?? "—"}</div></div>
     <div class="stat-box"><div class="stat-label">Temps de glace</div><div class="stat-val">${st.toi ?? "—"}</div></div>
     <div class="stat-box"><div class="stat-label">% Mises au jeu</div><div class="stat-val">${st.fowPct ?? "—"}</div></div>
+    <div class="stat-box"><div class="stat-label">Mises en échec</div><div class="stat-val">${st.hits ?? "—"}</div></div>
+    <div class="stat-box"><div class="stat-label">Tirs bloqués</div><div class="stat-val">${st.blocks ?? "—"}</div></div>
+    <div class="stat-box"><div class="stat-label">Revirements</div><div class="stat-val">${st.takeaways ?? "—"}</div></div>
+    ${edgeSpeedsHTML}
   `;
 }
 
@@ -389,7 +399,7 @@ function openServiceStatusModal() {
           ${adminDispatchState.running ? "disabled" : ""}
           title="Télécharge immédiatement le dernier nhl-data.json commité sans attendre GitHub Pages"
         >
-          Recharger depuis GitHub (rapide)
+          Recharger depuis GitHub
         </button>
       </div>
 
@@ -419,6 +429,16 @@ function openServiceStatusModal() {
           <td><strong>API LNH — Statistiques Carrière</strong><br><small>api-web.nhle.com/v1/player/{id}/landing</small></td>
           <td>${renderBadge(SERVICE_STATUS.nhlCareer?.ok)}</td>
           <td>${SERVICE_STATUS.nhlCareer?.detail || "—"}</td>
+        </tr>
+        <tr>
+          <td><strong>API LNH — Stats temps réel</strong><br><small>api.nhle.com/stats/rest/en/skater/realtime</small></td>
+          <td>${renderBadge(SERVICE_STATUS.nhlRealtime?.ok)}</td>
+          <td>${SERVICE_STATUS.nhlRealtime?.detail || "—"}</td>
+        </tr>
+        <tr>
+          <td><strong>API LNH — NHL EDGE (Vitesses)</strong><br><small>api-web.nhle.com/v1/edge/skater-detail/{id}/now</small></td>
+          <td>${renderBadge(SERVICE_STATUS.nhlEdge?.ok)}</td>
+          <td>${SERVICE_STATUS.nhlEdge?.detail || "—"}</td>
         </tr>
         <tr>
           <td><strong>Daily Faceoff — Trios, SN/IN & Blessés</strong><br><small>dailyfaceoff.com/.../line-combinations</small></td>
