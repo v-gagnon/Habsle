@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-21T15:26:40Z",
+    "updatedAt": "2026-11-22T00:04:07Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -19,8 +19,8 @@
       },
       "dailyFaceoff": {
         "ok": true,
-        "count": 26,
-        "detail": "Opérationnel (20 alignés, 6 blessés, 0 laissés de côté)"
+        "count": 25,
+        "detail": "Opérationnel (20 alignés, 5 blessés, 0 laissés de côté)"
       }
     }
   },
@@ -1932,7 +1932,7 @@
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 1",
+        "SN 2",
         "IN 2"
       ],
       "number": 85,
@@ -1977,18 +1977,18 @@
       "number": 20,
       "id": 8483515
     },
-    "kirby dach": {
-      "name": "Kirby Dach",
+    "zack bolduc": {
+      "name": "Zack Bolduc",
       "unit": "Trio 3",
       "pos": "AG",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2"
+        "SN 1"
       ],
-      "number": 77,
-      "id": 8481523
+      "number": 76,
+      "id": 8482737
     },
     "phillip danault": {
       "name": "Phillip Danault",
@@ -2003,20 +2003,21 @@
       "number": 24,
       "id": 8476479
     },
-    "owen beck": {
-      "name": "Owen Beck",
+    "kirby dach": {
+      "name": "Kirby Dach",
       "unit": "Trio 3",
       "pos": "AD",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "Aucune"
+        "SN 2"
       ],
-      "id": 8483424
+      "number": 77,
+      "id": 8481523
     },
-    "florian xhekaj": {
-      "name": "Florian Xhekaj",
+    "brett berard": {
+      "name": "Brett Berard",
       "unit": "Trio 4",
       "pos": "AG",
       "injured": false,
@@ -2025,8 +2026,8 @@
       "specialTeams": [
         "Aucune"
       ],
-      "number": 63,
-      "id": 8484403
+      "number": 65,
+      "id": 8482132
     },
     "oliver kapanen": {
       "name": "Oliver Kapanen",
@@ -2040,8 +2041,8 @@
       ],
       "id": 8482775
     },
-    "brett berard": {
-      "name": "Brett Berard",
+    "owen beck": {
+      "name": "Owen Beck",
       "unit": "Trio 4",
       "pos": "AD",
       "injured": false,
@@ -2050,8 +2051,7 @@
       "specialTeams": [
         "Aucune"
       ],
-      "number": 65,
-      "id": 8482132
+      "id": 8483424
     },
     "kaiden guhle": {
       "name": "Kaiden Guhle",
@@ -2119,18 +2119,18 @@
       "number": 72,
       "id": 8482964
     },
-    "adam engstrom": {
-      "name": "Adam Engstrom",
+    "david reinbacher": {
+      "name": "David Reinbacher",
       "unit": "Paire 3",
       "pos": "D",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2"
+        "Aucune"
       ],
-      "number": 42,
-      "id": 8483686
+      "number": 64,
+      "id": 8484220
     },
     "jacob fowler": {
       "name": "Jacob Fowler",
@@ -2221,19 +2221,6 @@
       ],
       "number": 8,
       "id": 8476875
-    },
-    "zack bolduc": {
-      "name": "Zack Bolduc",
-      "unit": "Hors alignement",
-      "pos": null,
-      "injured": true,
-      "scratched": false,
-      "outStatus": "Blessé",
-      "specialTeams": [
-        "Aucune"
-      ],
-      "number": 76,
-      "id": 8482737
     }
   }
 }
