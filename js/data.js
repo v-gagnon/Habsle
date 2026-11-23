@@ -1,216 +1,208 @@
 // Alignement et statistiques 2026-2027 des Canadiens de Montréal
-// Sources : NHL.com (nhl.com/canadiens/stats), Hockey-Reference & Daily Faceoff (nov. 2026)
 const PLAYERS = [
   // --- TRIO 1 ---
   {
+    id: 8481540, name: "Cole Caufield", number: 13, pos: "AG", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
+    birthDate: "2001-01-02", shoots: "D", country: "USA", height: "5'8\"", weight: 175, hometown: "Mosinee, WI",
+    note: "Buteur naturel au tir sur réception rapide, choisi 15e en 2019",
+    stats: { gp: 24, g: 12, a: 8, pts: 20, plusMinus: 5, pim: 10, ppg: 2, gwg: 3, shots: 79, shPct: "15.2%", toi: "18:33", fowPct: "71.4%", hits: 21, blocks: 3, takeaways: 6, skatingSpeed: "35.1 km/h", shotSpeed: "138.2 km/h" },
+    careerStats: { gp: 392, g: 181, a: 146, pts: 327, plusMinus: 4, pim: 68, ppg: 44, gwg: 38, shots: 1267, shPct: "14.3%", toi: "18:04", fowPct: "43.9%", hits: 232, blocks: 96, takeaways: 138 }
+  },
+  {
     id: 8480018, name: "Nick Suzuki", number: 14, pos: "C", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
     specialTeams: ["SN 1", "IN 2"],
-    age: 27, shoots: "D", country: "CAN", height: "5'11\"", weight: 207, hometown: "London, ON",
-    note: "Capitaine du CH, centre du 1er trio",
-    stats: { gp: 10, g: 6, a: 9, pts: 15, plusMinus: 8, pim: 2, ppg: 1, gwg: 0, shots: 30, shPct: "20.0%", toi: "21:37", fowPct: "53.9%" },
-    careerStats: { gp: 465, g: 144, a: 247, pts: 391, plusMinus: -62, pim: 149, ppg: 46, gwg: 22, shots: 975, shPct: "14.8%", toi: "20:08", fowPct: "50.2%" }
+    birthDate: "1999-08-10", shoots: "D", country: "CAN", height: "5'11\"", weight: 207, hometown: "London, ON",
+    note: "Capitaine du CH depuis 2022, premier centre et principal fabricant de jeu",
+    stats: { gp: 18, g: 9, a: 11, pts: 20, plusMinus: 9, pim: 2, ppg: 2, gwg: 0, shots: 47, shPct: "19.1%", toi: "20:47", fowPct: "53.8%", hits: 25, blocks: 12, takeaways: 8, skatingSpeed: "35.5 km/h", shotSpeed: "134.8 km/h" },
+    careerStats: { gp: 555, g: 176, a: 320, pts: 496, plusMinus: -11, pim: 169, ppg: 55, gwg: 20, shots: 1183, shPct: "14.9%", toi: "19:53", fowPct: "49.5%", hits: 492, blocks: 381, takeaways: 262 }
   },
   {
-    id: 8481540, name: "Cole Caufield", number: 13, pos: "AD", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
-    specialTeams: ["SN 1"],
-    age: 25, shoots: "D", country: "USA", height: "5'8\"", weight: 175, hometown: "Mosinee, WI",
-    note: "Franc-tireur de 1er trio et 1re vague d'avantage numérique",
-    stats: { gp: 16, g: 11, a: 4, pts: 15, plusMinus: 5, pim: 8, ppg: 2, gwg: 3, shots: 54, shPct: "20.4%", toi: "18:39", fowPct: "60.0%" },
-    careerStats: { gp: 303, g: 129, a: 105, pts: 234, plusMinus: -46, pim: 62, ppg: 39, gwg: 24, shots: 965, shPct: "13.4%", toi: "18:10", fowPct: "42.9%" }
-  },
-  {
-    id: 8483515, name: "Juraj Slafkovský", number: 20, pos: "AG", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
-    specialTeams: ["SN 1"],
-    age: 22, shoots: "G", country: "SVK", height: "6'3\"", weight: 225, hometown: "Košice, SVK",
-    note: "1er choix au total en 2022, ailier de puissance du 1er trio",
-    stats: { gp: 16, g: 2, a: 10, pts: 12, plusMinus: 0, pim: 14, ppg: 0, gwg: 0, shots: 39, shPct: "5.1%", toi: "18:14", fowPct: "31.3%" },
-    careerStats: { gp: 216, g: 44, a: 79, pts: 123, plusMinus: -34, pim: 137, ppg: 13, gwg: 6, shots: 372, shPct: "11.8%", toi: "16:48", fowPct: "36.5%" }
+    id: 8480074, name: "Alexandre Texier", number: 85, pos: "AD", posGroup: "ATT", unit: "Trio 1", unitGroup: "ATT",
+    specialTeams: ["SN 2", "IN 2"],
+    birthDate: "1999-09-13", shoots: "G", country: "FRA", height: "6'1\"", weight: 196, hometown: "Saint-Martin-d'Hères, FRA",
+    note: "Ailier français passé par Columbus et Saint-Louis avant Montréal",
+    stats: { gp: 24, g: 2, a: 3, pts: 5, plusMinus: -3, pim: 14, ppg: 0, gwg: 0, shots: 45, shPct: "4.4%", toi: "14:04", fowPct: "—", hits: 27, blocks: 11, takeaways: 6, skatingSpeed: "35.2 km/h", shotSpeed: "143.8 km/h" },
+    careerStats: { gp: 307, g: 50, a: 66, pts: 116, plusMinus: -9, pim: 132, ppg: 1, gwg: 4, shots: 467, shPct: "10.7%", toi: "14:18", fowPct: "35.0%", hits: 253, blocks: 112, takeaways: 94 }
   },
 
   // --- TRIO 2 ---
   {
     id: 8481618, name: "Alex Newhook", number: 15, pos: "AG", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
     specialTeams: ["SN 2"],
-    age: 25, shoots: "G", country: "CAN", height: "5'11\"", weight: 200, hometown: "St. John's, NL",
-    note: "Attaquant rapide polyvalent (centre / ailier gauche)",
-    stats: { gp: 16, g: 3, a: 4, pts: 7, plusMinus: -3, pim: 12, ppg: 0, gwg: 0, shots: 15, shPct: "20.0%", toi: "16:30", fowPct: "50.3%" },
-    careerStats: { gp: 312, g: 60, a: 73, pts: 133, plusMinus: -28, pim: 94, ppg: 12, gwg: 11, shots: 495, shPct: "12.1%", toi: "15:12", fowPct: "44.8%" }
+    birthDate: "2001-01-28", shoots: "G", country: "CAN", height: "5'11\"", weight: 200, hometown: "St. John's, NL",
+    note: "Patineur rapide acquis du Colorado en 2023, à l'aise au centre et à l'aile",
+    stats: { gp: 24, g: 6, a: 6, pts: 12, plusMinus: -4, pim: 14, ppg: 0, gwg: 0, shots: 29, shPct: "20.7%", toi: "16:24", fowPct: "50.2%", hits: 22, blocks: 17, takeaways: 2, skatingSpeed: "36.5 km/h", shotSpeed: "133.8 km/h" },
+    careerStats: { gp: 362, g: 76, a: 87, pts: 163, plusMinus: -11, pim: 102, ppg: 9, gwg: 15, shots: 530, shPct: "14.3%", toi: "14:49", fowPct: "43.2%", hits: 298, blocks: 160, takeaways: 88 }
   },
   {
-    id: 8482775, name: "Oliver Kapanen", number: 91, pos: "C", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
-    specialTeams: ["IN 2"],
-    age: 23, shoots: "D", country: "FIN", height: "6'2\"", weight: 194, hometown: "Timrå, SWE",
-    note: "Centre intelligent repêché au 2e tour en 2021",
-    stats: { gp: 9, g: 1, a: 0, pts: 1, plusMinus: -1, pim: 2, ppg: 0, gwg: 0, shots: 8, shPct: "12.5%", toi: "11:40", fowPct: "47.5%" },
-    careerStats: { gp: 27, g: 1, a: 2, pts: 3, plusMinus: -5, pim: 6, ppg: 0, gwg: 0, shots: 21, shPct: "4.8%", toi: "11:32", fowPct: "46.8%" }
+    id: 8477946, name: "Dylan Larkin", number: 71, pos: "C", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
+    birthDate: "1996-07-30", shoots: "G", country: "USA", height: "6'1\"", weight: 198, hometown: "Waterford, MI",
+    note: "Ex-capitaine des Red Wings acquis en novembre 2026 pour épauler Suzuki au centre",
+    stats: { gp: 10, g: 2, a: 4, pts: 6, plusMinus: 3, pim: 4, ppg: 0, gwg: 0, shots: 32, shPct: "6.3%", toi: "21:41", fowPct: "53.4%", hits: 5, blocks: 6, takeaways: 4, skatingSpeed: "35.5 km/h", shotSpeed: "133.0 km/h" },
+    careerStats: { gp: 818, g: 278, a: 371, pts: 649, plusMinus: -97, pim: 503, ppg: 86, gwg: 40, shots: 2447, shPct: "11.4%", toi: "19:33", fowPct: "52.8%", hits: 640, blocks: 350, takeaways: 484 }
   },
   {
-    id: 8481523, name: "Kirby Dach", number: 77, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
-    specialTeams: ["SN 2"],
-    age: 25, shoots: "D", country: "CAN", height: "6'4\"", weight: 221, hometown: "Fort Saskatchewan, AB",
-    note: "Attaquant format géant évoluant au centre et à l'aile droite",
-    stats: { gp: 14, g: 1, a: 4, pts: 5, plusMinus: 0, pim: 6, ppg: 1, gwg: 0, shots: 11, shPct: "9.1%", toi: "10:48", fowPct: "43.8%" },
-    careerStats: { gp: 283, g: 44, a: 87, pts: 131, plusMinus: -52, pim: 167, ppg: 13, gwg: 6, shots: 442, shPct: "10.0%", toi: "16:54", fowPct: "38.6%" }
+    id: 8483515, name: "Juraj Slafkovský", number: 20, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
+    specialTeams: ["SN 1"],
+    birthDate: "2004-03-30", shoots: "G", country: "SVK", height: "6'3\"", weight: 225, hometown: "Košice, SVK",
+    note: "1er choix au total en 2022, ailier slovaque lourd à déloger le long des rampes",
+    stats: { gp: 24, g: 2, a: 12, pts: 14, plusMinus: 0, pim: 18, ppg: 0, gwg: 0, shots: 54, shPct: "3.7%", toi: "18:26", fowPct: "35.0%", hits: 21, blocks: 24, takeaways: 3, skatingSpeed: "37.2 km/h", shotSpeed: "147.3 km/h" },
+    careerStats: { gp: 306, g: 74, a: 124, pts: 198, plusMinus: -19, pim: 203, ppg: 27, gwg: 7, shots: 561, shPct: "13.2%", toi: "17:15", fowPct: "36.2%", hits: 525, blocks: 259, takeaways: 81 }
   },
   {
-    id: 8484984, name: "Ivan Demidov", number: 93, pos: "AD", posGroup: "ATT", unit: "Trio 2", unitGroup: "ATT",
-    specialTeams: ["SN 2"],
-    age: 20, shoots: "G", country: "RUS", height: "6'1\"", weight: 192, hometown: "Sergiyev Posad, RUS",
-    note: "5e choix au total en 2024, ailier créatif électrisant",
-    stats: { gp: 2, g: 1, a: 1, pts: 2, plusMinus: 0, pim: 2, ppg: 0, gwg: 0, shots: 4, shPct: "25.0%", toi: "15:37", fowPct: "—" },
-    careerStats: { gp: 4, g: 2, a: 2, pts: 4, plusMinus: 1, pim: 2, ppg: 0, gwg: 0, shots: 8, shPct: "25.0%", toi: "16:10", fowPct: "—" }
+    id: 8484984, name: "Ivan Demidov", number: 93, pos: "AD", posGroup: "ATT", unit: "Hors alignement", unitGroup: "ATT",
+    specialTeams: ["Aucune"],
+    birthDate: "2005-12-10", shoots: "G", country: "RUS", height: "6'1\"", weight: 192, hometown: "Sergiyev Posad, RUS",
+    note: "5e choix en 2024 et finaliste au Calder en 2026, ailier russe aux mains rapides",
+    stats: { gp: 2, g: 1, a: 1, pts: 2, plusMinus: 0, pim: 2, ppg: 0, gwg: 0, shots: 4, shPct: "25.0%", toi: "15:37", fowPct: "—", hits: 3, blocks: 0, takeaways: 0, skatingSpeed: "32.9 km/h", shotSpeed: "137.4 km/h" },
+    careerStats: { gp: 86, g: 21, a: 45, pts: 66, plusMinus: 4, pim: 36, ppg: 7, gwg: 4, shots: 136, shPct: "15.4%", toi: "15:28", fowPct: "—", hits: 33, blocks: 26, takeaways: 22 }
   },
 
   // --- TRIO 3 ---
   {
-    id: 8482737, name: "Zachary Bolduc", number: 76, pos: "AD", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
+    id: 8482737, name: "Zachary Bolduc", number: 76, pos: "AG", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
     specialTeams: ["SN 2"],
-    age: 23, shoots: "G", country: "CAN", height: "6'0\"", weight: 187, hometown: "Trois-Rivières, QC",
-    note: "Ailier québécois acquis de Saint-Louis en juillet 2025",
-    stats: { gp: 16, g: 5, a: 2, pts: 7, plusMinus: 1, pim: 4, ppg: 2, gwg: 1, shots: 27, shPct: "18.5%", toi: "13:58", fowPct: "—" },
-    careerStats: { gp: 113, g: 29, a: 23, pts: 52, plusMinus: 16, pim: 47, ppg: 8, gwg: 5, shots: 169, shPct: "17.2%", toi: "13:05", fowPct: "41.7%" }
+    birthDate: "2003-02-24", shoots: "G", country: "CAN", height: "6'0\"", weight: 187, hometown: "Trois-Rivières, QC",
+    note: "Ailier de Trois-Rivières acquis des Blues en juillet 2025, doté d'un bon tir",
+    stats: { gp: 23, g: 7, a: 3, pts: 10, plusMinus: 1, pim: 4, ppg: 4, gwg: 1, shots: 37, shPct: "18.9%", toi: "14:26", fowPct: "—", hits: 35, blocks: 8, takeaways: 2, skatingSpeed: "36.0 km/h", shotSpeed: "136.0 km/h" },
+    careerStats: { gp: 198, g: 43, a: 42, pts: 85, plusMinus: 15, pim: 75, ppg: 14, gwg: 4, shots: 296, shPct: "14.5%", toi: "13:13", fowPct: "43.1%", hits: 325, blocks: 99, takeaways: 52 }
   },
   {
     id: 8476479, name: "Phillip Danault", number: 24, pos: "C", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
     specialTeams: ["IN 1"],
-    age: 33, shoots: "G", country: "CAN", height: "6'1\"", weight: 200, hometown: "Victoriaville, QC",
-    note: "Spécialiste défensif et des mises au jeu revenu à Montréal",
-    stats: { gp: 16, g: 1, a: 5, pts: 6, plusMinus: 4, pim: 0, ppg: 0, gwg: 0, shots: 22, shPct: "4.5%", toi: "17:05", fowPct: "54.7%" },
-    careerStats: { gp: 736, g: 126, a: 268, pts: 394, plusMinus: 83, pim: 330, ppg: 13, gwg: 20, shots: 1260, shPct: "10.0%", toi: "17:42", fowPct: "54.5%" }
+    birthDate: "1993-02-24", shoots: "G", country: "CAN", height: "6'1\"", weight: 200, hometown: "Victoriaville, QC",
+    note: "Spécialiste des mises au jeu et du travail défensif, revenu à Montréal en 2025-2026",
+    stats: { gp: 24, g: 3, a: 6, pts: 9, plusMinus: 1, pim: 0, ppg: 0, gwg: 0, shots: 36, shPct: "8.3%", toi: "17:10", fowPct: "56.1%", hits: 16, blocks: 13, takeaways: 3, skatingSpeed: "34.9 km/h", shotSpeed: "132.3 km/h" },
+    careerStats: { gp: 810, g: 134, a: 286, pts: 420, plusMinus: 80, pim: 349, ppg: 10, gwg: 20, shots: 1392, shPct: "9.6%", toi: "17:03", fowPct: "53.3%", hits: 870, blocks: 553, takeaways: 313 }
   },
   {
-    id: 8480074, name: "Alexandre Texier", number: 85, pos: "AG", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
-    specialTeams: ["Aucune"],
-    age: 27, shoots: "G", country: "FRA", height: "6'1\"", weight: 196, hometown: "Saint-Martin-d'Hères, FRA",
-    note: "Attaquant français agile sur le 3e trio",
-    stats: { gp: 16, g: 2, a: 3, pts: 5, plusMinus: -2, pim: 10, ppg: 0, gwg: 0, shots: 22, shPct: "9.1%", toi: "13:14", fowPct: "—" },
-    careerStats: { gp: 248, g: 42, a: 54, pts: 96, plusMinus: -26, pim: 102, ppg: 4, gwg: 7, shots: 368, shPct: "11.4%", toi: "14:25", fowPct: "43.1%" }
+    id: 8482775, name: "Oliver Kapanen", number: 91, pos: "AD", posGroup: "ATT", unit: "Trio 3", unitGroup: "ATT",
+    specialTeams: ["SN 2"],
+    birthDate: "2003-07-29", shoots: "D", country: "SWE", height: "6'2\"", weight: 194, hometown: "Timrå, SWE",
+    note: "Choix de 2e tour en 2021, attaquant finlandais né en Suède et fiable sans la rondelle",
+    stats: { gp: 17, g: 2, a: 2, pts: 4, plusMinus: 5, pim: 6, ppg: 0, gwg: 0, shots: 20, shPct: "10.0%", toi: "11:14", fowPct: "48.9%", hits: 4, blocks: 6, takeaways: 2, skatingSpeed: "34.2 km/h", shotSpeed: "137.8 km/h" },
+    careerStats: { gp: 117, g: 24, a: 19, pts: 43, plusMinus: 4, pim: 30, ppg: 1, gwg: 2, shots: 167, shPct: "14.4%", toi: "13:27", fowPct: "45.7%", hits: 37, blocks: 82, takeaways: 17 }
   },
 
-  // --- TRIO 4 & ATTAQUANTS DE PROFONDEUR ---
+  // --- TRIO 4 ---
   {
-    id: 8475184, name: "Chris Kreider", number: 22, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
-    specialTeams: ["SN 1"],
-    age: 35, shoots: "G", country: "USA", height: "6'3\"", weight: 232, hometown: "Boxford, MA",
-    note: "Vétéran expérimenté redoutable devant le filet",
-    stats: { gp: 16, g: 2, a: 6, pts: 8, plusMinus: 4, pim: 6, ppg: 0, gwg: 0, shots: 17, shPct: "11.8%", toi: "13:46", fowPct: "33.3%" },
-    careerStats: { gp: 901, g: 328, a: 262, pts: 590, plusMinus: 118, pim: 594, ppg: 116, gwg: 50, shots: 2150, shPct: "15.3%", toi: "17:20", fowPct: "45.2%" }
+    id: 8484403, name: "Florian Xhekaj", number: 63, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    specialTeams: ["Aucune"],
+    birthDate: "2004-06-27", shoots: "G", country: "CAN", height: "6'3\"", weight: 195, hometown: "Hamilton, ON",
+    note: "Frère cadet d'Arber, repêché au 4e tour en 2023 pour son jeu physique",
+    stats: { gp: 10, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 15, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "7:50", fowPct: "20.0%", hits: 31, blocks: 5, takeaways: 0, skatingSpeed: "34.6 km/h", shotSpeed: "131.7 km/h" },
+    careerStats: { gp: 15, g: 1, a: 3, pts: 4, plusMinus: -2, pim: 22, ppg: 0, gwg: 0, shots: 15, shPct: "6.7%", toi: "8:25", fowPct: "20.0%", hits: 40, blocks: 9, takeaways: 0 }
   },
   {
     id: 8478133, name: "Jake Evans", number: 71, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
     specialTeams: ["IN 1"],
-    age: 30, shoots: "D", country: "CAN", height: "6'0\"", weight: 190, hometown: "Toronto, ON",
-    note: "Pilier du désavantage numérique au centre du 4e trio",
-    stats: { gp: 16, g: 2, a: 4, pts: 6, plusMinus: 5, pim: 2, ppg: 0, gwg: 1, shots: 12, shPct: "16.7%", toi: "15:24", fowPct: "54.8%" },
-    careerStats: { gp: 366, g: 42, a: 82, pts: 124, plusMinus: -12, pim: 112, ppg: 1, gwg: 7, shots: 412, shPct: "10.2%", toi: "14:52", fowPct: "52.1%" }
+    birthDate: "1996-06-02", shoots: "D", country: "CAN", height: "6'0\"", weight: 190, hometown: "Toronto, ON",
+    note: "Choix de 7e tour en 2014, spécialiste du désavantage numérique et des mises au jeu",
+    stats: { gp: 24, g: 4, a: 6, pts: 10, plusMinus: 5, pim: 2, ppg: 0, gwg: 3, shots: 21, shPct: "19.0%", toi: "15:54", fowPct: "55.0%", hits: 16, blocks: 12, takeaways: 12, skatingSpeed: "35.8 km/h", shotSpeed: "127.2 km/h" },
+    careerStats: { gp: 442, g: 56, a: 106, pts: 162, plusMinus: -10, pim: 143, ppg: 1, gwg: 11, shots: 505, shPct: "11.1%", toi: "14:57", fowPct: "52.5%", hits: 525, blocks: 296, takeaways: 144 }
   },
   {
-    id: 8483424, name: "Owen Beck", number: 62, pos: "C", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    id: 8483424, name: "Owen Beck", number: 62, pos: "AD", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
     specialTeams: ["Aucune"],
-    age: 22, shoots: "D", country: "CAN", height: "6'0\"", weight: 199, hometown: "Port Hope, ON",
-    note: "Jeune centre fiable dans les deux sens de la patinoire",
-    stats: { gp: 5, g: 1, a: 2, pts: 3, plusMinus: 0, pim: 5, ppg: 0, gwg: 0, shots: 6, shPct: "16.7%", toi: "08:42", fowPct: "57.1%" },
-    careerStats: { gp: 18, g: 1, a: 3, pts: 4, plusMinus: -2, pim: 7, ppg: 0, gwg: 0, shots: 17, shPct: "5.9%", toi: "09:48", fowPct: "51.4%" }
+    birthDate: "2004-02-03", shoots: "D", country: "CAN", height: "6'0\"", weight: 199, hometown: "Port Hope, ON",
+    note: "Choix de 2e tour en 2022, centre efficace aux mises au jeu et rarement hors position",
+    stats: { gp: 10, g: 2, a: 2, pts: 4, plusMinus: 1, pim: 7, ppg: 0, gwg: 0, shots: 7, shPct: "28.6%", toi: "8:49", fowPct: "50.0%", hits: 23, blocks: 8, takeaways: 2, skatingSpeed: "36.6 km/h", shotSpeed: "138.0 km/h" },
+    careerStats: { gp: 38, g: 3, a: 3, pts: 6, plusMinus: 2, pim: 13, ppg: 0, gwg: 0, shots: 28, shPct: "10.7%", toi: "9:21", fowPct: "55.8%", hits: 70, blocks: 25, takeaways: 5 }
   },
   {
-    id: 8476981, name: "Josh Anderson", number: 17, pos: "AD", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
-    specialTeams: ["IN 2"],
-    age: 32, shoots: "D", country: "CAN", height: "6'3\"", weight: 226, hometown: "Burlington, ON",
-    note: "Ailier droit robuste et très rapide en transition",
-    stats: { gp: 16, g: 7, a: 3, pts: 10, plusMinus: 8, pim: 16, ppg: 0, gwg: 1, shots: 33, shPct: "21.2%", toi: "14:28", fowPct: "33.3%" },
-    careerStats: { gp: 641, g: 155, a: 114, pts: 269, plusMinus: -55, pim: 572, ppg: 18, gwg: 24, shots: 1385, shPct: "11.2%", toi: "15:56", fowPct: "41.8%" }
-  },
-  {
-    id: 8484403, name: "Florian Xhekaj", number: 63, pos: "AG", posGroup: "ATT", unit: "Trio 4", unitGroup: "ATT",
+    id: 8476981, name: "Josh Anderson", number: 17, pos: "AD", posGroup: "ATT", unit: "Hors alignement", unitGroup: "ATT",
     specialTeams: ["Aucune"],
-    age: 22, shoots: "G", country: "CAN", height: "6'3\"", weight: 195, hometown: "Hamilton, ON",
-    note: "Frère cadet d'Arber, attaquant robuste et énergique",
-    stats: { gp: 7, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 13, ppg: 0, gwg: 0, shots: 9, shPct: "11.1%", toi: "07:53", fowPct: "20.0%" },
-    careerStats: { gp: 7, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 13, ppg: 0, gwg: 0, shots: 9, shPct: "11.1%", toi: "07:53", fowPct: "20.0%" }
+    birthDate: "1994-05-07", shoots: "D", country: "CAN", height: "6'3\"", weight: 226, hometown: "Burlington, ON",
+    note: "Ailier droit massif et rapide en ligne droite, souvent utilisé pour brasser la cage",
+    stats: { gp: 19, g: 8, a: 4, pts: 12, plusMinus: 6, pim: 22, ppg: 0, gwg: 1, shots: 35, shPct: "22.9%", toi: "14:05", fowPct: "33.3%", hits: 42, blocks: 8, takeaways: 3, skatingSpeed: "36.8 km/h", shotSpeed: "138.0 km/h" },
+    careerStats: { gp: 707, g: 168, a: 117, pts: 285, plusMinus: -34, pim: 663, ppg: 11, gwg: 27, shots: 1435, shPct: "11.7%", toi: "15:29", fowPct: "46.1%", hits: 1549, blocks: 362, takeaways: 257 }
+  },
+  {
+    id: 8475184, name: "Chris Kreider", number: 22, pos: "AG", posGroup: "ATT", unit: "Hors alignement", unitGroup: "ATT",
+    outStatus: "Blessé",
+    specialTeams: ["Aucune"],
+    birthDate: "1991-04-30", shoots: "G", country: "USA", height: "6'3\"", weight: 232, hometown: "Boxford, MA",
+    note: "Vétéran de près de 1000 matchs signé en septembre 2026, reconnu pour ses déviations devant le filet",
+    stats: { gp: 19, g: 3, a: 6, pts: 9, plusMinus: 4, pim: 6, ppg: 0, gwg: 1, shots: 22, shPct: "13.6%", toi: "13:21", fowPct: "33.3%", hits: 21, blocks: 8, takeaways: 2, skatingSpeed: "35.4 km/h", shotSpeed: "138.4 km/h" },
+    careerStats: { gp: 977, g: 351, a: 290, pts: 641, plusMinus: 121, pim: 615, ppg: 124, gwg: 54, shots: 2321, shPct: "15.1%", toi: "16:52", fowPct: "42.2%", hits: 1683, blocks: 391, takeaways: 285 }
   },
 
   // --- DÉFENSEURS (PAIRES 1 À 3) ---
   {
-    id: 8483457, name: "Lane Hutson", number: 48, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "DEF",
-    specialTeams: ["SN 1"],
-    age: 22, shoots: "G", country: "USA", height: "5'9\"", weight: 162, hometown: "Holland, MI",
-    note: "Quart-arrière offensif ultra-mobile à la ligne bleue",
-    stats: { gp: 16, g: 3, a: 13, pts: 16, plusMinus: 8, pim: 8, ppg: 1, gwg: 0, shots: 29, shPct: "10.3%", toi: "24:59", fowPct: "—" },
-    careerStats: { gp: 100, g: 9, a: 75, pts: 84, plusMinus: 4, pim: 44, ppg: 2, gwg: 1, shots: 156, shPct: "5.8%", toi: "23:12", fowPct: "—" }
+    id: 8482087, name: "Kaiden Guhle", number: 21, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "DEF",
+    specialTeams: ["IN 1"],
+    birthDate: "2002-01-18", shoots: "G", country: "CAN", height: "6'3\"", weight: 202, hometown: "Edmonton, AB",
+    note: "16e choix en 2020, défenseur robuste chargé de neutraliser les meilleurs trios adverses",
+    stats: { gp: 20, g: 2, a: 4, pts: 6, plusMinus: 3, pim: 19, ppg: 0, gwg: 1, shots: 23, shPct: "8.7%", toi: "22:26", fowPct: "—", hits: 46, blocks: 37, takeaways: 11, skatingSpeed: "36.5 km/h", shotSpeed: "149.0 km/h" },
+    careerStats: { gp: 228, g: 20, a: 55, pts: 75, plusMinus: -13, pim: 190, ppg: 0, gwg: 5, shots: 277, shPct: "7.2%", toi: "20:46", fowPct: "—", hits: 436, blocks: 479, takeaways: 94 }
   },
   {
     id: 8480865, name: "Noah Dobson", number: 53, pos: "D", posGroup: "DEF", unit: "Paire 1", unitGroup: "DEF",
     specialTeams: ["SN 2", "IN 2"],
-    age: 26, shoots: "D", country: "CAN", height: "6'4\"", weight: 200, hometown: "Summerside, PE",
-    note: "Défenseur droitier numéro un sur la première paire",
-    stats: { gp: 16, g: 0, a: 8, pts: 8, plusMinus: 1, pim: 12, ppg: 0, gwg: 0, shots: 34, shPct: "0.0%", toi: "20:56", fowPct: "—" },
-    careerStats: { gp: 405, g: 50, a: 188, pts: 238, plusMinus: 8, pim: 166, ppg: 14, gwg: 10, shots: 912, shPct: "5.5%", toi: "21:45", fowPct: "—" }
+    birthDate: "2000-01-07", shoots: "D", country: "CAN", height: "6'4\"", weight: 200, hometown: "Summerside, PE",
+    note: "Défenseur droitier de 6'4\" arrivé des Islanders en 2025, capable d'avaler de grosses minutes",
+    stats: { gp: 24, g: 0, a: 9, pts: 9, plusMinus: -6, pim: 16, ppg: 0, gwg: 0, shots: 47, shPct: "0.0%", toi: "21:02", fowPct: "—", hits: 25, blocks: 31, takeaways: 9, skatingSpeed: "35.3 km/h", shotSpeed: "147.0 km/h" },
+    careerStats: { gp: 492, g: 62, a: 224, pts: 286, plusMinus: -4, pim: 168, ppg: 12, gwg: 12, shots: 1077, shPct: "5.8%", toi: "21:09", fowPct: "—", hits: 431, blocks: 873, takeaways: 200 }
   },
   {
-    id: 8482087, name: "Kaiden Guhle", number: 21, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
-    specialTeams: ["IN 1"],
-    age: 24, shoots: "G", country: "CAN", height: "6'3\"", weight: 202, hometown: "Edmonton, AB",
-    note: "Défenseur complet affrontant les meilleurs trios adverses",
-    stats: { gp: 12, g: 2, a: 3, pts: 5, plusMinus: 3, pim: 10, ppg: 0, gwg: 1, shots: 14, shPct: "14.3%", toi: "23:03", fowPct: "—" },
-    careerStats: { gp: 181, g: 18, a: 45, pts: 63, plusMinus: -18, pim: 140, ppg: 1, gwg: 3, shots: 282, shPct: "6.4%", toi: "21:08", fowPct: "—" }
+    id: 8483457, name: "Lane Hutson", number: 48, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
+    specialTeams: ["SN 1"],
+    birthDate: "2004-02-14", shoots: "G", country: "USA", height: "5'9\"", weight: 162, hometown: "Holland, MI",
+    note: "Gagnant du trophée Calder en 2025, défenseur créatif qui dicte le jeu de la ligne bleue",
+    stats: { gp: 24, g: 5, a: 19, pts: 24, plusMinus: 6, pim: 12, ppg: 1, gwg: 1, shots: 47, shPct: "10.6%", toi: "25:26", fowPct: "—", hits: 8, blocks: 35, takeaways: 10, skatingSpeed: "35.8 km/h", shotSpeed: "148.9 km/h" },
+    careerStats: { gp: 190, g: 23, a: 147, pts: 170, plusMinus: 38, pim: 80, ppg: 4, gwg: 4, shots: 265, shPct: "8.7%", toi: "23:31", fowPct: "—", hits: 80, blocks: 295, takeaways: 112 }
   },
   {
     id: 8478851, name: "Alexandre Carrier", number: 45, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
-    specialTeams: ["IN 2"],
-    age: 30, shoots: "D", country: "CAN", height: "5'11\"", weight: 174, hometown: "Québec, QC",
-    note: "Défenseur droitier québécois fiable en relance",
-    stats: { gp: 16, g: 1, a: 5, pts: 6, plusMinus: 5, pim: 12, ppg: 0, gwg: 1, shots: 14, shPct: "7.1%", toi: "20:36", fowPct: "—" },
-    careerStats: { gp: 310, g: 14, a: 84, pts: 98, plusMinus: 26, pim: 176, ppg: 1, gwg: 3, shots: 335, shPct: "4.2%", toi: "19:34", fowPct: "—" }
+    specialTeams: ["IN 1"],
+    birthDate: "1996-10-08", shoots: "D", country: "CAN", height: "5'11\"", weight: 174, hometown: "Québec, QC",
+    note: "Défenseur droitier de Québec acquis de Nashville, calme en relance et généreux sur les tirs bloqués",
+    stats: { gp: 24, g: 1, a: 6, pts: 7, plusMinus: 4, pim: 14, ppg: 0, gwg: 1, shots: 17, shPct: "5.9%", toi: "20:37", fowPct: "—", hits: 23, blocks: 47, takeaways: 6, skatingSpeed: "34.0 km/h", shotSpeed: "134.9 km/h" },
+    careerStats: { gp: 393, g: 21, a: 95, pts: 116, plusMinus: 35, pim: 219, ppg: 1, gwg: 4, shots: 411, shPct: "5.1%", toi: "19:36", fowPct: "—", hits: 370, blocks: 731, takeaways: 123 }
   },
   {
     id: 8476875, name: "Mike Matheson", number: 8, pos: "D", posGroup: "DEF", unit: "Paire 2", unitGroup: "DEF",
-    specialTeams: ["SN 2", "IN 1"],
-    age: 32, shoots: "G", country: "CAN", height: "6'2\"", weight: 196, hometown: "Pointe-Claire, QC",
-    note: "Vétéran originaire de Pointe-Claire au coup de patin élite",
-    stats: { gp: 8, g: 1, a: 3, pts: 4, plusMinus: 1, pim: 6, ppg: 0, gwg: 0, shots: 15, shPct: "6.7%", toi: "23:45", fowPct: "—" },
-    careerStats: { gp: 635, g: 74, a: 205, pts: 279, plusMinus: -42, pim: 382, ppg: 19, gwg: 13, shots: 1290, shPct: "5.7%", toi: "21:38", fowPct: "—" }
+    specialTeams: ["Aucune"],
+    birthDate: "1994-02-27", shoots: "G", country: "CAN", height: "6'2\"", weight: 196, hometown: "Pointe-Claire, QC",
+    note: "Vétéran de Pointe-Claire au patin fluide, utilisé dans toutes les situations",
+    stats: { gp: 9, g: 1, a: 4, pts: 5, plusMinus: 4, pim: 6, ppg: 0, gwg: 0, shots: 16, shPct: "6.3%", toi: "23:28", fowPct: "—", hits: 5, blocks: 16, takeaways: 3, skatingSpeed: "35.9 km/h", shotSpeed: "151.2 km/h" },
+    careerStats: { gp: 714, g: 82, a: 225, pts: 307, plusMinus: -19, pim: 400, ppg: 8, gwg: 17, shots: 1401, shPct: "5.9%", toi: "22:08", fowPct: "50.0%", hits: 606, blocks: 1162, takeaways: 448 }
   },
   {
     id: 8482964, name: "Arber Xhekaj", number: 72, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "DEF",
-    specialTeams: ["Aucune"],
-    age: 25, shoots: "G", country: "CAN", height: "6'4\"", weight: 240, hometown: "Hamilton, ON",
-    note: "Surnommé le Shérif, défenseur physique au tir frappé lourd",
-    stats: { gp: 15, g: 1, a: 2, pts: 3, plusMinus: -1, pim: 30, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "11:51", fowPct: "—" },
-    careerStats: { gp: 180, g: 10, a: 22, pts: 32, plusMinus: -16, pim: 330, ppg: 1, gwg: 1, shots: 198, shPct: "5.1%", toi: "14:46", fowPct: "—" }
+    specialTeams: ["IN 2"],
+    birthDate: "2001-01-30", shoots: "G", country: "CAN", height: "6'4\"", weight: 240, hometown: "Hamilton, ON",
+    note: "Surnommé le Shérif, défenseur non repêché connu pour sa robustesse et son lancer frappé",
+    stats: { gp: 23, g: 1, a: 4, pts: 5, plusMinus: 3, pim: 34, ppg: 0, gwg: 0, shots: 20, shPct: "5.0%", toi: "12:25", fowPct: "—", hits: 52, blocks: 16, takeaways: 2, skatingSpeed: "35.7 km/h", shotSpeed: "160.0 km/h" },
+    careerStats: { gp: 253, g: 11, a: 27, pts: 38, plusMinus: -21, pim: 450, ppg: 2, gwg: 0, shots: 265, shPct: "4.2%", toi: "13:57", fowPct: "—", hits: 694, blocks: 217, takeaways: 38 }
   },
   {
     id: 8483686, name: "Adam Engström", number: 42, pos: "D", posGroup: "DEF", unit: "Paire 3", unitGroup: "DEF",
     specialTeams: ["Aucune"],
-    age: 22, shoots: "G", country: "SWE", height: "6'2\"", weight: 193, hometown: "Järna, SWE",
-    note: "Défenseur suédois fluide repêché en 2022",
-    stats: { gp: 10, g: 1, a: 1, pts: 2, plusMinus: 5, pim: 0, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "11:25", fowPct: "—" },
-    careerStats: { gp: 10, g: 1, a: 1, pts: 2, plusMinus: 5, pim: 0, ppg: 0, gwg: 0, shots: 11, shPct: "9.1%", toi: "11:25", fowPct: "—" }
+    birthDate: "2003-11-17", shoots: "G", country: "SWE", height: "6'2\"", weight: 193, hometown: "Järna, SWE",
+    note: "Défenseur suédois repêché au 3e tour en 2022, bon patineur propre dans ses sorties de zone",
+    stats: { gp: 16, g: 1, a: 1, pts: 2, plusMinus: 6, pim: 2, ppg: 0, gwg: 0, shots: 14, shPct: "7.1%", toi: "11:26", fowPct: "—", hits: 3, blocks: 8, takeaways: 1, skatingSpeed: "34.8 km/h", shotSpeed: "136.0 km/h" },
+    careerStats: { gp: 31, g: 1, a: 2, pts: 3, plusMinus: 8, pim: 10, ppg: 0, gwg: 0, shots: 25, shPct: "4.0%", toi: "12:13", fowPct: "—", hits: 10, blocks: 16, takeaways: 3 }
   },
 
   // --- GARDIENS ---
   {
     id: 8484170, name: "Jacob Fowler", number: 32, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
     specialTeams: ["Aucune"],
-    age: 21, shoots: "G", country: "USA", height: "6'1\"", weight: 223, hometown: "Melbourne, FL",
-    note: "Jeune gardien calme et technique devant le filet",
-    stats: { gp: 9, gs: 9, w: 7, l: 1, otl: 1, gaa: "2.17", svPct: ".925", so: 2, saves: 247, shotsAgainst: 267 },
-    careerStats: { gp: 9, gs: 9, w: 7, l: 1, otl: 1, gaa: "2.17", svPct: ".925", so: 2, saves: 247, shotsAgainst: 267 }
+    birthDate: "2004-11-24", shoots: "G", country: "USA", height: "6'1\"", weight: 223, hometown: "Melbourne, FL",
+    note: "Choix de 3e tour en 2023 issu de Boston College, gardien posé qui s'impose devant le filet",
+    stats: { gp: 15, gs: 15, w: 10, l: 3, otl: 2, gaa: "2.31", svPct: ".918", so: 2, saves: 390, shotsAgainst: 425 },
+    careerStats: { gp: 32, gs: 32, w: 19, l: 9, otl: 4, gaa: "2.38", svPct: ".913", so: 3, saves: 797, shotsAgainst: 873 }
   },
   {
     id: 8482487, name: "Jakub Dobeš", number: 75, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
     specialTeams: ["Aucune"],
-    age: 25, shoots: "G", country: "CZE", height: "6'4\"", weight: 215, hometown: "Ostrava, CZE",
-    note: "Gardien tchèque imposant de 6 pieds 4 pouces",
-    stats: { gp: 7, gs: 7, w: 3, l: 2, otl: 2, gaa: "4.04", svPct: ".860", so: 0, saves: 172, shotsAgainst: 200 },
-    careerStats: { gp: 23, gs: 21, w: 10, l: 8, otl: 4, gaa: "3.12", svPct: ".896", so: 1, saves: 565, shotsAgainst: 631 }
-  },
-  {
-    id: 8478470, name: "Samuel Montembeault", number: 35, pos: "G", posGroup: "GAR", unit: "Gardien", unitGroup: "GAR",
-    specialTeams: ["Aucune"],
-    age: 30, shoots: "G", country: "CAN", height: "6'3\"", weight: 218, hometown: "Bécancour, QC",
-    note: "Gardien québécois vétéran devant le filet du Tricolore",
-    stats: { gp: 0, gs: 0, w: 0, l: 0, otl: 0, gaa: "—", svPct: "—", so: 0, saves: 0, shotsAgainst: 0 },
-    careerStats: { gp: 206, gs: 189, w: 80, l: 84, otl: 28, gaa: "3.20", svPct: ".899", so: 5, saves: 5620, shotsAgainst: 6251 }
+    birthDate: "2001-05-27", shoots: "G", country: "CZE", height: "6'4\"", weight: 215, hometown: "Ostrava, CZE",
+    note: "Gardien tchèque de 6'4\" repêché au 5e tour en 2020, imposant devant son filet",
+    stats: { gp: 9, gs: 9, w: 4, l: 3, otl: 2, gaa: "3.60", svPct: ".864", so: 0, saves: 204, shotsAgainst: 236 },
+    careerStats: { gp: 68, gs: 66, w: 40, l: 17, otl: 9, gaa: "2.88", svPct: ".899", so: 1, saves: 1674, shotsAgainst: 1863 }
   }
 ];
 
@@ -311,10 +303,60 @@ function sortColumnsInCanonicalOrder(columns) {
   });
 }
 
-// Identifiants des 25 joueurs de base éligibles aux défis et parties
+function calculateAgeFromBirthDate(birthDateStr) {
+  if (!birthDateStr || typeof birthDateStr !== "string") return null;
+  const match = birthDateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  let birthYear, birthMonth, birthDay;
+
+  if (match) {
+    birthYear = parseInt(match[1], 10);
+    birthMonth = parseInt(match[2], 10);
+    birthDay = parseInt(match[3], 10);
+  } else {
+    const birth = new Date(birthDateStr);
+    if (isNaN(birth.getTime())) return null;
+    birthYear = birth.getFullYear();
+    birthMonth = birth.getMonth() + 1;
+    birthDay = birth.getDate();
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - birthYear;
+  const currentMonth = today.getMonth() + 1;
+  if (currentMonth < birthMonth || (currentMonth === birthMonth && today.getDate() < birthDay)) {
+    age--;
+  }
+  return age;
+}
+
+function getPlayerAge(player) {
+  if (!player) return null;
+  const computed = calculateAgeFromBirthDate(player.birthDate);
+  if (typeof computed === "number") return computed;
+  return typeof player._fallbackAge === "number" ? player._fallbackAge : null;
+}
+
+function attachDynamicAge(player, fallbackAge = "—") {
+  if (!player) return player;
+  if (typeof fallbackAge === "number") {
+    player._fallbackAge = fallbackAge;
+  }
+  Object.defineProperty(player, "age", {
+    enumerable: true,
+    configurable: true,
+    get() {
+      const computed = getPlayerAge(this);
+      return computed !== null ? computed : fallbackAge;
+    }
+  });
+  return player;
+}
+
+// Identifiants des joueurs de base éligibles aux défis et parties
 const CORE_PLAYER_IDS = new Set(PLAYERS.map(p => p.id));
 PLAYERS.forEach(p => {
   p.isPlayable = true;
+  attachDynamicAge(p);
 });
 
 function isPlayablePlayer(player) {
@@ -453,11 +495,13 @@ const CLUE_DEFINITIONS = {
     interval: "(±2)",
     isStat: false,
     evaluate(player, secret) {
+      const gAge = getPlayerAge(player);
+      const sAge = getPlayerAge(secret);
       return compareNumericClue(
-        player.age,
-        secret.age,
+        gAge,
+        sAge,
         2,
-        `${player.age} ans`,
+        gAge !== null ? `${gAge} ans` : "—",
         "▲ Plus vieux",
         "▼ Plus jeune"
       );
@@ -720,18 +764,6 @@ function formatSpeedKmh(val) {
     : "—";
 }
 
-function calculateAgeFromBirthDate(birthDateStr) {
-  if (!birthDateStr) return null;
-  const birth = new Date(birthDateStr);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-}
-
 function normalizeLookupKey(nameStr) {
   return (nameStr || "")
     .normalize("NFD")
@@ -833,37 +865,40 @@ function buildDynamicPlayerFromDailyFaceoff(dfKey, dfInfo, allRosterEntries, all
 
   const resolvedUnit = dfInfo.unit && dfInfo.unit !== INJURED_UNIT ? dfInfo.unit : INJURED_UNIT;
 
-  return {
-    id: rosterEntry?.id || statsEntry?.playerId || dfInfo.id || (1000000 + indexSeed),
-    name: fullName,
-    number: rosterEntry?.sweaterNumber ?? dfInfo.number ?? "—",
-    pos,
-    posGroup,
-    unit: resolvedUnit,
-    unitGroup: posGroup,
-    outStatus:
-      resolvedUnit === INJURED_UNIT
-        ? (dfInfo.outStatus || (dfInfo.injured ? "Blessé" : "Laissé de côté"))
-        : null,
-    specialTeams: Array.isArray(dfInfo.specialTeams) && dfInfo.specialTeams.length > 0
-      ? dfInfo.specialTeams
-      : ["Aucune"],
-    age: calculateAgeFromBirthDate(rosterEntry?.birthDate) ?? dfInfo.age ?? "—",
-    shoots: rosterEntry?.shootsCatches ? (rosterEntry.shootsCatches === "L" ? "G" : "D") : (dfInfo.shoots || "—"),
-    country: rosterEntry?.birthCountry || dfInfo.country || "—",
-    height: formatInchesToHeight(rosterEntry?.heightInInches) !== "—"
-      ? formatInchesToHeight(rosterEntry?.heightInInches)
-      : (dfInfo.height || "—"),
-    weight: rosterEntry?.weightInPounds ?? dfInfo.weight ?? "—",
-    hometown: formatHometownFromRoster(rosterEntry) !== "—"
-      ? formatHometownFromRoster(rosterEntry)
-      : (dfInfo.hometown || "—"),
-    note: `${roleLabel} de réserve des Canadiens`,
-    headshotUrl: rosterEntry?.headshot || statsEntry?.headshot || dfInfo.headshotUrl || null,
-    stats: createDefaultStatsForGroup(posGroup),
-    careerStats: createDefaultStatsForGroup(posGroup),
-    isPlayable: false
-  };
+  return attachDynamicAge(
+    {
+      id: rosterEntry?.id || statsEntry?.playerId || dfInfo.id || (1000000 + indexSeed),
+      name: fullName,
+      number: rosterEntry?.sweaterNumber ?? dfInfo.number ?? "—",
+      pos,
+      posGroup,
+      unit: resolvedUnit,
+      unitGroup: posGroup,
+      outStatus:
+        resolvedUnit === INJURED_UNIT
+          ? (dfInfo.outStatus || (dfInfo.injured ? "Blessé" : "Laissé de côté"))
+          : null,
+      specialTeams: Array.isArray(dfInfo.specialTeams) && dfInfo.specialTeams.length > 0
+        ? dfInfo.specialTeams
+        : ["Aucune"],
+      birthDate: rosterEntry?.birthDate || dfInfo.birthDate || null,
+      shoots: rosterEntry?.shootsCatches ? (rosterEntry.shootsCatches === "L" ? "G" : "D") : (dfInfo.shoots || "—"),
+      country: rosterEntry?.birthCountry || dfInfo.country || "—",
+      height: formatInchesToHeight(rosterEntry?.heightInInches) !== "—"
+        ? formatInchesToHeight(rosterEntry?.heightInInches)
+        : (dfInfo.height || "—"),
+      weight: rosterEntry?.weightInPounds ?? dfInfo.weight ?? "—",
+      hometown: formatHometownFromRoster(rosterEntry) !== "—"
+        ? formatHometownFromRoster(rosterEntry)
+        : (dfInfo.hometown || "—"),
+      note: `${roleLabel} de réserve des Canadiens`,
+      headshotUrl: rosterEntry?.headshot || statsEntry?.headshot || dfInfo.headshotUrl || null,
+      stats: createDefaultStatsForGroup(posGroup),
+      careerStats: createDefaultStatsForGroup(posGroup),
+      isPlayable: false
+    },
+    dfInfo.age ?? "—"
+  );
 }
 
 function applyCareerRegularSeasonObj(player, reg) {
@@ -988,8 +1023,7 @@ function applyNHLAPIData(
       player.country = entry.birthCountry;
     }
     if (entry.birthDate) {
-      const computedAge = calculateAgeFromBirthDate(entry.birthDate);
-      if (computedAge) player.age = computedAge;
+      player.birthDate = entry.birthDate;
     }
     if (entry.headshot) {
       player.headshotUrl = entry.headshot;

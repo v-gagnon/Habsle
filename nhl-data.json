@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-23T13:10:44Z",
+    "updatedAt": "2026-11-23T15:03:01Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -258,6 +258,30 @@
         }
       },
       {
+        "id": 8477946,
+        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8477946.png",
+        "firstName": {
+          "default": "Dylan"
+        },
+        "lastName": {
+          "default": "Larkin"
+        },
+        "positionCode": "C",
+        "shootsCatches": "L",
+        "heightInInches": 73,
+        "weightInPounds": 198,
+        "heightInCentimeters": 185,
+        "weightInKilograms": 90,
+        "birthDate": "1996-07-30",
+        "birthCity": {
+          "default": "Waterford"
+        },
+        "birthCountry": "USA",
+        "birthStateProvince": {
+          "default": "MI"
+        }
+      },
+      {
         "id": 8481618,
         "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8481618.png",
         "firstName": {
@@ -378,29 +402,6 @@
         "birthCountry": "CAN",
         "birthStateProvince": {
           "default": "ON"
-        }
-      },
-      {
-        "id": 8477946,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/DET/8477946.png",
-        "firstName": {
-          "default": "Dylan"
-        },
-        "lastName": {
-          "default": "Larkin"
-        },
-        "sweaterNumber": 71,
-        "positionCode": "C",
-        "shootsCatches": "L",
-        "heightInInches": 73,
-        "weightInPounds": 198,
-        "birthDate": "1996-07-30",
-        "birthCity": {
-          "default": "Waterford"
-        },
-        "birthCountry": "USA",
-        "birthStateProvince": {
-          "default": "Michigan"
         }
       }
     ],
@@ -625,31 +626,6 @@
         "birthCountry": "USA",
         "birthStateProvince": {
           "default": "FL"
-        }
-      },
-      {
-        "id": 8478470,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8478470.png",
-        "firstName": {
-          "default": "Samuel"
-        },
-        "lastName": {
-          "default": "Montembeault"
-        },
-        "sweaterNumber": 35,
-        "positionCode": "G",
-        "shootsCatches": "L",
-        "heightInInches": 75,
-        "weightInPounds": 218,
-        "heightInCentimeters": 191,
-        "weightInKilograms": 99,
-        "birthDate": "1996-10-30",
-        "birthCity": {
-          "default": "Becancour"
-        },
-        "birthCountry": "CAN",
-        "birthStateProvince": {
-          "default": "QC"
         }
       }
     ]
@@ -2041,6 +2017,18 @@
         "takeaways": 88,
         "giveaways": 129
       },
+      "8484220": {
+        "hits": 6,
+        "blockedShots": 3,
+        "takeaways": 0,
+        "giveaways": 4
+      },
+      "8482132": {
+        "hits": 73,
+        "blockedShots": 30,
+        "takeaways": 8,
+        "giveaways": 29
+      },
       "8478133": {
         "hits": 525,
         "blockedShots": 296,
@@ -2059,29 +2047,23 @@
         "takeaways": 94,
         "giveaways": 191
       },
-      "8484220": {
-        "hits": 6,
-        "blockedShots": 3,
-        "takeaways": 0,
-        "giveaways": 4
-      },
-      "8482132": {
-        "hits": 73,
-        "blockedShots": 30,
-        "takeaways": 8,
-        "giveaways": 29
-      },
-      "8483686": {
-        "hits": 10,
-        "blockedShots": 16,
-        "takeaways": 3,
-        "giveaways": 22
-      },
       "8478851": {
         "hits": 370,
         "blockedShots": 731,
         "takeaways": 123,
         "giveaways": 214
+      },
+      "8480865": {
+        "hits": 431,
+        "blockedShots": 873,
+        "takeaways": 200,
+        "giveaways": 474
+      },
+      "8475184": {
+        "hits": 1683,
+        "blockedShots": 391,
+        "takeaways": 285,
+        "giveaways": 557
       },
       "8483424": {
         "hits": 70,
@@ -2107,29 +2089,17 @@
         "takeaways": 112,
         "giveaways": 245
       },
+      "8483686": {
+        "hits": 10,
+        "blockedShots": 16,
+        "takeaways": 3,
+        "giveaways": 22
+      },
       "8484984": {
         "hits": 33,
         "blockedShots": 26,
         "takeaways": 22,
         "giveaways": 74
-      },
-      "8480865": {
-        "hits": 431,
-        "blockedShots": 873,
-        "takeaways": 200,
-        "giveaways": 474
-      },
-      "8475184": {
-        "hits": 1683,
-        "blockedShots": 391,
-        "takeaways": 285,
-        "giveaways": 557
-      },
-      "8477946": {
-        "hits": 640,
-        "blockedShots": 350,
-        "takeaways": 484,
-        "giveaways": 704
       },
       "8480018": {
         "hits": 492,
@@ -2149,6 +2119,18 @@
         "takeaways": 0,
         "giveaways": 9
       },
+      "8477946": {
+        "hits": 640,
+        "blockedShots": 350,
+        "takeaways": 484,
+        "giveaways": 704
+      },
+      "8481593": {
+        "hits": 418,
+        "blockedShots": 166,
+        "takeaways": 64,
+        "giveaways": 155
+      },
       "8481540": {
         "hits": 232,
         "blockedShots": 96,
@@ -2167,23 +2149,17 @@
         "takeaways": 94,
         "giveaways": 97
       },
-      "8482964": {
-        "hits": 694,
-        "blockedShots": 217,
-        "takeaways": 38,
-        "giveaways": 172
-      },
-      "8481593": {
-        "hits": 418,
-        "blockedShots": 166,
-        "takeaways": 64,
-        "giveaways": 155
-      },
       "8481523": {
         "hits": 325,
         "blockedShots": 194,
         "takeaways": 151,
         "giveaways": 138
+      },
+      "8482964": {
+        "hits": 694,
+        "blockedShots": 217,
+        "takeaways": 38,
+        "giveaways": 172
       },
       "8476479": {
         "hits": 870,
@@ -2535,19 +2511,6 @@
       "number": 42,
       "id": 8483686
     },
-    "jacob fowler": {
-      "name": "Jacob Fowler",
-      "unit": "Gardien",
-      "pos": null,
-      "injured": false,
-      "scratched": false,
-      "outStatus": null,
-      "specialTeams": [
-        "Aucune"
-      ],
-      "number": 32,
-      "id": 8484170
-    },
     "jakub dobes": {
       "name": "Jakub Dobes",
       "unit": "Gardien",
@@ -2560,6 +2523,19 @@
       ],
       "number": 75,
       "id": 8482487
+    },
+    "jacob fowler": {
+      "name": "Jacob Fowler",
+      "unit": "Gardien",
+      "pos": null,
+      "injured": false,
+      "scratched": false,
+      "outStatus": null,
+      "specialTeams": [
+        "Aucune"
+      ],
+      "number": 32,
+      "id": 8484170
     },
     "ivan demidov": {
       "name": "Ivan Demidov",
