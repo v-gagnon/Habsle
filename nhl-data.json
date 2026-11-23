@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-23T15:03:01Z",
+    "updatedAt": "2026-11-23T19:20:19Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -266,6 +266,7 @@
         "lastName": {
           "default": "Larkin"
         },
+        "sweaterNumber": 89,
         "positionCode": "C",
         "shootsCatches": "L",
         "heightInInches": 73,
@@ -2017,18 +2018,6 @@
         "takeaways": 88,
         "giveaways": 129
       },
-      "8484220": {
-        "hits": 6,
-        "blockedShots": 3,
-        "takeaways": 0,
-        "giveaways": 4
-      },
-      "8482132": {
-        "hits": 73,
-        "blockedShots": 30,
-        "takeaways": 8,
-        "giveaways": 29
-      },
       "8478133": {
         "hits": 525,
         "blockedShots": 296,
@@ -2047,23 +2036,29 @@
         "takeaways": 94,
         "giveaways": 191
       },
+      "8484220": {
+        "hits": 6,
+        "blockedShots": 3,
+        "takeaways": 0,
+        "giveaways": 4
+      },
+      "8482132": {
+        "hits": 73,
+        "blockedShots": 30,
+        "takeaways": 8,
+        "giveaways": 29
+      },
+      "8483686": {
+        "hits": 10,
+        "blockedShots": 16,
+        "takeaways": 3,
+        "giveaways": 22
+      },
       "8478851": {
         "hits": 370,
         "blockedShots": 731,
         "takeaways": 123,
         "giveaways": 214
-      },
-      "8480865": {
-        "hits": 431,
-        "blockedShots": 873,
-        "takeaways": 200,
-        "giveaways": 474
-      },
-      "8475184": {
-        "hits": 1683,
-        "blockedShots": 391,
-        "takeaways": 285,
-        "giveaways": 557
       },
       "8483424": {
         "hits": 70,
@@ -2077,29 +2072,41 @@
         "takeaways": 448,
         "giveaways": 777
       },
-      "8482775": {
-        "hits": 37,
-        "blockedShots": 82,
-        "takeaways": 17,
-        "giveaways": 54
-      },
       "8483457": {
         "hits": 80,
         "blockedShots": 295,
         "takeaways": 112,
         "giveaways": 245
       },
-      "8483686": {
-        "hits": 10,
-        "blockedShots": 16,
-        "takeaways": 3,
-        "giveaways": 22
+      "8482775": {
+        "hits": 37,
+        "blockedShots": 82,
+        "takeaways": 17,
+        "giveaways": 54
       },
       "8484984": {
         "hits": 33,
         "blockedShots": 26,
         "takeaways": 22,
         "giveaways": 74
+      },
+      "8480865": {
+        "hits": 431,
+        "blockedShots": 873,
+        "takeaways": 200,
+        "giveaways": 474
+      },
+      "8475184": {
+        "hits": 1683,
+        "blockedShots": 391,
+        "takeaways": 285,
+        "giveaways": 557
+      },
+      "8477946": {
+        "hits": 640,
+        "blockedShots": 350,
+        "takeaways": 484,
+        "giveaways": 704
       },
       "8480018": {
         "hits": 492,
@@ -2119,18 +2126,6 @@
         "takeaways": 0,
         "giveaways": 9
       },
-      "8477946": {
-        "hits": 640,
-        "blockedShots": 350,
-        "takeaways": 484,
-        "giveaways": 704
-      },
-      "8481593": {
-        "hits": 418,
-        "blockedShots": 166,
-        "takeaways": 64,
-        "giveaways": 155
-      },
       "8481540": {
         "hits": 232,
         "blockedShots": 96,
@@ -2149,17 +2144,23 @@
         "takeaways": 94,
         "giveaways": 97
       },
-      "8481523": {
-        "hits": 325,
-        "blockedShots": 194,
-        "takeaways": 151,
-        "giveaways": 138
-      },
       "8482964": {
         "hits": 694,
         "blockedShots": 217,
         "takeaways": 38,
         "giveaways": 172
+      },
+      "8481593": {
+        "hits": 418,
+        "blockedShots": 166,
+        "takeaways": 64,
+        "giveaways": 155
+      },
+      "8481523": {
+        "hits": 325,
+        "blockedShots": 194,
+        "takeaways": 151,
+        "giveaways": 138
       },
       "8476479": {
         "hits": 870,
@@ -2340,7 +2341,7 @@
       "specialTeams": [
         "SN 1"
       ],
-      "number": 71,
+      "number": 89,
       "id": 8477946
     },
     "juraj slafkovsky": {
