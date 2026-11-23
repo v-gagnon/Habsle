@@ -1,11 +1,11 @@
 {
   "meta": {
-    "updatedAt": "2026-11-22T18:25:16Z",
+    "updatedAt": "2026-11-23T13:10:44Z",
     "services": {
       "nhlRoster": {
         "ok": true,
-        "count": 25,
-        "detail": "Opérationnel (25 joueurs reçus)"
+        "count": 24,
+        "detail": "Opérationnel (24 joueurs reçus)"
       },
       "nhlStats": {
         "ok": true,
@@ -19,18 +19,18 @@
       },
       "dailyFaceoff": {
         "ok": true,
-        "count": 25,
-        "detail": "Opérationnel (20 alignés, 5 blessés, 0 laissés de côté)"
+        "count": 24,
+        "detail": "Opérationnel (20 alignés, 4 blessés, 0 laissés de côté)"
       },
       "nhlRealtime": {
         "ok": true,
-        "count": 25,
-        "detail": "Opérationnel (25 saison, 25 carrière)"
+        "count": 26,
+        "detail": "Opérationnel (26 saison, 26 carrière)"
       },
       "nhlEdge": {
         "ok": true,
-        "count": 25,
-        "detail": "Opérationnel (25/25 fiches EDGE)"
+        "count": 26,
+        "detail": "Opérationnel (26/26 fiches EDGE)"
       }
     }
   },
@@ -134,31 +134,6 @@
         "birthCountry": "USA",
         "birthStateProvince": {
           "default": "WI"
-        }
-      },
-      {
-        "id": 8481523,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8481523.png",
-        "firstName": {
-          "default": "Kirby"
-        },
-        "lastName": {
-          "default": "Dach"
-        },
-        "sweaterNumber": 77,
-        "positionCode": "C",
-        "shootsCatches": "R",
-        "heightInInches": 76,
-        "weightInPounds": 221,
-        "heightInCentimeters": 193,
-        "weightInKilograms": 100,
-        "birthDate": "2001-01-21",
-        "birthCity": {
-          "default": "Fort Saskatchewan"
-        },
-        "birthCountry": "CAN",
-        "birthStateProvince": {
-          "default": "AB"
         }
       },
       {
@@ -406,26 +381,26 @@
         }
       },
       {
-        "id": 8482132,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8482132.png",
+        "id": 8477946,
+        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/DET/8477946.png",
         "firstName": {
-          "default": "Brett"
+          "default": "Dylan"
         },
         "lastName": {
-          "default": "Berard"
+          "default": "Larkin"
         },
-        "sweaterNumber": 37,
-        "positionCode": "L",
+        "sweaterNumber": 71,
+        "positionCode": "C",
         "shootsCatches": "L",
-        "heightInInches": 69,
-        "weightInPounds": 175,
-        "birthDate": "2002-09-09",
+        "heightInInches": 73,
+        "weightInPounds": 198,
+        "birthDate": "1996-07-30",
         "birthCity": {
-          "default": "Providence"
+          "default": "Waterford"
         },
         "birthCountry": "USA",
         "birthStateProvince": {
-          "default": "Rhode Island"
+          "default": "Michigan"
         }
       }
     ],
@@ -602,27 +577,6 @@
         "birthStateProvince": {
           "default": "ON"
         }
-      },
-      {
-        "id": 8484220,
-        "headshot": "https://assets.nhle.com/mugs/nhl/20262027/MTL/8484220.png",
-        "firstName": {
-          "default": "David"
-        },
-        "lastName": {
-          "default": "Reinbacher"
-        },
-        "sweaterNumber": 64,
-        "positionCode": "D",
-        "shootsCatches": "R",
-        "heightInInches": 75,
-        "weightInPounds": 207,
-        "birthDate": "2004-10-25",
-        "birthCity": {
-          "default": "Hohenems"
-        },
-        "birthCountry": "AUT",
-        "birthStateProvince": null
       }
     ],
     "goalies": [
@@ -1901,6 +1855,24 @@
       "shorthandedGoals": 0,
       "shorthandedPoints": 0,
       "shots": 136
+    },
+    "8477946": {
+      "assists": 371,
+      "avgToi": "19:33",
+      "faceoffWinningPctg": 0.5275,
+      "gameWinningGoals": 40,
+      "gamesPlayed": 818,
+      "goals": 278,
+      "otGoals": 13,
+      "pim": 503,
+      "plusMinus": -97,
+      "points": 649,
+      "powerPlayGoals": 86,
+      "powerPlayPoints": 179,
+      "shootingPctg": 0.11359999999999999,
+      "shorthandedGoals": 9,
+      "shorthandedPoints": 12,
+      "shots": 2447
     }
   },
   "realtime": {
@@ -1946,6 +1918,12 @@
         "blockedShots": 8,
         "takeaways": 1,
         "giveaways": 15
+      },
+      "8477946": {
+        "hits": 5,
+        "blockedShots": 6,
+        "takeaways": 4,
+        "giveaways": 20
       },
       "8478851": {
         "hits": 23,
@@ -2147,6 +2125,12 @@
         "takeaways": 285,
         "giveaways": 557
       },
+      "8477946": {
+        "hits": 640,
+        "blockedShots": 350,
+        "takeaways": 484,
+        "giveaways": 704
+      },
       "8480018": {
         "hits": 492,
         "blockedShots": 381,
@@ -2309,6 +2293,10 @@
     "8484984": {
       "skatingSpeedKmh": 32.9,
       "shotSpeedKmh": 137.4
+    },
+    "8477946": {
+      "skatingSpeedKmh": 35.5,
+      "shotSpeedKmh": 133.0
     }
   },
   "lines": {
@@ -2366,18 +2354,18 @@
       "number": 15,
       "id": 8481618
     },
-    "jake evans": {
-      "name": "Jake Evans",
+    "dylan larkin": {
+      "name": "Dylan Larkin",
       "unit": "Trio 2",
       "pos": "C",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "IN 1"
+        "SN 1"
       ],
       "number": 71,
-      "id": 8478133
+      "id": 8477946
     },
     "juraj slafkovsky": {
       "name": "Juraj Slafkovsky",
@@ -2400,7 +2388,7 @@
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 1"
+        "SN 2"
       ],
       "number": 76,
       "id": 8482737
@@ -2418,8 +2406,8 @@
       "number": 24,
       "id": 8476479
     },
-    "kirby dach": {
-      "name": "Kirby Dach",
+    "oliver kapanen": {
+      "name": "Oliver Kapanen",
       "unit": "Trio 3",
       "pos": "AD",
       "injured": false,
@@ -2428,11 +2416,10 @@
       "specialTeams": [
         "SN 2"
       ],
-      "number": 77,
-      "id": 8481523
+      "id": 8482775
     },
-    "brett berard": {
-      "name": "Brett Berard",
+    "florian xhekaj": {
+      "name": "Florian Xhekaj",
       "unit": "Trio 4",
       "pos": "AG",
       "injured": false,
@@ -2441,20 +2428,21 @@
       "specialTeams": [
         "Aucune"
       ],
-      "number": 65,
-      "id": 8482132
+      "number": 63,
+      "id": 8484403
     },
-    "oliver kapanen": {
-      "name": "Oliver Kapanen",
+    "jake evans": {
+      "name": "Jake Evans",
       "unit": "Trio 4",
       "pos": "C",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2"
+        "IN 1"
       ],
-      "id": 8482775
+      "number": 71,
+      "id": 8478133
     },
     "owen beck": {
       "name": "Owen Beck",
@@ -2534,8 +2522,8 @@
       "number": 72,
       "id": 8482964
     },
-    "david reinbacher": {
-      "name": "David Reinbacher",
+    "adam engstrom": {
+      "name": "Adam Engstrom",
       "unit": "Paire 3",
       "pos": "D",
       "injured": false,
@@ -2544,8 +2532,8 @@
       "specialTeams": [
         "Aucune"
       ],
-      "number": 64,
-      "id": 8484220
+      "number": 42,
+      "id": 8483686
     },
     "jacob fowler": {
       "name": "Jacob Fowler",
@@ -2584,19 +2572,6 @@
         "Aucune"
       ],
       "id": 8484984
-    },
-    "sam montembeault": {
-      "name": "Sam Montembeault",
-      "unit": "Hors alignement",
-      "pos": null,
-      "injured": true,
-      "scratched": false,
-      "outStatus": "Blessé",
-      "specialTeams": [
-        "Aucune"
-      ],
-      "number": 35,
-      "id": 8478470
     },
     "josh anderson": {
       "name": "Josh Anderson",
