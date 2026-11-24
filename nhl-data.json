@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-23T23:22:52Z",
+    "updatedAt": "2026-11-24T01:07:29Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -2304,19 +2304,18 @@
       "number": 14,
       "id": 8480018
     },
-    "alexandre texier": {
-      "name": "Alexandre Texier",
+    "juraj slafkovsky": {
+      "name": "Juraj Slafkovsky",
       "unit": "Trio 1",
       "pos": "AD",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2",
-        "IN 2"
+        "SN 1"
       ],
-      "number": 85,
-      "id": 8480074
+      "number": 20,
+      "id": 8483515
     },
     "alex newhook": {
       "name": "Alex Newhook",
@@ -2344,18 +2343,19 @@
       "number": 89,
       "id": 8477946
     },
-    "juraj slafkovsky": {
-      "name": "Juraj Slafkovsky",
+    "alexandre texier": {
+      "name": "Alexandre Texier",
       "unit": "Trio 2",
       "pos": "AD",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 1"
+        "SN 2",
+        "IN 2"
       ],
-      "number": 20,
-      "id": 8483515
+      "number": 85,
+      "id": 8480074
     },
     "zack bolduc": {
       "name": "Zack Bolduc",
@@ -2383,17 +2383,18 @@
       "number": 24,
       "id": 8476479
     },
-    "oliver kapanen": {
-      "name": "Oliver Kapanen",
+    "jake evans": {
+      "name": "Jake Evans",
       "unit": "Trio 3",
       "pos": "AD",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "SN 2"
+        "IN 1"
       ],
-      "id": 8482775
+      "number": 71,
+      "id": 8478133
     },
     "florian xhekaj": {
       "name": "Florian Xhekaj",
@@ -2408,18 +2409,17 @@
       "number": 63,
       "id": 8484403
     },
-    "jake evans": {
-      "name": "Jake Evans",
+    "oliver kapanen": {
+      "name": "Oliver Kapanen",
       "unit": "Trio 4",
       "pos": "C",
       "injured": false,
       "scratched": false,
       "outStatus": null,
       "specialTeams": [
-        "IN 1"
+        "SN 2"
       ],
-      "number": 71,
-      "id": 8478133
+      "id": 8482775
     },
     "owen beck": {
       "name": "Owen Beck",
