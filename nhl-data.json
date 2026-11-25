@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-24T18:57:40Z",
+    "updatedAt": "2026-11-25T13:10:50Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -1981,17 +1981,17 @@
         "takeaways": 2,
         "giveaways": 9
       },
-      "8482087": {
-        "hits": 48,
-        "blockedShots": 37,
-        "takeaways": 11,
-        "giveaways": 16
-      },
       "8481593": {
         "hits": 58,
         "blockedShots": 27,
         "takeaways": 6,
         "giveaways": 18
+      },
+      "8482087": {
+        "hits": 48,
+        "blockedShots": 37,
+        "takeaways": 11,
+        "giveaways": 16
       },
       "8484403": {
         "hits": 36,
@@ -2023,12 +2023,6 @@
         "takeaways": 4,
         "giveaways": 14
       },
-      "8480018": {
-        "hits": 26,
-        "blockedShots": 12,
-        "takeaways": 8,
-        "giveaways": 19
-      },
       "8482737": {
         "hits": 36,
         "blockedShots": 8,
@@ -2059,17 +2053,17 @@
         "takeaways": 2,
         "giveaways": 15
       },
+      "8480018": {
+        "hits": 26,
+        "blockedShots": 12,
+        "takeaways": 8,
+        "giveaways": 19
+      },
       "8483457": {
         "hits": 8,
         "blockedShots": 39,
         "takeaways": 11,
         "giveaways": 42
-      },
-      "8476875": {
-        "hits": 5,
-        "blockedShots": 16,
-        "takeaways": 3,
-        "giveaways": 14
       },
       "8480865": {
         "hits": 26,
@@ -2082,6 +2076,12 @@
         "blockedShots": 16,
         "takeaways": 2,
         "giveaways": 13
+      },
+      "8476875": {
+        "hits": 5,
+        "blockedShots": 16,
+        "takeaways": 3,
+        "giveaways": 14
       }
     },
     "career": {
@@ -2139,12 +2139,6 @@
         "takeaways": 6,
         "giveaways": 27
       },
-      "8476875": {
-        "hits": 606,
-        "blockedShots": 1162,
-        "takeaways": 448,
-        "giveaways": 777
-      },
       "8482775": {
         "hits": 37,
         "blockedShots": 82,
@@ -2156,6 +2150,12 @@
         "blockedShots": 299,
         "takeaways": 113,
         "giveaways": 248
+      },
+      "8476875": {
+        "hits": 606,
+        "blockedShots": 1162,
+        "takeaways": 448,
+        "giveaways": 777
       },
       "8484984": {
         "hits": 33,
@@ -2585,19 +2585,6 @@
       "number": 42,
       "id": 8483686
     },
-    "jakub dobes": {
-      "name": "Jakub Dobes",
-      "unit": "Gardien",
-      "pos": null,
-      "injured": false,
-      "scratched": false,
-      "outStatus": null,
-      "specialTeams": [
-        "Aucune"
-      ],
-      "number": 75,
-      "id": 8482487
-    },
     "jacob fowler": {
       "name": "Jacob Fowler",
       "unit": "Gardien",
@@ -2610,6 +2597,19 @@
       ],
       "number": 32,
       "id": 8484170
+    },
+    "jakub dobes": {
+      "name": "Jakub Dobes",
+      "unit": "Gardien",
+      "pos": null,
+      "injured": false,
+      "scratched": false,
+      "outStatus": null,
+      "specialTeams": [
+        "Aucune"
+      ],
+      "number": 75,
+      "id": 8482487
     },
     "ivan demidov": {
       "name": "Ivan Demidov",
