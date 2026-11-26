@@ -422,7 +422,15 @@ function parseMMSS(mmss) {
   return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
 }
 
-function compareNumericClue(guessVal, secretVal, closeThreshold, displayStr, upLabel = "▲ Plus haut", downLabel = "▼ Plus bas") {
+const EXPERT_EXTENDED_MULTIPLIER = 2;
+
+function compareNumericClue(
+  guessVal,
+  secretVal,
+  closeThreshold,
+  displayStr,
+  { upLabel = "▲ Plus haut", downLabel = "▼ Plus bas", extendedClose = false } = {}
+) {
   if (guessVal === null || secretVal === null || isNaN(guessVal) || isNaN(secretVal)) {
     const bothMissing = guessVal === secretVal;
     return {
@@ -431,20 +439,51 @@ function compareNumericClue(guessVal, secretVal, closeThreshold, displayStr, upL
       sub: ""
     };
   }
+
   const diff = secretVal - guessVal;
-  const status = diff === 0 ? "exact" : Math.abs(diff) <= closeThreshold ? "close" : "wrong";
+  const absDiff = Math.abs(diff);
+
+  let status = "wrong";
+  if (diff === 0) {
+    status = "exact";
+  } else if (absDiff <= closeThreshold) {
+    status = "close";
+  } else if (extendedClose && absDiff <= closeThreshold * EXPERT_EXTENDED_MULTIPLIER) {
+    status = "far-close";
+  }
+
   const sub = diff === 0 ? "" : diff > 0 ? upLabel : downLabel;
   return { text: displayStr, status, sub };
+}
+
+function formatClueInterval(def, { extendedClose = false } = {}) {
+  if (!def) return "";
+  if (typeof def.closeThreshold === "number") {
+    const formatVal = def.formatThreshold || (val => String(val));
+    const closeText = `±${formatVal(def.closeThreshold)}`;
+    if (extendedClose) {
+      const extendedVal = def.closeThreshold * EXPERT_EXTENDED_MULTIPLIER;
+      return `(${closeText} / ±${formatVal(extendedVal)})`;
+    }
+    return `(${closeText})`;
+  }
+  return def.interval || "";
 }
 
 const CLUE_DEFINITIONS = {
   number: {
     label: "#",
     fullName: "Numéro (#)",
-    interval: "(±5)",
+    closeThreshold: 5,
     isStat: false,
-    evaluate(player, secret) {
-      return compareNumericClue(player.number, secret.number, 5, `#${player.number}`);
+    evaluate(player, secret, options) {
+      return compareNumericClue(
+        player.number,
+        secret.number,
+        this.closeThreshold,
+        `#${player.number}`,
+        options
+      );
     }
   },
   pos: {
@@ -492,18 +531,17 @@ const CLUE_DEFINITIONS = {
   age: {
     label: "Âge",
     fullName: "Âge",
-    interval: "(±2)",
+    closeThreshold: 2,
     isStat: false,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gAge = getPlayerAge(player);
       const sAge = getPlayerAge(secret);
       return compareNumericClue(
         gAge,
         sAge,
-        2,
+        this.closeThreshold,
         gAge !== null ? `${gAge} ans` : "—",
-        "▲ Plus vieux",
-        "▼ Plus jeune"
+        { ...options, upLabel: "▲ Plus vieux", downLabel: "▼ Plus jeune" }
       );
     }
   },
@@ -553,53 +591,53 @@ const CLUE_DEFINITIONS = {
   gp: {
     label: "MJ",
     fullName: "Matchs joués",
-    interval: "(±3)",
+    closeThreshold: 3,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.gp ?? 0;
       const sVal = secret.stats?.gp ?? 0;
-      return compareNumericClue(gVal, sVal, 3, `${gVal} MJ`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} MJ`, options);
     }
   },
   g: {
     label: "Buts",
     fullName: "Buts",
-    interval: "(±2)",
+    closeThreshold: 2,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.g ?? 0;
       const sVal = secret.stats?.g ?? 0;
-      return compareNumericClue(gVal, sVal, 2, `${gVal} B`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} B`, options);
     }
   },
   a: {
     label: "Passes",
     fullName: "Passes",
-    interval: "(±2)",
+    closeThreshold: 2,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.a ?? 0;
       const sVal = secret.stats?.a ?? 0;
-      return compareNumericClue(gVal, sVal, 2, `${gVal} A`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} A`, options);
     }
   },
   pts: {
     label: "Points",
     fullName: "Points",
-    interval: "(±3)",
+    closeThreshold: 3,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.pts ?? 0;
       const sVal = secret.stats?.pts ?? 0;
-      return compareNumericClue(gVal, sVal, 3, `${gVal} Pts`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} Pts`, options);
     }
   },
   plusMinus: {
     label: "+/-",
     fullName: "Différentiel (+/-)",
-    interval: "(±2)",
+    closeThreshold: 2,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gIsGoalie = player.posGroup === "GAR";
       const sIsGoalie = secret.posGroup === "GAR";
       if (gIsGoalie || sIsGoalie) {
@@ -613,84 +651,84 @@ const CLUE_DEFINITIONS = {
       const gVal = player.stats?.plusMinus ?? 0;
       const sVal = secret.stats?.plusMinus ?? 0;
       const formatted = gVal > 0 ? `+${gVal}` : `${gVal}`;
-      return compareNumericClue(gVal, sVal, 2, formatted);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, formatted, options);
     }
   },
   pim: {
     label: "PUN",
     fullName: "Punitions (PUN)",
-    interval: "(±4)",
+    closeThreshold: 4,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.pim ?? 0;
       const sVal = secret.stats?.pim ?? 0;
-      return compareNumericClue(gVal, sVal, 4, `${gVal} min`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} min`, options);
     }
   },
   shots: {
     label: "Tirs",
     fullName: "Tirs au but",
-    interval: "(±8)",
+    closeThreshold: 8,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gVal = player.stats?.shots ?? 0;
       const sVal = secret.stats?.shots ?? 0;
-      return compareNumericClue(gVal, sVal, 8, `${gVal} tirs`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, `${gVal} tirs`, options);
     }
   },
   toi: {
     label: "TG/M",
     fullName: "Temps de glace",
-    interval: "(±2:00)",
+    closeThreshold: 120,
+    formatThreshold: formatSecondsToMMSS,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gStr = player.posGroup === "GAR" ? (player.stats?.gp > 0 ? "60:00" : "—") : (player.stats?.toi || "—");
       const sStr = secret.posGroup === "GAR" ? (secret.stats?.gp > 0 ? "60:00" : "—") : (secret.stats?.toi || "—");
       const gSec = parseMMSS(gStr);
       const sSec = parseMMSS(sStr);
-      return compareNumericClue(gSec, sSec, 120, gStr);
+      return compareNumericClue(gSec, sSec, this.closeThreshold, gStr, options);
     }
   },
   height: {
     label: "Taille",
     fullName: "Taille",
-    interval: "(±2\")",
+    closeThreshold: 2,
+    formatThreshold: val => `${val}"`,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gIn = parseHeightToInches(player.height);
       const sIn = parseHeightToInches(secret.height);
       return compareNumericClue(
         gIn,
         sIn,
-        2,
+        this.closeThreshold,
         player.height,
-        "▲ Plus grand",
-        "▼ Plus petit"
+        { ...options, upLabel: "▲ Plus grand", downLabel: "▼ Plus petit" }
       );
     }
   },
   weight: {
     label: "Poids",
     fullName: "Poids (lb)",
-    interval: "(±10)",
+    closeThreshold: 5,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       return compareNumericClue(
         player.weight,
         secret.weight,
-        10,
+        this.closeThreshold,
         `${player.weight} lb`,
-        "▲ Plus lourd",
-        "▼ Plus léger"
+        { ...options, upLabel: "▲ Plus lourd", downLabel: "▼ Plus léger" }
       );
     }
   },
   hits: {
     label: "Mises en éch.",
     fullName: "Mises en échec",
-    interval: "(±5)",
+    closeThreshold: 5,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gIsGoalie = player.posGroup === "GAR";
       const sIsGoalie = secret.posGroup === "GAR";
       if (gIsGoalie || sIsGoalie) {
@@ -703,15 +741,15 @@ const CLUE_DEFINITIONS = {
       }
       const gVal = typeof player.stats?.hits === "number" ? player.stats.hits : null;
       const sVal = typeof secret.stats?.hits === "number" ? secret.stats.hits : null;
-      return compareNumericClue(gVal, sVal, 5, gVal === null ? "—" : `${gVal}`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, gVal === null ? "—" : `${gVal}`, options);
     }
   },
   blocks: {
     label: "Tirs bloqués",
     fullName: "Tirs bloqués",
-    interval: "(±4)",
+    closeThreshold: 4,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gIsGoalie = player.posGroup === "GAR";
       const sIsGoalie = secret.posGroup === "GAR";
       if (gIsGoalie || sIsGoalie) {
@@ -724,15 +762,15 @@ const CLUE_DEFINITIONS = {
       }
       const gVal = typeof player.stats?.blocks === "number" ? player.stats.blocks : null;
       const sVal = typeof secret.stats?.blocks === "number" ? secret.stats.blocks : null;
-      return compareNumericClue(gVal, sVal, 4, gVal === null ? "—" : `${gVal}`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, gVal === null ? "—" : `${gVal}`, options);
     }
   },
   takeaways: {
     label: "Revirements",
     fullName: "Revirements",
-    interval: "(±2)",
+    closeThreshold: 2,
     isStat: true,
-    evaluate(player, secret) {
+    evaluate(player, secret, options) {
       const gIsGoalie = player.posGroup === "GAR";
       const sIsGoalie = secret.posGroup === "GAR";
       if (gIsGoalie || sIsGoalie) {
@@ -745,7 +783,7 @@ const CLUE_DEFINITIONS = {
       }
       const gVal = typeof player.stats?.takeaways === "number" ? player.stats.takeaways : null;
       const sVal = typeof secret.stats?.takeaways === "number" ? secret.stats.takeaways : null;
-      return compareNumericClue(gVal, sVal, 2, gVal === null ? "—" : `${gVal}`);
+      return compareNumericClue(gVal, sVal, this.closeThreshold, gVal === null ? "—" : `${gVal}`, options);
     }
   }
 };

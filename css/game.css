@@ -469,6 +469,7 @@
 
 .dot.exact { background: var(--exact-green); }
 .dot.close { background: var(--close-yellow); }
+.dot.far-close { background: var(--far-close-red); }
 .dot.wrong { background: var(--wrong-gray); }
 
 /* Grille adaptable (1 à 6 colonnes d'indices) */
@@ -553,6 +554,11 @@
 
 .cell.close {
   background: var(--close-yellow);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.cell.far-close {
+  background: var(--far-close-red);
   border-color: rgba(255, 255, 255, 0.25);
 }
 

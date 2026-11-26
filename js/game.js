@@ -44,6 +44,7 @@ const resultContentEl = document.getElementById("result-content");
 
 const boardHeaderEl = document.getElementById("board-header");
 const boardLegendEl = document.getElementById("board-legend");
+const legendExtendedCloseEl = document.getElementById("legend-extended-close");
 
 const imageClueStage = document.getElementById("image-clue-stage");
 const mysteryPlayerImg = document.getElementById("mystery-player-img");
@@ -571,7 +572,7 @@ function renderCustomConfigUI() {
         <span class="clue-opt-label">${def.fullName}</span>
         ${isSelected ? `<span class="clue-opt-order">${selectedIdx + 1}</span>` : ""}
       </div>
-      <span class="clue-opt-meta">${def.isStat ? "Statistique / Secondaire" : "Indice standard"} ${def.interval}</span>
+      <span class="clue-opt-meta">${def.isStat ? "Statistique / Secondaire" : "Indice standard"} ${formatClueInterval(def)}</span>
     `;
 
     btn.addEventListener("click", () => {
@@ -785,7 +786,7 @@ function restartCurrentGameSameType() {
 }
 
 // --- RENDU DE L'EN-TÊTE DE GRILLE DYNAMIQUE ---
-function renderBoardHeader(columns) {
+function renderBoardHeader(columns, extendedClose = false) {
   const colCount = columns.length;
   const boardEl = boardHeaderEl.parentElement;
   boardEl.style.setProperty("--col-count", String(colCount));
@@ -794,11 +795,12 @@ function renderBoardHeader(columns) {
   boardHeaderEl.innerHTML = `<div class="header-col-cell"><span>Joueur</span></div>`;
   columns.forEach(colKey => {
     const def = CLUE_DEFINITIONS[colKey];
+    const intervalText = formatClueInterval(def, { extendedClose });
     const div = document.createElement("div");
     div.className = `header-col-cell ${def.isStat ? "stat-col-header" : ""}`;
     div.innerHTML = `
       <span>${def.label}</span>
-      ${def.interval ? `<span class="header-interval">${def.interval}</span>` : ""}
+      ${intervalText ? `<span class="header-interval">${intervalText}</span>` : ""}
     `;
     boardHeaderEl.appendChild(div);
   });
@@ -852,6 +854,7 @@ function renderActiveGameSession() {
   const isCustom = activeGameMode === "custom";
   const isChallenge = isChallengeMode(activeGameMode);
   const imageMode = isImageSession(session);
+  const expertMode = isExpertSession(session);
   const isSurvival = activeGameMode === "survival";
 
   // Titres et bannières
@@ -901,12 +904,15 @@ function renderActiveGameSession() {
 
   setChallengeEndScreenVisibility(false);
   boardHeaderEl.classList.toggle("hidden", imageMode);
+  if (legendExtendedCloseEl) {
+    legendExtendedCloseEl.classList.toggle("hidden", !expertMode);
+  }
 
   if (imageMode) {
     boardHeaderEl.parentElement.style.setProperty("--board-min-width", "100%");
     updateImageStageDOM(session);
   } else {
-    renderBoardHeader(session.columns);
+    renderBoardHeader(session.columns, expertMode);
   }
 
   attemptCountEl.textContent = `${session.guesses.length} / ${getMaxAttempts(session)}`;
@@ -920,7 +926,7 @@ function renderActiveGameSession() {
     if (imageMode) {
       appendImageGuessRowDOM(player, session.secretPlayer, index + 1);
     } else {
-      appendGuessRowDOM(player, session.secretPlayer, session.columns, false, session.hideArrows);
+      appendGuessRowDOM(player, session.secretPlayer, session.columns, false, session.hideArrows, expertMode);
     }
   });
 
@@ -1023,7 +1029,14 @@ function submitGuess(player) {
   if (imageMode) {
     appendImageGuessRowDOM(player, session.secretPlayer, attemptNumber);
   } else {
-    appendGuessRowDOM(player, session.secretPlayer, session.columns, true, session.hideArrows);
+    appendGuessRowDOM(
+      player,
+      session.secretPlayer,
+      session.columns,
+      true,
+      session.hideArrows,
+      isExpertSession(session)
+    );
   }
 
   if (player.id === session.secretPlayer.id) {
@@ -1054,12 +1067,21 @@ function appendImageGuessRowDOM(player, secretPlayer, attemptNumber) {
   guessesContainer.appendChild(row);
 }
 
-function appendGuessRowDOM(player, secretPlayer, columns, animate, hideArrows = false) {
+function appendGuessRowDOM(
+  player,
+  secretPlayer,
+  columns,
+  animate,
+  hideArrows = false,
+  extendedClose = false
+) {
   const nameStatus = player.id === secretPlayer.id ? "exact" : "name-cell";
 
   const cellsData = [
     { text: player.name, status: nameStatus, sub: "" },
-    ...columns.map(colKey => CLUE_DEFINITIONS[colKey].evaluate(player, secretPlayer))
+    ...columns.map(colKey =>
+      CLUE_DEFINITIONS[colKey].evaluate(player, secretPlayer, { extendedClose })
+    )
   ];
 
   const row = document.createElement("div");

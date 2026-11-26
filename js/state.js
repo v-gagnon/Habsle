@@ -31,7 +31,7 @@ function generateRemixedColumns(rng = Math.random) {
 }
 
 function generateExpertColumns(rng = Math.random) {
-  const normalCount = Math.floor(rng() * 2);
+  const normalCount = Math.floor(rng() * 2 + 0.5);
   const statCount = 5 - normalCount;
   const keptBase = shuffleArray(CLASSIC_COLUMNS, rng).slice(0, normalCount);
   const pickedStats = shuffleArray(STAT_POOL_COLUMNS, rng).slice(0, statCount);
@@ -305,6 +305,10 @@ function isChallengeMode(modeKey) {
 
 function isImageSession(session) {
   return session && session.variant === "image";
+}
+
+function isExpertSession(session) {
+  return Boolean(session && session.variant === "expert");
 }
 
 function getTodayKey() {
