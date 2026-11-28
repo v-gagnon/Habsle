@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updatedAt": "2026-11-28T11:58:37Z",
+    "updatedAt": "2026-11-28T16:16:05Z",
     "services": {
       "nhlRoster": {
         "ok": true,
@@ -2139,12 +2139,6 @@
         "takeaways": 6,
         "giveaways": 27
       },
-      "8476875": {
-        "hits": 606,
-        "blockedShots": 1162,
-        "takeaways": 448,
-        "giveaways": 777
-      },
       "8482775": {
         "hits": 38,
         "blockedShots": 82,
@@ -2156,6 +2150,12 @@
         "blockedShots": 303,
         "takeaways": 115,
         "giveaways": 251
+      },
+      "8476875": {
+        "hits": 606,
+        "blockedShots": 1162,
+        "takeaways": 448,
+        "giveaways": 777
       },
       "8484984": {
         "hits": 33,
